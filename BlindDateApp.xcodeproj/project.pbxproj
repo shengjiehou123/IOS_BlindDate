@@ -7,20 +7,35 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		55219B014EB8F3FB048E4E7B /* Pods_BlindDateApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA46E149846F89A84C1EE6CF /* Pods_BlindDateApp.framework */; };
+		A2519B9229A9E59D0098DF3E /* ViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2519B9129A9E59D0098DF3E /* ViewExtension.swift */; };
+		A2519B9429A9E5D40098DF3E /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2519B9329A9E5D40098DF3E /* LoadingView.swift */; };
+		A2519B9729A9E95B0098DF3E /* UserCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2519B9629A9E95B0098DF3E /* UserCenter.swift */; };
 		A2E4E91B299B5104000A46FE /* BlindDateAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E4E91A299B5104000A46FE /* BlindDateAppApp.swift */; };
 		A2E4E91D299B5104000A46FE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E4E91C299B5104000A46FE /* ContentView.swift */; };
 		A2E4E91F299B5107000A46FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2E4E91E299B5107000A46FE /* Assets.xcassets */; };
 		A2E4E922299B5107000A46FE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2E4E921299B5107000A46FE /* Preview Assets.xcassets */; };
 		A2E4E929299B517D000A46FE /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E4E928299B517D000A46FE /* LoginView.swift */; };
+		A2FFE855299B5E03009642D3 /* BaseRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FFE854299B5E03009642D3 /* BaseRequest.swift */; };
+		A2FFE857299B61E8009642D3 /* Consts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FFE856299B61E8009642D3 /* Consts.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		664FC701655135A14D8BE38C /* Pods-BlindDateApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlindDateApp.debug.xcconfig"; path = "Target Support Files/Pods-BlindDateApp/Pods-BlindDateApp.debug.xcconfig"; sourceTree = "<group>"; };
+		A2519B9129A9E59D0098DF3E /* ViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtension.swift; sourceTree = "<group>"; };
+		A2519B9329A9E5D40098DF3E /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		A2519B9629A9E95B0098DF3E /* UserCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCenter.swift; sourceTree = "<group>"; };
 		A2E4E917299B5104000A46FE /* BlindDateApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlindDateApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2E4E91A299B5104000A46FE /* BlindDateAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindDateAppApp.swift; sourceTree = "<group>"; };
 		A2E4E91C299B5104000A46FE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A2E4E91E299B5107000A46FE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A2E4E921299B5107000A46FE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		A2E4E928299B517D000A46FE /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		A2FFE854299B5E03009642D3 /* BaseRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseRequest.swift; sourceTree = "<group>"; };
+		A2FFE856299B61E8009642D3 /* Consts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Consts.swift; sourceTree = "<group>"; };
+		A2FFE858299B6ABA009642D3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		EA46E149846F89A84C1EE6CF /* Pods_BlindDateApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BlindDateApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F1F647A3B0394268888BD8CC /* Pods-BlindDateApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlindDateApp.release.xcconfig"; path = "Target Support Files/Pods-BlindDateApp/Pods-BlindDateApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -28,17 +43,45 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55219B014EB8F3FB048E4E7B /* Pods_BlindDateApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		363D64CA92C3E6867018CC70 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EA46E149846F89A84C1EE6CF /* Pods_BlindDateApp.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A2519B9029A9E5850098DF3E /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				A2519B9129A9E59D0098DF3E /* ViewExtension.swift */,
+				A2519B9329A9E5D40098DF3E /* LoadingView.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		A2519B9529A9E94B0098DF3E /* UserCenter */ = {
+			isa = PBXGroup;
+			children = (
+				A2519B9629A9E95B0098DF3E /* UserCenter.swift */,
+			);
+			path = UserCenter;
+			sourceTree = "<group>";
+		};
 		A2E4E90E299B5104000A46FE = {
 			isa = PBXGroup;
 			children = (
 				A2E4E919299B5104000A46FE /* BlindDateApp */,
 				A2E4E918299B5104000A46FE /* Products */,
+				B5C5E14EEBD53F916B567301 /* Pods */,
+				363D64CA92C3E6867018CC70 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -53,10 +96,15 @@
 		A2E4E919299B5104000A46FE /* BlindDateApp */ = {
 			isa = PBXGroup;
 			children = (
+				A2FFE858299B6ABA009642D3 /* Info.plist */,
 				A2E4E91A299B5104000A46FE /* BlindDateAppApp.swift */,
 				A2E4E91C299B5104000A46FE /* ContentView.swift */,
 				A2E4E928299B517D000A46FE /* LoginView.swift */,
+				A2FFE856299B61E8009642D3 /* Consts.swift */,
+				A2519B9529A9E94B0098DF3E /* UserCenter */,
+				A2FFE853299B5DE9009642D3 /* NetWork */,
 				A2E4E91E299B5107000A46FE /* Assets.xcassets */,
+				A2519B9029A9E5850098DF3E /* Utils */,
 				A2E4E920299B5107000A46FE /* Preview Content */,
 			);
 			path = BlindDateApp;
@@ -70,6 +118,23 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		A2FFE853299B5DE9009642D3 /* NetWork */ = {
+			isa = PBXGroup;
+			children = (
+				A2FFE854299B5E03009642D3 /* BaseRequest.swift */,
+			);
+			path = NetWork;
+			sourceTree = "<group>";
+		};
+		B5C5E14EEBD53F916B567301 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				664FC701655135A14D8BE38C /* Pods-BlindDateApp.debug.xcconfig */,
+				F1F647A3B0394268888BD8CC /* Pods-BlindDateApp.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -77,9 +142,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A2E4E925299B5107000A46FE /* Build configuration list for PBXNativeTarget "BlindDateApp" */;
 			buildPhases = (
+				F2BD2EF57D7D2F8D3B61C428 /* [CP] Check Pods Manifest.lock */,
 				A2E4E913299B5104000A46FE /* Sources */,
 				A2E4E914299B5104000A46FE /* Frameworks */,
 				A2E4E915299B5104000A46FE /* Resources */,
+				3F997CF2377978A420D527B1 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -135,13 +202,60 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		3F997CF2377978A420D527B1 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BlindDateApp/Pods-BlindDateApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BlindDateApp/Pods-BlindDateApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BlindDateApp/Pods-BlindDateApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F2BD2EF57D7D2F8D3B61C428 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-BlindDateApp-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		A2E4E913299B5104000A46FE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A2519B9229A9E59D0098DF3E /* ViewExtension.swift in Sources */,
+				A2FFE855299B5E03009642D3 /* BaseRequest.swift in Sources */,
+				A2FFE857299B61E8009642D3 /* Consts.swift in Sources */,
+				A2519B9729A9E95B0098DF3E /* UserCenter.swift in Sources */,
 				A2E4E929299B517D000A46FE /* LoginView.swift in Sources */,
 				A2E4E91D299B5104000A46FE /* ContentView.swift in Sources */,
+				A2519B9429A9E5D40098DF3E /* LoadingView.swift in Sources */,
 				A2E4E91B299B5104000A46FE /* BlindDateAppApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -200,7 +314,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -255,7 +369,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -267,6 +381,7 @@
 		};
 		A2E4E926299B5107000A46FE /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 664FC701655135A14D8BE38C /* Pods-BlindDateApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -276,16 +391,19 @@
 				DEVELOPMENT_TEAM = KAM5B3W9B2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BlindDateApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.poolin.landmarks.BlindDateApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -296,6 +414,7 @@
 		};
 		A2E4E927299B5107000A46FE /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F1F647A3B0394268888BD8CC /* Pods-BlindDateApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -305,16 +424,19 @@
 				DEVELOPMENT_TEAM = KAM5B3W9B2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BlindDateApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.poolin.landmarks.BlindDateApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
