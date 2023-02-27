@@ -11,28 +11,26 @@ struct RecommandList: View {
     init(){
         UINavigationBar.appearance().isTranslucent = false
         UINavigationBar.appearance().barTintColor = .white
+        requestRecommandList(state: .normal)
 //        UIScrollView.appearance().bounces = false
     }
-    @State var showToast : Bool = false
-    @State var toastMsg : String = ""
+   
+    @State var computedModel = ComputedProperty()
+    @State var listData : [ReCommandModel] = []
     var body: some View {
 //        Text("Hello, World!").onAppear {
 ////            requestRecommandList(state: .normal)
 //        }
     NavigationView{
-        ScrollView(.vertical, showsIndicators: false) {
-            ZStack(alignment: .top) {
-                VStack{
-                    CardView(bgColor: .orange)
-                    HomePageAboutUsView().padding(EdgeInsets(top: 20, leading: 10, bottom: 0, trailing: 10))
-                }
-                
-            }.navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(leading: Text("推荐").font(.system(size: 30, weight: .medium, design: .default)))
-                
-        }
-    }.navigationViewStyle(StackNavigationViewStyle()).toast(isShow: $showToast, msg: toastMsg).onAppear {
-        requestRecommandList(state: .normal)
+        ZStack(alignment: .top){
+            ScrollCardView(bgColor: .orange).frame(width:0.8 * (screenWidth - 20))
+            ScrollCardView(bgColor: .orange).frame(width:0.85 * (screenWidth - 20))
+            ScrollCardView(bgColor: .blue).offset(y:10).frame(width:0.9 * (screenWidth - 10))
+            ScrollCardView(bgColor:.purple).offset(y:20)
+        }.navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(leading: Text("推荐").font(.system(size: 30, weight: .medium, design: .default))).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).toast(isShow: $computedModel.showToast, msg: computedModel.toastMsg)
+    }.onAppear {
+//        requestRecommandList(state: .normal)
     }
             
         
@@ -40,17 +38,87 @@ struct RecommandList: View {
     
     func requestRecommandList(state:RefreshState){
         let param = ["page":1,"pageLimit":2]
+        if state == .normal{
+            computedModel.showLoading = true
+            computedModel.loadingBgColor = .white
+        }
         NW.request(urlStr: "recommended/list", method: .post, parameters: param) { response in
-            print(response.data)
-            showToast = true
-            toastMsg = "suc"
+            computedModel.showLoading = false
+            if state == .normal || state == .pullDown || state == .refresh {
+                listData.removeAll()
+            }
+            guard let list = response.data["list"] as? [[String:Any]] else{
+                return
+            }
+            var tempArr : [ReCommandModel] = []
+
+            for item in list {
+                guard let recommandModel = ReCommandModel.deserialize(from: item, designatedPath: nil) else{
+                    continue
+                }
+                tempArr.append(recommandModel)
+            }
+            listData.append(contentsOf: tempArr)
         } failedHandler: { response in
-            showToast = true
-            toastMsg = "failed"
+            computedModel.showLoading = false
+            computedModel.showToast = true
+            computedModel.toastMsg = response.message
         }
 
     }
 }
+
+struct ScrollCardView:View{
+    var bgColor : Color
+    @State var offset : CGFloat = 0;
+    @GestureState var isDragging : Bool = false
+    @State var endSwipe : Bool = false
+    var body: some View{
+        ScrollView(.vertical, showsIndicators: false) {
+            VStack{
+                CardView(bgColor: bgColor)
+                HomePageAboutUsView().padding(EdgeInsets(top: 20, leading: 10, bottom: 0, trailing: 10))
+            }
+        }.background(RoundedRectangle(cornerRadius: 10).fill(Color.purple)).padding(EdgeInsets(top: 0, leading: 10, bottom: 50, trailing: 10))
+            .offset(x:offset)
+            .rotationEffect(.init(degrees: getRotation(angle: 8)))
+            .gesture(DragGesture().updating($isDragging, body: { value, out, _ in
+                out = true
+            }).onChanged({ value in
+                let translation = value.translation.width
+                offset = isDragging ? translation : .zero
+            }).onEnded({ value in
+                let translation = value.translation.width
+                let checkingStatus = translation > 0 ? translation : -translation
+                withAnimation {
+                    if checkingStatus > screenWidth / 2 {
+                        //delete card
+                        offset = (translation > 0 ? screenWidth: -screenWidth) * 2
+                        if translation > 0 {
+                            //rightswipe
+                            
+                        }else{
+                            //leftswipe
+                            
+                        }
+                    }else{
+                        offset = .zero
+                    }
+                }
+    
+            })
+            )
+    }
+    
+    // 旋转
+    func getRotation(angle: Double)-> Double{
+        let rotation = (offset / (screenWidth - 50)) * angle
+        return rotation
+    }
+    
+    
+}
+
 
 struct HomePageAboutUsView:View{
     var body: some View{
@@ -72,7 +140,7 @@ struct CardView:View{
     var body: some View{
         VStack(alignment: .leading, spacing: 0) {
            CardHeaderView(bgColor: bgColor)
-            Spacer()
+//            Spacer()
         }
     }
 }
@@ -122,6 +190,7 @@ struct CardHeaderView:View{
     }
     
     func sortTitles(){
+        rows.removeAll()
         getNextRowTitles(row: 0, titles: titles)
         log.info("overParentWidthDic:\(overParentWidthDic)")
     }

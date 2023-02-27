@@ -7,10 +7,7 @@
 
 import SwiftUI
 
-class ComputedProperty:ObservableObject{
-   @Published var showLoading : Bool = false
-   @Published var loadingBgColor : Color = .clear
-}
+
 
 extension View{
     func toast(isShow:Binding<Bool>,msg:String) -> some View{
@@ -38,7 +35,7 @@ struct Toast:View{
     var msg : String
     var duration:Double
     var body: some View{
-        if isShow {
+        if isShow && !msg.isEmpty{
             HStack(alignment: .center, spacing: 0) {
                 Text(msg).foregroundColor(.white).padding()
             }.padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)).background(RoundedRectangle(cornerRadius: 10).fill( Color(UIColor.black.withAlphaComponent(0.9)))).frame(maxWidth:screenWidth - 60).onAppear {

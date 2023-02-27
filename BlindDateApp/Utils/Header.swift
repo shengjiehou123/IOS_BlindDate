@@ -23,3 +23,5 @@ public let log = XCGLogger.default
 public let screenWidth = UIScreen.main.bounds.width
 
 public let screenHeight = UIScreen.main.bounds.height
+
+

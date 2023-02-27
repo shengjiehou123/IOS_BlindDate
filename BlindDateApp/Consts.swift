@@ -1,6 +1,14 @@
 
 import Foundation
 import UIKit
+import SwiftUI
+
+class ComputedProperty:ObservableObject{
+   @Published var showLoading : Bool = false
+   @Published var loadingBgColor : Color = .clear
+   @Published var showToast : Bool = false
+   @Published var toastMsg : String = ""
+}
 
 public let NW = BaseRequest.shared
 

@@ -9,5 +9,7 @@ target 'BlindDateApp' do
 
   pod 'Alamofire'
   pod 'XCGLogger', '~> 7.0.1'
+  pod 'SDWebImageSwiftUI'
+  pod 'HandyJSON', '~> 5.0.2'
 
 end
