@@ -16,14 +16,25 @@ struct ResponseData{
 
 open class BaseRequest: NSObject {
    static let shared  = BaseRequest()
-   var headers : HTTPHeaders = HTTPHeaders()
+   var httpHeaders : HTTPHeaders = HTTPHeaders()
+    public override init() {
+        httpHeaders.add(name: "Content-type", value: "application/json")
+    }
+    
+    func updateHeaders(){
+        if !UserCenter.shared.token.isEmpty {
+            httpHeaders.add(name: "Authorization", value: "Bearer " + UserCenter.shared.token)
+        }
+    }
+    
    func request(urlStr: String,
                 method: HTTPMethod = .get,
             parameters: Parameters? = nil,
                 encoding: ParameterEncoding = JSONEncoding.default,completionHandler: @escaping (_ response: ResponseData) -> Void,failedHandler: @escaping (_ response: ResponseData) -> Void){
         let requestUrlStr = Consts.shared.domain + "/" + urlStr
         print("requestUrlStr:\(requestUrlStr), method:\(method), params:\(String(describing: parameters))")
-        AF.request(requestUrlStr, method: method, parameters: parameters, encoding: encoding, headers: nil).response{ response in
+        updateHeaders()
+        AF.request(requestUrlStr, method: method, parameters: parameters, encoding: encoding, headers: httpHeaders).response{ response in
             print("\(response)")
             if response.response?.statusCode == 200 {
                 if let dic = try? JSONSerialization.jsonObject(with: response.data ?? Data(), options: JSONSerialization.ReadingOptions.mutableContainers) as? [String:Any]{

@@ -8,18 +8,57 @@
 import SwiftUI
 
 struct ContentView: View {
+    @ObservedObject var userCenter : UserCenter = UserCenter.shared
     var body: some View {
-        TabView{
+        if !userCenter.isLogin {
             LoginView()
-                .tabItem {
-                    Label{
-                        Text("首页")
+        }else{
+            TabView{
+                RecommandList().tabItem {
+                    Label {
+                        Text("推荐")
                     } icon: {
-                        Image("")
+                        Image(systemName: "arkit").foregroundColor(.red)
                     }
-
                 }
+                
+                Text("喜欢").tabItem {
+                    Label {
+                        Text("喜欢")
+                    } icon: {
+                        Image(systemName: "arkit").foregroundColor(.red)
+                    }
+                }
+                
+                Text("消息").tabItem {
+                    Label {
+                        Text("消息")
+                    } icon: {
+                        Image(systemName: "arkit").foregroundColor(.red)
+                    }
+                }
+                
+                Text("我的").tabItem {
+                    Label {
+                        Text("我的")
+                    } icon: {
+                        Image(systemName: "arkit").foregroundColor(.red)
+                    }
+                }
+            }
         }
+       
+//        TabView{
+//
+//                .tabItem {
+//                    Label{
+//                        Text("首页")
+//                    } icon: {
+//                        Image("")
+//                    }
+//
+//                }
+//        }
     }
 }
 
