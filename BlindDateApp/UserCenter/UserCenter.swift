@@ -28,6 +28,7 @@ class UserCenter : NSObject,ObservableObject{
         do{
             let data = try  NSKeyedArchiver.archivedData(withRootObject: token, requiringSecureCoding: true)
             try data.write(to: path)
+            self.token = token
             isLogin = true
         } catch{
             log.info("\(error)")

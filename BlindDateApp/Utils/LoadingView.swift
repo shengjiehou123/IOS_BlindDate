@@ -34,12 +34,14 @@ struct LoadingView: ViewModifier {
             }
 
             
-            VStack(alignment: .center) {
-                ActivityLoading(isAnimating: $isShowing).frame(width:50,height:50,alignment:.center)
-            }.frame(width: 100, height: 100, alignment: .center).background(Color(UIColor.black).cornerRadius(10)).opacity(self.isShowing ? 1 : 0)
+            if isShowing {
+                VStack(alignment: .center) {
+                    ActivityLoading(isAnimating: $isShowing).frame(width:50,height:50,alignment:.center)
+                }.frame(width: 100, height: 100, alignment: .center).background(Color(UIColor.black).cornerRadius(10)).opacity(self.isShowing ? 1 : 0)
+            }
 
                 
-        }.ignoresSafeArea(.container, edges: .bottom)
+        }
         
     }
 }

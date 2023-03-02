@@ -55,20 +55,28 @@ struct LoginView: View {
         computedModel.showLoading = true
         NW.request(urlStr: "send/code", method: .post, parameters: param) { response in
             computedModel.showLoading = false
+            computedModel.showToast = false
            codeKey = response.data["codeKey"] as? String ?? ""
         } failedHandler: { response in
-            
+            computedModel.showLoading = false
+            computedModel.showToast = true
+            computedModel.toastMsg = response.message
         }
 
     }
     
     func requestLogin(){
         let param = ["phone_number":phoneNumber,"code":code,"codeKey":codeKey]
+        computedModel.showLoading = true
         NW.request(urlStr: "login", method: .post, parameters: param) { response in
+            computedModel.showLoading = true
+            computedModel.showToast = false
            let token = response.data["token"] as? String ?? ""
            UserCenter.shared.saveToken(token: token)
         } failedHandler: { response in
-            
+            computedModel.showLoading = false
+            computedModel.showToast = true
+            computedModel.toastMsg = response.message
         }
     }
 }

@@ -8,9 +8,10 @@
 import UIKit
 import HandyJSON
 
-class ReCommandModel: HandyJSON {
+class ReCommandModel: HandyJSON,Identifiable {
     var id :Int = 0
     var idVerifyed : Int = 0
+    var avatar : String = ""
     var nickName :String = ""
     var gender :Int = 0
     var birthday :Double = 0
@@ -27,6 +28,7 @@ class ReCommandModel: HandyJSON {
     var acceptOtherPersonMinAge:Int = 18
     var acceptOtherPersonMaxAge:Int = 35
     var aboutMeDesc:String = ""
+    var likePersonDesc:String = ""
     var myTag:String = ""
     var likePersonTag:String = ""
     var userPhotos: [UserPhotoModel] = []
@@ -35,7 +37,7 @@ class ReCommandModel: HandyJSON {
     }
 }
 
-class UserPhotoModel:HandyJSON{
+class UserPhotoModel:HandyJSON,Identifiable{
     var uid :Int = 0
     var scenes:String = "life"
     var photo:String = ""

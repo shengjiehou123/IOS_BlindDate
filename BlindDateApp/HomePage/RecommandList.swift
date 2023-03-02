@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+import SDWebImageSwiftUI
 
 struct RecommandList: View {
     init(){
         UINavigationBar.appearance().isTranslucent = false
         UINavigationBar.appearance().barTintColor = .white
-        requestRecommandList(state: .normal)
+//        requestRecommandList(state: .normal)
 //        UIScrollView.appearance().bounces = false
     }
    
@@ -23,14 +24,14 @@ struct RecommandList: View {
 //        }
     NavigationView{
         ZStack(alignment: .top){
-            ScrollCardView(bgColor: .orange).frame(width:0.8 * (screenWidth - 20))
-            ScrollCardView(bgColor: .orange).frame(width:0.85 * (screenWidth - 20))
-            ScrollCardView(bgColor: .blue).offset(y:10).frame(width:0.9 * (screenWidth - 10))
-            ScrollCardView(bgColor:.purple).offset(y:20)
+            ForEach(0..<listData.count,id:\.self){ index in
+                let model = listData[index]
+                ScrollCardView(bgColor: .orange, recommandModel: model,index: index)
+            }
         }.navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(leading: Text("推荐").font(.system(size: 30, weight: .medium, design: .default))).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).toast(isShow: $computedModel.showToast, msg: computedModel.toastMsg)
     }.onAppear {
-//        requestRecommandList(state: .normal)
+        requestRecommandList(state: .normal)
     }
             
         
@@ -70,22 +71,28 @@ struct RecommandList: View {
 
 struct ScrollCardView:View{
     var bgColor : Color
+    var recommandModel : ReCommandModel
+    var index:Int
     @State var offset : CGFloat = 0;
     @GestureState var isDragging : Bool = false
     @State var endSwipe : Bool = false
+    
     var body: some View{
+        let topOffset = index <= 2 ? index * 15 : 0
         ScrollView(.vertical, showsIndicators: false) {
             VStack{
-                CardView(bgColor: bgColor)
-                HomePageAboutUsView().padding(EdgeInsets(top: 20, leading: 10, bottom: 0, trailing: 10))
+                CardView(recommandModel: recommandModel, bgColor: bgColor)
+                HomePageAboutUsView(title: "关于我",content: recommandModel.aboutMeDesc,userPhotos: recommandModel.userPhotos).padding(EdgeInsets(top: 20, leading: 10, bottom: 0, trailing: 10))
+                HomePageAboutUsView(title: "希望对方",content: recommandModel.likePersonDesc,userPhotos: []).padding(EdgeInsets(top: 20, leading: 10, bottom: 0, trailing: 10))
             }
-        }.background(RoundedRectangle(cornerRadius: 10).fill(Color.purple)).padding(EdgeInsets(top: 0, leading: 10, bottom: 50, trailing: 10))
-            .offset(x:offset)
+        }.navigationViewStyle(.automatic).background(RoundedRectangle(cornerRadius: 10).fill(Color.white).shadow(color: Color.black.opacity(0.2), radius: 3, x: 0, y: 1)).padding(EdgeInsets(top: 0, leading: 10, bottom: 10, trailing: 10))
+            .offset(x:offset,y:CGFloat(topOffset))
             .rotationEffect(.init(degrees: getRotation(angle: 8)))
             .gesture(DragGesture().updating($isDragging, body: { value, out, _ in
                 out = true
             }).onChanged({ value in
                 let translation = value.translation.width
+                log.info("translationWidth\(translation)")
                 offset = isDragging ? translation : .zero
             }).onEnded({ value in
                 let translation = value.translation.width
@@ -121,31 +128,44 @@ struct ScrollCardView:View{
 
 
 struct HomePageAboutUsView:View{
+    var title : String
+    var content: String
+    var userPhotos:[UserPhotoModel]
     var body: some View{
         VStack(alignment: .leading, spacing: 15) {
             HStack(alignment: .top, spacing: 0) {
-                Text("关于我")
+                Text(title)
                     .foregroundColor(.gray)
                     .font(.system(size: 17, weight: .medium, design: .default))
                 Spacer()
             }
-            Text("不知道说些什么哈哈哈哈哈哈哈哈哈哈不知道说些什么哈哈哈哈哈哈哈哈哈哈不知道说些什么哈哈哈哈哈哈哈哈哈哈不知道说些什么哈哈哈哈哈哈哈哈哈哈不知道说些什么哈哈哈哈哈哈哈哈哈哈").lineSpacing(5)
+            Text(content).lineSpacing(5)
+            
+            ForEach(userPhotos,id:\.uid) { model in
+                let photo = model.photo
+                let url = URL.init(string:photo)
+                WebImage(url: url).resizable().aspectRatio(contentMode: .fill).frame(width: screenWidth - 40, height: 330, alignment: .leading)
+                        .clipped()
+            }
+            
         }
         
     }
 }
 
 struct CardView:View{
+    var recommandModel : ReCommandModel
     var bgColor : Color
     var body: some View{
         VStack(alignment: .leading, spacing: 0) {
-           CardHeaderView(bgColor: bgColor)
+           CardHeaderView(recommandModel: recommandModel, bgColor: bgColor)
 //            Spacer()
         }
     }
 }
 
 struct CardHeaderView:View{
+    var recommandModel : ReCommandModel
     @State var titles = ["163cm","电商","搞笑女孩","搞笑女孩2","搞笑女孩3"]
     @State var sumWidth : CGFloat = 0
     @State var overParentWidthDic :[Int:[String]] = [:]
@@ -154,12 +174,15 @@ struct CardHeaderView:View{
     var body: some View{
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .center, spacing: 0, content: {
-                Circle().fill(Color.red).frame(width: 80, height: 80, alignment: .leading)
+                let avatarUrl = URL(string: recommandModel.avatar)
+                WebImage(url: avatarUrl).resizable().aspectRatio(contentMode: .fill).background(Color.gray).frame(width: 80, height: 80, alignment: .leading).clipShape(Circle())
                 VStack(alignment: .leading, spacing: 0) {
                     HStack(alignment: .center, spacing: 10) {
-                        Text("昵称")
+                        Text( recommandModel.nickName)
                             .foregroundColor(.white)
-                        Text("30")
+                        let birthDayDate =  Date.init(timeIntervalSince1970: recommandModel.birthday)
+                        
+                        Text("\(birthDayDate.getAge())")
                             .foregroundColor(.white)
                     }.padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                     HStack(alignment: .center, spacing: 10) {

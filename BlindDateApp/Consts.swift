@@ -25,7 +25,7 @@ class Consts: NSObject {
     public var domain : String{
         switch env {
         case .dev:
-            return "http://127.0.0.1:8001/api/v1"
+            return "http://test-blinddate.natapp1.cc/api/v1"
         case .release:
             return ""
        }
