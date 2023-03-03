@@ -17,6 +17,8 @@
 		A2519BA229AC8CD60098DF3E /* ReCommandModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2519BA129AC8CD60098DF3E /* ReCommandModel.swift */; };
 		A281042F29B0AB4600C0B8E8 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281042E29B0AB4600C0B8E8 /* DateExtension.swift */; };
 		A281043129B197ED00C0B8E8 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043029B197ED00C0B8E8 /* UIImageExtension.swift */; };
+		A281043429B1E4F700C0B8E8 /* LikeMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043329B1E4F700C0B8E8 /* LikeMe.swift */; };
+		A281043729B1EA6200C0B8E8 /* LikeMeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043629B1EA6200C0B8E8 /* LikeMeModel.swift */; };
 		A2E4E91B299B5104000A46FE /* BlindDateAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E4E91A299B5104000A46FE /* BlindDateAppApp.swift */; };
 		A2E4E91D299B5104000A46FE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E4E91C299B5104000A46FE /* ContentView.swift */; };
 		A2E4E91F299B5107000A46FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2E4E91E299B5107000A46FE /* Assets.xcassets */; };
@@ -37,6 +39,8 @@
 		A2519BA129AC8CD60098DF3E /* ReCommandModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReCommandModel.swift; sourceTree = "<group>"; };
 		A281042E29B0AB4600C0B8E8 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		A281043029B197ED00C0B8E8 /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
+		A281043329B1E4F700C0B8E8 /* LikeMe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMe.swift; sourceTree = "<group>"; };
+		A281043629B1EA6200C0B8E8 /* LikeMeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMeModel.swift; sourceTree = "<group>"; };
 		A2E4E917299B5104000A46FE /* BlindDateApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlindDateApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2E4E91A299B5104000A46FE /* BlindDateAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindDateAppApp.swift; sourceTree = "<group>"; };
 		A2E4E91C299B5104000A46FE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -108,6 +112,23 @@
 			path = model;
 			sourceTree = "<group>";
 		};
+		A281043229B1E4E400C0B8E8 /* LikeMePage */ = {
+			isa = PBXGroup;
+			children = (
+				A281043529B1EA5000C0B8E8 /* Model */,
+				A281043329B1E4F700C0B8E8 /* LikeMe.swift */,
+			);
+			path = LikeMePage;
+			sourceTree = "<group>";
+		};
+		A281043529B1EA5000C0B8E8 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				A281043629B1EA6200C0B8E8 /* LikeMeModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		A2E4E90E299B5104000A46FE = {
 			isa = PBXGroup;
 			children = (
@@ -134,6 +155,7 @@
 				A2E4E91C299B5104000A46FE /* ContentView.swift */,
 				A2E4E928299B517D000A46FE /* LoginView.swift */,
 				A2FFE856299B61E8009642D3 /* Consts.swift */,
+				A281043229B1E4E400C0B8E8 /* LikeMePage */,
 				A2519B9D29AA01D50098DF3E /* HomePage */,
 				A2519B9529A9E94B0098DF3E /* UserCenter */,
 				A2FFE853299B5DE9009642D3 /* NetWork */,
@@ -287,7 +309,9 @@
 				A2519B9C29A9F1FA0098DF3E /* Header.swift in Sources */,
 				A2519BA229AC8CD60098DF3E /* ReCommandModel.swift in Sources */,
 				A2519B9229A9E59D0098DF3E /* ViewExtension.swift in Sources */,
+				A281043729B1EA6200C0B8E8 /* LikeMeModel.swift in Sources */,
 				A2FFE855299B5E03009642D3 /* BaseRequest.swift in Sources */,
+				A281043429B1E4F700C0B8E8 /* LikeMe.swift in Sources */,
 				A281042F29B0AB4600C0B8E8 /* DateExtension.swift in Sources */,
 				A2FFE857299B61E8009642D3 /* Consts.swift in Sources */,
 				A2519B9929A9EF640098DF3E /* ColorExtension.swift in Sources */,

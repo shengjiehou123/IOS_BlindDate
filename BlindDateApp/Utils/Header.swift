@@ -11,6 +11,8 @@ import XCGLogger
 
 import Alamofire
 
+import Introspect
+
 enum RefreshState{
     case normal
     case pullDown

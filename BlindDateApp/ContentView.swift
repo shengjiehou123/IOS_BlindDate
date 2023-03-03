@@ -22,7 +22,7 @@ struct ContentView: View {
                     }
                 }
                 
-                Text("喜欢").tabItem {
+                LikeMe().tabItem {
                     Label {
                         Text("喜欢")
                     } icon: {

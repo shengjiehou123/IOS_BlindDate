@@ -42,6 +42,7 @@ struct RecommandList: View {
             tabBar.shadowImage = UIImage.from(color: .clear)
             tabBar.tintColor = UIColor.colorWithHexString(hex: "#326291")
         }
+        
 
 
     }
@@ -61,8 +62,9 @@ struct RecommandList: View {
         }.navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(leading: Text("推荐").font(.system(size: 30, weight: .medium, design: .default))).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).toast(isShow: $computedModel.showToast, msg: computedModel.toastMsg)
     }.onAppear {
-        UIScrollView.appearance().bounces = false
         requestRecommandList(state: .normal)
+    }.onDisappear {
+        
     }
             
         
@@ -119,6 +121,9 @@ struct ScrollCardView:View{
         }.navigationViewStyle(.stack).background(RoundedRectangle(cornerRadius: 10).fill(Color.white).shadow(color: Color.black.opacity(0.2), radius: 3, x: 0, y: 1)).padding(EdgeInsets(top: 0, leading: 10, bottom: CGFloat(topOffset) + 10, trailing: 10))
             .offset(x:offset,y:CGFloat(topOffset))
             .rotationEffect(.init(degrees: getRotation(angle: 8)),anchor: .bottom)
+            .introspectScrollView(customize: { scrollView in
+                scrollView.bounces = false
+            })
             .delaysTouches(for: 0.1, onTap: {
                 
             }).gesture(DragGesture().updating($isDragging, body: { value, out, _ in
