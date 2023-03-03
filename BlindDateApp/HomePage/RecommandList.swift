@@ -7,9 +7,12 @@
 
 import SwiftUI
 import SDWebImageSwiftUI
+import JFHeroBrowser
 
 struct RecommandList: View {
     init(){
+        
+        JFHeroBrowserGlobalConfig.default.networkImageProvider = HeroNetworkImageProvider.shared
         let navigationBar = UINavigationBar.appearance()
 
         if #available(iOS 15.0, *)  {
@@ -184,10 +187,18 @@ struct HomePageAboutUsView:View{
             }.padding(EdgeInsets(top: 20, leading: 10, bottom: 0, trailing: 10))
             Text(content).lineSpacing(5).padding(EdgeInsets(top: 0, leading: 10, bottom: 20, trailing: 10))
             
-            ForEach(userPhotos) { model in
+            ForEach(0..<userPhotos.count) { index in
+                let model = userPhotos[index]
                 let url = URL.init(string:model.photo)
                 WebImage(url: url).resizable().interpolation(.high).aspectRatio(contentMode:.fill).frame(width: screenWidth - 40, height: 500, alignment: .leading).padding(.leading,10)
-                    .clipped(antialiased: true)
+                    .clipped(antialiased: true).onTapGesture {
+                   var list: [HeroBrowserViewModule] = []
+                   for i in 0..<userPhotos.count {
+                       let photoModel = userPhotos[i]
+                       list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: photoModel.photo, originImgUrl: photoModel.photo))
+                   }
+                   myAppRootVC?.hero.browserPhoto(viewModules: list, initIndex: index)
+                }
             }
             
         }.clipped(antialiased: true)

@@ -11,5 +11,6 @@ target 'BlindDateApp' do
   pod 'XCGLogger', '~> 7.0.1'
   pod 'SDWebImageSwiftUI'
   pod 'HandyJSON', '~> 5.0.2'
+  pod 'JFHeroBrowser', '1.2.0'
 
 end
