@@ -7,5 +7,7 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>UIViewEdgeAntialiasing</key>
+	<true/>
 </dict>
 </plist>

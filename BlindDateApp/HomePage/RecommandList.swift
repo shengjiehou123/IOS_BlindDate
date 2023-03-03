@@ -10,10 +10,37 @@ import SDWebImageSwiftUI
 
 struct RecommandList: View {
     init(){
-        UINavigationBar.appearance().isTranslucent = false
-        UINavigationBar.appearance().barTintColor = .white
-//        requestRecommandList(state: .normal)
-//        UIScrollView.appearance().bounces = false
+        let navigationBar = UINavigationBar.appearance()
+
+        if #available(iOS 15.0, *)  {
+            let navibarAppearance = UINavigationBarAppearance()
+            navibarAppearance.backgroundColor = .white
+            navibarAppearance.backgroundImage = UIImage.from(color: .white)
+            navibarAppearance.shadowImage = UIImage.from(color: .clear)
+
+            navigationBar.standardAppearance = navibarAppearance
+            navigationBar.scrollEdgeAppearance = navibarAppearance
+        }else{
+            navigationBar.setBackgroundImage(UIImage.from(color: .white), for: .any, barMetrics: .default)
+            navigationBar.shadowImage = UIImage()
+        }
+        let tabBar = UITabBar.appearance()
+        if #available(iOS 13.0, *) {
+            let tabbarAppearance = UITabBarAppearance()
+            tabbarAppearance.backgroundImage = UIImage.from(color: .white)
+            tabbarAppearance.shadowImage = UIImage.from(color: .clear)
+           tabBar.standardAppearance = tabbarAppearance
+            if #available(iOS 15.0, *) {
+                tabBar.scrollEdgeAppearance = tabbarAppearance
+            }
+        }else{
+            tabBar.isTranslucent = false
+            tabBar.backgroundImage = UIImage.from(color: .white)
+            tabBar.shadowImage = UIImage.from(color: .clear)
+            tabBar.tintColor = UIColor.colorWithHexString(hex: "#326291")
+        }
+
+
     }
    
     @State var computedModel = ComputedProperty()
@@ -31,6 +58,7 @@ struct RecommandList: View {
         }.navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(leading: Text("推荐").font(.system(size: 30, weight: .medium, design: .default))).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).toast(isShow: $computedModel.showToast, msg: computedModel.toastMsg)
     }.onAppear {
+        UIScrollView.appearance().bounces = false
         requestRecommandList(state: .normal)
     }
             
@@ -80,15 +108,17 @@ struct ScrollCardView:View{
     var body: some View{
         let topOffset = index <= 2 ? index * 15 : 0
         ScrollView(.vertical, showsIndicators: false) {
-            VStack{
+            LazyVStack{
                 CardView(recommandModel: recommandModel, bgColor: bgColor)
-                HomePageAboutUsView(title: "关于我",content: recommandModel.aboutMeDesc,userPhotos: recommandModel.userPhotos).padding(EdgeInsets(top: 20, leading: 10, bottom: 0, trailing: 10))
-                HomePageAboutUsView(title: "希望对方",content: recommandModel.likePersonDesc,userPhotos: []).padding(EdgeInsets(top: 20, leading: 10, bottom: 0, trailing: 10))
+                HomePageAboutUsView(title: "关于我",content: recommandModel.aboutMeDesc,userPhotos: recommandModel.userPhotos)
+                HomePageAboutUsView(title: "希望对方",content: recommandModel.likePersonDesc,userPhotos: [])
             }
-        }.navigationViewStyle(.automatic).background(RoundedRectangle(cornerRadius: 10).fill(Color.white).shadow(color: Color.black.opacity(0.2), radius: 3, x: 0, y: 1)).padding(EdgeInsets(top: 0, leading: 10, bottom: 10, trailing: 10))
+        }.navigationViewStyle(.stack).background(RoundedRectangle(cornerRadius: 10).fill(Color.white).shadow(color: Color.black.opacity(0.2), radius: 3, x: 0, y: 1)).padding(EdgeInsets(top: 0, leading: 10, bottom: CGFloat(topOffset) + 10, trailing: 10))
             .offset(x:offset,y:CGFloat(topOffset))
-            .rotationEffect(.init(degrees: getRotation(angle: 8)))
-            .gesture(DragGesture().updating($isDragging, body: { value, out, _ in
+            .rotationEffect(.init(degrees: getRotation(angle: 8)),anchor: .bottom)
+            .delaysTouches(for: 0.1, onTap: {
+                
+            }).gesture(DragGesture().updating($isDragging, body: { value, out, _ in
                 out = true
             }).onChanged({ value in
                 let translation = value.translation.width
@@ -98,15 +128,18 @@ struct ScrollCardView:View{
                 let translation = value.translation.width
                 let checkingStatus = translation > 0 ? translation : -translation
                 withAnimation {
-                    if checkingStatus > screenWidth / 2 {
+                    if checkingStatus > 50{
                         //delete card
                         offset = (translation > 0 ? screenWidth: -screenWidth) * 2
                         if translation > 0 {
                             //rightswipe
+                            //like
+                            requestLikePerson(toUserId: recommandModel.id, like: true)
                             
                         }else{
                             //leftswipe
-                            
+                            //not like
+                            requestLikePerson(toUserId: recommandModel.id, like: false)
                         }
                     }else{
                         offset = .zero
@@ -121,6 +154,16 @@ struct ScrollCardView:View{
     func getRotation(angle: Double)-> Double{
         let rotation = (offset / (screenWidth - 50)) * angle
         return rotation
+    }
+    
+    func requestLikePerson(toUserId:Int,like:Bool){
+        let param = ["toUserId":toUserId,"like":like] as [String : Any]
+        NW.request(urlStr: "like/person", method: .post, parameters: param) { response in
+            
+        } failedHandler: { response in
+        
+        }
+
     }
     
     
@@ -138,17 +181,16 @@ struct HomePageAboutUsView:View{
                     .foregroundColor(.gray)
                     .font(.system(size: 17, weight: .medium, design: .default))
                 Spacer()
-            }
-            Text(content).lineSpacing(5)
+            }.padding(EdgeInsets(top: 20, leading: 10, bottom: 0, trailing: 10))
+            Text(content).lineSpacing(5).padding(EdgeInsets(top: 0, leading: 10, bottom: 20, trailing: 10))
             
-            ForEach(userPhotos,id:\.uid) { model in
-                let photo = model.photo
-                let url = URL.init(string:photo)
-                WebImage(url: url).resizable().aspectRatio(contentMode: .fill).frame(width: screenWidth - 40, height: 330, alignment: .leading)
-                        .clipped()
+            ForEach(userPhotos) { model in
+                let url = URL.init(string:model.photo)
+                WebImage(url: url).resizable().interpolation(.high).aspectRatio(contentMode:.fill).frame(width: screenWidth - 40, height: 500, alignment: .leading).padding(.leading,10)
+                    .clipped(antialiased: true)
             }
             
-        }
+        }.clipped(antialiased: true)
         
     }
 }
@@ -186,7 +228,7 @@ struct CardHeaderView:View{
                             .foregroundColor(.white)
                     }.padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                     HStack(alignment: .center, spacing: 10) {
-                        Image("arkit").resizable().frame(width: 20, height: 20, alignment: .leading).background(Color.red).padding(EdgeInsets(top: 4, leading: 10, bottom: 4, trailing: 4))
+                        Image(systemName:"arkit").resizable().frame(width: 20, height: 20, alignment: .leading).background(Color.red).padding(EdgeInsets(top: 4, leading: 10, bottom: 4, trailing: 4))
                         Text("实名 真实头像")
                             .foregroundColor(.white)
                             .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 4))

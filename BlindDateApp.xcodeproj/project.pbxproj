@@ -16,6 +16,7 @@
 		A2519B9F29AA01E30098DF3E /* RecommandList.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2519B9E29AA01E30098DF3E /* RecommandList.swift */; };
 		A2519BA229AC8CD60098DF3E /* ReCommandModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2519BA129AC8CD60098DF3E /* ReCommandModel.swift */; };
 		A281042F29B0AB4600C0B8E8 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281042E29B0AB4600C0B8E8 /* DateExtension.swift */; };
+		A281043129B197ED00C0B8E8 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043029B197ED00C0B8E8 /* UIImageExtension.swift */; };
 		A2E4E91B299B5104000A46FE /* BlindDateAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E4E91A299B5104000A46FE /* BlindDateAppApp.swift */; };
 		A2E4E91D299B5104000A46FE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E4E91C299B5104000A46FE /* ContentView.swift */; };
 		A2E4E91F299B5107000A46FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2E4E91E299B5107000A46FE /* Assets.xcassets */; };
@@ -35,6 +36,7 @@
 		A2519B9E29AA01E30098DF3E /* RecommandList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommandList.swift; sourceTree = "<group>"; };
 		A2519BA129AC8CD60098DF3E /* ReCommandModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReCommandModel.swift; sourceTree = "<group>"; };
 		A281042E29B0AB4600C0B8E8 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
+		A281043029B197ED00C0B8E8 /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
 		A2E4E917299B5104000A46FE /* BlindDateApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlindDateApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2E4E91A299B5104000A46FE /* BlindDateAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindDateAppApp.swift; sourceTree = "<group>"; };
 		A2E4E91C299B5104000A46FE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -75,6 +77,7 @@
 				A2519B9829A9EF640098DF3E /* ColorExtension.swift */,
 				A281042E29B0AB4600C0B8E8 /* DateExtension.swift */,
 				A2519B9329A9E5D40098DF3E /* LoadingView.swift */,
+				A281043029B197ED00C0B8E8 /* UIImageExtension.swift */,
 				A2519B9B29A9F1FA0098DF3E /* Header.swift */,
 			);
 			path = Utils;
@@ -289,6 +292,7 @@
 				A2FFE857299B61E8009642D3 /* Consts.swift in Sources */,
 				A2519B9929A9EF640098DF3E /* ColorExtension.swift in Sources */,
 				A2519B9729A9E95B0098DF3E /* UserCenter.swift in Sources */,
+				A281043129B197ED00C0B8E8 /* UIImageExtension.swift in Sources */,
 				A2E4E929299B517D000A46FE /* LoginView.swift in Sources */,
 				A2E4E91D299B5104000A46FE /* ContentView.swift in Sources */,
 				A2519B9429A9E5D40098DF3E /* LoadingView.swift in Sources */,

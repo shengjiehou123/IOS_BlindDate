@@ -11,7 +11,7 @@ import SwiftUI
 struct BlindDateAppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView().background(Color.white)
         }
     }
 }
