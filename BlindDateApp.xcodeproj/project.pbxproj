@@ -19,6 +19,8 @@
 		A281043129B197ED00C0B8E8 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043029B197ED00C0B8E8 /* UIImageExtension.swift */; };
 		A281043429B1E4F700C0B8E8 /* LikeMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043329B1E4F700C0B8E8 /* LikeMe.swift */; };
 		A281043729B1EA6200C0B8E8 /* LikeMeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043629B1EA6200C0B8E8 /* LikeMeModel.swift */; };
+		A281043C29B20DD900C0B8E8 /* Me.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043B29B20DD900C0B8E8 /* Me.swift */; };
+		A281043F29B2FCAC00C0B8E8 /* EnterInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043E29B2FCAC00C0B8E8 /* EnterInfoView.swift */; };
 		A2E4E91B299B5104000A46FE /* BlindDateAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E4E91A299B5104000A46FE /* BlindDateAppApp.swift */; };
 		A2E4E91D299B5104000A46FE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E4E91C299B5104000A46FE /* ContentView.swift */; };
 		A2E4E91F299B5107000A46FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2E4E91E299B5107000A46FE /* Assets.xcassets */; };
@@ -41,6 +43,8 @@
 		A281043029B197ED00C0B8E8 /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
 		A281043329B1E4F700C0B8E8 /* LikeMe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMe.swift; sourceTree = "<group>"; };
 		A281043629B1EA6200C0B8E8 /* LikeMeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMeModel.swift; sourceTree = "<group>"; };
+		A281043B29B20DD900C0B8E8 /* Me.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Me.swift; sourceTree = "<group>"; };
+		A281043E29B2FCAC00C0B8E8 /* EnterInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterInfoView.swift; sourceTree = "<group>"; };
 		A2E4E917299B5104000A46FE /* BlindDateApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlindDateApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2E4E91A299B5104000A46FE /* BlindDateAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindDateAppApp.swift; sourceTree = "<group>"; };
 		A2E4E91C299B5104000A46FE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -129,6 +133,23 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		A281043A29B20DC000C0B8E8 /* MePage */ = {
+			isa = PBXGroup;
+			children = (
+				A281043B29B20DD900C0B8E8 /* Me.swift */,
+			);
+			path = MePage;
+			sourceTree = "<group>";
+		};
+		A281043D29B2FC6400C0B8E8 /* LoginModule */ = {
+			isa = PBXGroup;
+			children = (
+				A2E4E928299B517D000A46FE /* LoginView.swift */,
+				A281043E29B2FCAC00C0B8E8 /* EnterInfoView.swift */,
+			);
+			path = LoginModule;
+			sourceTree = "<group>";
+		};
 		A2E4E90E299B5104000A46FE = {
 			isa = PBXGroup;
 			children = (
@@ -153,12 +174,13 @@
 				A2FFE858299B6ABA009642D3 /* Info.plist */,
 				A2E4E91A299B5104000A46FE /* BlindDateAppApp.swift */,
 				A2E4E91C299B5104000A46FE /* ContentView.swift */,
-				A2E4E928299B517D000A46FE /* LoginView.swift */,
+				A281043D29B2FC6400C0B8E8 /* LoginModule */,
 				A2FFE856299B61E8009642D3 /* Consts.swift */,
-				A281043229B1E4E400C0B8E8 /* LikeMePage */,
-				A2519B9D29AA01D50098DF3E /* HomePage */,
 				A2519B9529A9E94B0098DF3E /* UserCenter */,
 				A2FFE853299B5DE9009642D3 /* NetWork */,
+				A2519B9D29AA01D50098DF3E /* HomePage */,
+				A281043229B1E4E400C0B8E8 /* LikeMePage */,
+				A281043A29B20DC000C0B8E8 /* MePage */,
 				A2E4E91E299B5107000A46FE /* Assets.xcassets */,
 				A2519B9029A9E5850098DF3E /* Utils */,
 				A2E4E920299B5107000A46FE /* Preview Content */,
@@ -306,6 +328,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A2519B9F29AA01E30098DF3E /* RecommandList.swift in Sources */,
+				A281043C29B20DD900C0B8E8 /* Me.swift in Sources */,
 				A2519B9C29A9F1FA0098DF3E /* Header.swift in Sources */,
 				A2519BA229AC8CD60098DF3E /* ReCommandModel.swift in Sources */,
 				A2519B9229A9E59D0098DF3E /* ViewExtension.swift in Sources */,
@@ -317,6 +340,7 @@
 				A2519B9929A9EF640098DF3E /* ColorExtension.swift in Sources */,
 				A2519B9729A9E95B0098DF3E /* UserCenter.swift in Sources */,
 				A281043129B197ED00C0B8E8 /* UIImageExtension.swift in Sources */,
+				A281043F29B2FCAC00C0B8E8 /* EnterInfoView.swift in Sources */,
 				A2E4E929299B517D000A46FE /* LoginView.swift in Sources */,
 				A2E4E91D299B5104000A46FE /* ContentView.swift in Sources */,
 				A2519B9429A9E5D40098DF3E /* LoadingView.swift in Sources */,

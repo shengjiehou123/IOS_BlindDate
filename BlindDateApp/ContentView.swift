@@ -38,7 +38,7 @@ struct ContentView: View {
                     }
                 }
                 
-                Text("我的").tabItem {
+                Me().tabItem {
                     Label {
                         Text("我的")
                     } icon: {
