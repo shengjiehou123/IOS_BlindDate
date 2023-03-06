@@ -22,13 +22,13 @@ struct LoginView: View {
                 Spacer()
             }.padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
             Spacer().frame(height:20)
-            HStack(alignment: .center, spacing: 0) {
-                TextField.init("请输入手机号", text: $phoneNumber).textFieldStyle(.plain).accentColor(.orange).frame(maxWidth:.infinity,maxHeight:44).background(RoundedRectangle(cornerRadius: 5).stroke(.gray,style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round, miterLimit: 0, dash: [], dashPhase: 0))).padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-            }
+            HStack(alignment: .center, spacing: 20) {
+                TextField.init("请输入手机号", text: $phoneNumber).textFieldStyle(.plain).accentColor(.orange).padding().frame(height:45).background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
+            }.padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
             
             Spacer().frame(height:20)
             HStack(alignment: .center, spacing: 0) {
-                TextField.init("请输入验证码", text: $code).textFieldStyle(.plain).accentColor(.orange).frame(maxWidth:.infinity,maxHeight:44).background(RoundedRectangle(cornerRadius: 5).stroke(.gray,style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round, miterLimit: 0, dash: [], dashPhase: 0))).padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
+                TextField.init("请输入验证码", text: $code).textFieldStyle(.plain).accentColor(.orange).padding().frame(height:45).background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3"))).padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
                 Spacer()
                 Button {
                     requestSendCode()
@@ -36,7 +36,7 @@ struct LoginView: View {
                     Text("获取验证码")
                         .font(.system(size: 15))
                         .foregroundColor(.white).padding()
-                }.frame(maxHeight: 44).background(RoundedRectangle(cornerRadius: 5).fill(.blue)).padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 20))
+                }.frame(maxHeight: 45).background(RoundedRectangle(cornerRadius: 5).fill(.blue)).padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 20))
 
             }
             Spacer().frame(height:30)

@@ -73,6 +73,7 @@ struct RealNameVerifyView:View{
                 Spacer()
             }
             Text("为了保障您的交友安全，请完成实名认证。\n认证后即可匹配其他实名认证用户 。")
+                .font(.system(size: 14))
             TextField("请输入姓名", text: $name)
                 .padding()
                 .frame(height:45)
