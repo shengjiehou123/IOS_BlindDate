@@ -25,6 +25,13 @@ struct EnterInfoView: View {
     @State var loveGoal : Int = 0
     @State var minAge : Int = 0
     @State var maxAge : Int = 0
+    @State var aboutUsDesc :String = ""
+    var tagTitleArr : [String] = ["选出最符合我的标签","我的理想中的他是？"]
+    @State var tagArr : [String] = []
+    @State var tagOtherArr : [String] = []
+    @State var name : String = ""
+    @State var id : String = ""
+    
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(alignment: .top, spacing: 0) {
@@ -35,12 +42,155 @@ struct EnterInfoView: View {
                 MyCityAndHomeTownView(scrollIndex: $scrollIndex, workCity: $workCity, workCityCode: $workCityCode, homeTown: $homeTown, homeTownCode: $homeTownCode).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth)
                 LoveGoalView(scrollIndex: $scrollIndex, loveGoal: $loveGoal, minAge: $minAge, maxAge: $maxAge).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth)
                 MyAvatarView(scrollIndex: $scrollIndex).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth)
+                MyLifeView(scrollIndex: $scrollIndex).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth)
+                AboutUsDescView(scrollIndex: $scrollIndex, aboutUsDesc: $aboutUsDesc).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth)
+                Group{
+                    ForEach(0..<tagTitleArr.count){ index in
+                        let title = tagTitleArr[index]
+                        PersonTagView(scrollIndex: $scrollIndex, tagArr: $tagArr,title: title).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth)
+                    }
+                    RealNameVerifyView(name: $name, id: $id).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth)
+                }
             }
         }.frame(maxWidth:.infinity,maxHeight: .infinity).introspectScrollView { scrollView in
             scrollView.isPagingEnabled = true
-            scrollView.contentOffset = CGPoint(x: screenWidth * 6, y: 0)
+            scrollView.contentOffset = CGPoint(x: screenWidth * 11, y: 0)
         }
        
+    }
+}
+
+//MARK: 实名认证
+
+struct RealNameVerifyView:View{
+    @Binding var name : String
+    @Binding var id : String
+    var body: some View{
+        VStack(alignment: .leading, spacing: 20) {
+            HStack{
+                Text("最后，实名认证")
+                    .font(.system(size: 22, weight: .medium, design: .default))
+                Spacer()
+            }
+            Text("为了保障您的交友安全，请完成实名认证。\n认证后即可匹配其他实名认证用户 。")
+            TextField("请输入姓名", text: $name)
+                .padding()
+                .frame(height:45)
+                .background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
+            TextField("请输入身份证号", text: $id)
+                .padding()
+                .frame(height:45)
+                .background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
+            Spacer().frame(height:20)
+            NextStepButton(title: "认证并完成注册") {
+                
+            }
+        }
+    }
+}
+
+
+//MARK: 选择标签
+struct PersonTagView:View{
+    @Binding var scrollIndex : Int
+    @Binding var tagArr : [String]
+    var title : String
+    var body: some View{
+        VStack(alignment: .leading, spacing: 20) {
+            HStack{
+                Text(title)
+                    .font(.system(size: 22, weight: .medium, design: .default))
+                Spacer()
+            }
+            Text("最少3个，牵手会自动帮你生成自我介绍")
+                .font(.system(size: 16))
+            Spacer()
+            BackBtnMergeNextBtnView(nextStepHandle: {
+                scrollIndex = 9
+            }, backSepHandle: {
+                scrollIndex = 7
+            })
+            Spacer().frame(height:50)
+        }
+    }
+}
+
+struct AboutUsDescView:View{
+    @Binding var scrollIndex : Int
+    @Binding var aboutUsDesc : String
+    var body: some View{
+        VStack(alignment: .leading, spacing: 20) {
+            HStack{
+                Text("关于我")
+                    .font(.system(size: 22, weight: .medium, design: .default))
+                Spacer()
+            }
+            Text("说说你是什么样的人?")
+                .font(.system(size: 16, weight: .medium, design: .default))
+            TextEditor(text: $aboutUsDesc).foregroundColor(.red).lineSpacing(5)
+                .padding()
+                .background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3"))).frame(height:200).introspectTextView { textView in
+                    textView.backgroundColor = .colorWithHexString(hex: "#F3F3F3")
+                }
+            Text("示例：我是典型的白羊座，性格热情开朗喜欢认识新朋友，也比较喜欢小动物，偶尔多愁善感，容易对一些细节感动。")
+                .font(.system(size: 14))
+                .foregroundColor(.colorWithHexString(hex: "#918FC1"))
+                .padding()
+                .background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F1F1FE")))
+            Spacer()
+            BackBtnMergeNextBtnView(nextStepHandle: {
+                scrollIndex = 9
+            }, backSepHandle: {
+                scrollIndex = 7
+            })
+            Spacer().frame(height:50)
+            
+        }
+    }
+}
+
+//MARK: 我的生活
+struct MyLifeView:View{
+    @Binding var scrollIndex : Int
+    var  titles :[String] = ["生活照","兴趣照","旅行照","",""]
+    var body: some View{
+        VStack(alignment: .leading, spacing: 20) {
+            HStack{
+                Text("我的生活")
+                    .font(.system(size: 22, weight: .medium, design: .default))
+                Spacer()
+            }
+            Text("选几张照片来展示生活中的我，\n照片越丰富，就越容易收到喜欢～")
+                .font(.system(size: 13))
+            let items = [GridItem(.flexible()),GridItem(.flexible()),GridItem(.flexible())]
+            LazyVGrid(columns: items,spacing: 10) {
+                ForEach(0..<titles.count){ index in
+                    let title = titles[index]
+                    Button {
+                        
+                    } label: {
+                        VStack(alignment: .center, spacing: 10){
+                            Image("add_photo").resizable().aspectRatio( contentMode: .fit)
+                                .frame(width: 48, height: 48, alignment: .leading)
+                            if title.count > 0 {
+                                Text(title)
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.red)
+                            }
+                        }
+                    }.frame(maxWidth:.infinity,minHeight: 150, alignment: .center).background(RoundedRectangle(cornerRadius: 10).strokeBorder(.red,style: .init(lineWidth: 1, lineCap: .round, lineJoin: .round, miterLimit: 0, dash: [4,4], dashPhase: 2)))
+                        .background((Color.colorWithHexString(hex: "#FFF9F9"))).contentShape(Rectangle())
+                }
+            }
+            Spacer()
+            BackBtnMergeNextBtnView(nextStepHandle: {
+                scrollIndex = 8
+            }, backSepHandle: {
+                scrollIndex = 6
+            })
+            Spacer().frame(height:50)
+
+        }
     }
 }
 
@@ -66,7 +216,7 @@ struct MyAvatarView:View{
                         .foregroundColor(.red)
                 }
             }.frame(width: screenWidth - 40, height: screenWidth - 40, alignment: .center).background(RoundedRectangle(cornerRadius: 10).strokeBorder(.red,style: .init(lineWidth: 1, lineCap: .round, lineJoin: .round, miterLimit: 0, dash: [4,4], dashPhase: 2)))
-                .background((Color.colorWithHexString(hex: "#FFF9F9")))
+                .background((Color.colorWithHexString(hex: "#FFF9F9"))).contentShape(Rectangle())
             Spacer()
             BackBtnMergeNextBtnView(nextStepHandle: {
                 scrollIndex = 7
