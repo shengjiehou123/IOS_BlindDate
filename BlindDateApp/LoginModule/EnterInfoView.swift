@@ -34,27 +34,30 @@ struct EnterInfoView: View {
     
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(alignment: .top, spacing: 0) {
-                NickNameView(nickName: $nickName, scrollIndex: $scrollIndex).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth)
-                GenderAgeHeightView(scrollIndex: $scrollIndex, gender: $gender, birthDay: $birthDay, height: $height).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth)
-                EducationInfoView(scrollIndex: $scrollIndex, educationType: $educationType, schoolName: $schoolName).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth)
-                MyJobView(scrollIndex: $scrollIndex, job: $job, yearIncome: $yearIncome).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth)
-                MyCityAndHomeTownView(scrollIndex: $scrollIndex, workCity: $workCity, workCityCode: $workCityCode, homeTown: $homeTown, homeTownCode: $homeTownCode).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth)
-                LoveGoalView(scrollIndex: $scrollIndex, loveGoal: $loveGoal, minAge: $minAge, maxAge: $maxAge).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth)
-                MyAvatarView(scrollIndex: $scrollIndex).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth)
-                MyLifeView(scrollIndex: $scrollIndex).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth)
-                AboutUsDescView(scrollIndex: $scrollIndex, aboutUsDesc: $aboutUsDesc).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth)
-                Group{
-                    ForEach(0..<tagTitleArr.count){ index in
-                        let title = tagTitleArr[index]
-                        PersonTagView(scrollIndex: $scrollIndex, tagArr: $tagArr,title: title).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth)
+            ScrollViewReader { reader in
+                HStack(alignment: .top, spacing: 0) {
+                    NickNameView(nickName: $nickName, scrollIndex: $scrollIndex).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(0)
+                    GenderAgeHeightView(scrollIndex: $scrollIndex, gender: $gender, birthDay: $birthDay, height: $height).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(1)
+                    EducationInfoView(scrollIndex: $scrollIndex, educationType: $educationType, schoolName: $schoolName).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(2)
+                    MyJobView(scrollIndex: $scrollIndex, job: $job, yearIncome: $yearIncome).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(3)
+                    MyCityAndHomeTownView(scrollIndex: $scrollIndex, workCity: $workCity, workCityCode: $workCityCode, homeTown: $homeTown, homeTownCode: $homeTownCode).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(4)
+                    LoveGoalView(scrollIndex: $scrollIndex, loveGoal: $loveGoal, minAge: $minAge, maxAge: $maxAge).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(5)
+                    MyAvatarView(scrollIndex: $scrollIndex).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(6)
+                    MyLifeView(scrollIndex: $scrollIndex).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(7)
+                    AboutUsDescView(scrollIndex: $scrollIndex, aboutUsDesc: $aboutUsDesc).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(8)
+                    Group{
+                        ForEach(0..<tagTitleArr.count){ index in
+                            let title = tagTitleArr[index]
+                            PersonTagView(scrollIndex: $scrollIndex, index: index,tagArr: $tagArr,title: title).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(9+index)
+                        }
+                        RealNameVerifyView(name: $name, id: $id).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(11)
                     }
-                    RealNameVerifyView(name: $name, id: $id).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth)
-                }
+                }.offset(x:-screenWidth * CGFloat(scrollIndex))
+                    .animation(.linear(duration:0.25), value: scrollIndex)
+                
             }
-        }.frame(maxWidth:.infinity,maxHeight: .infinity).introspectScrollView { scrollView in
-            scrollView.isPagingEnabled = true
-            scrollView.contentOffset = CGPoint(x: screenWidth * 11, y: 0)
+        }.frame(maxWidth:.infinity,maxHeight: .infinity).ignoresSafeArea(.container, edges: .bottom).modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "")).introspectScrollView { sc in
+            sc.isScrollEnabled = false
         }
        
     }
@@ -94,6 +97,7 @@ struct RealNameVerifyView:View{
 //MARK: 选择标签
 struct PersonTagView:View{
     @Binding var scrollIndex : Int
+    var index : Int
     @Binding var tagArr : [String]
     var title : String
     var body: some View{
@@ -107,9 +111,9 @@ struct PersonTagView:View{
                 .font(.system(size: 16))
             Spacer()
             BackBtnMergeNextBtnView(nextStepHandle: {
-                scrollIndex = 9
+                scrollIndex = 10 + index
             }, backSepHandle: {
-                scrollIndex = 7
+                scrollIndex = 8 + index
             })
             Spacer().frame(height:50)
         }
@@ -430,9 +434,9 @@ struct GenderAgeHeightView:View{
 
             Spacer()
             BackBtnMergeNextBtnView {
-                scrollIndex = 0
-            } backSepHandle: {
                 scrollIndex = 2
+            } backSepHandle: {
+                scrollIndex = 0
             }
            
             Spacer().frame(height:50)
@@ -519,8 +523,8 @@ struct NextStepButton:View{
         } label: {
             Text(title)
                 .foregroundColor(.white)
-                .font(.system(size: 16, weight: .medium, design: .default))
-        }.frame(maxWidth:.infinity,maxHeight: 45).background(Capsule().fill(Color.red))
+                .font(.system(size: 16, weight: .medium, design: .default)).frame(maxWidth:.infinity,minHeight: 45).background(Capsule().fill(Color.red))
+        }.buttonStyle(PlainButtonStyle())
 
     }
 }

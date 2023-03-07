@@ -14,40 +14,42 @@ struct LoginView: View {
     @State var codeKey : String = ""
     @ObservedObject var computedModel = ComputedProperty()
     var body: some View {
-        VStack(alignment: .leading, spacing: 0, content: {
-            Spacer().frame(height:20)
-            HStack(alignment: .center, spacing: 0) {
-                Text("手机登录")
-                    .font(.system(size: 20, weight: .medium, design: .default))
-                Spacer()
-            }.padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
-            Spacer().frame(height:20)
-            HStack(alignment: .center, spacing: 20) {
-                TextField.init("请输入手机号", text: $phoneNumber).textFieldStyle(.plain).accentColor(.orange).padding().frame(height:45).background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
-            }.padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-            
-            Spacer().frame(height:20)
-            HStack(alignment: .center, spacing: 0) {
-                TextField.init("请输入验证码", text: $code).textFieldStyle(.plain).accentColor(.orange).padding().frame(height:45).background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3"))).padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
-                Spacer()
-                Button {
-                    requestSendCode()
+        NavigationView{
+            VStack(alignment: .leading, spacing: 0, content: {
+                Spacer().frame(height:20)
+                HStack(alignment: .center, spacing: 0) {
+                    Text("手机登录")
+                        .font(.system(size: 20, weight: .medium, design: .default))
+                    Spacer()
+                }.padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
+                Spacer().frame(height:20)
+                HStack(alignment: .center, spacing: 20) {
+                    TextField.init("请输入手机号", text: $phoneNumber).textFieldStyle(.plain).accentColor(.orange).padding().frame(height:45).background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
+                }.padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
+                
+                Spacer().frame(height:20)
+                HStack(alignment: .center, spacing: 0) {
+                    TextField.init("请输入验证码", text: $code).textFieldStyle(.plain).accentColor(.orange).padding().frame(height:45).background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3"))).padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
+                    Spacer()
+                    Button {
+                        requestSendCode()
+                    } label: {
+                        Text("获取验证码")
+                            .font(.system(size: 15))
+                            .foregroundColor(.white).padding()
+                    }.frame(maxHeight: 45).background(RoundedRectangle(cornerRadius: 5).fill(.blue)).padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 20))
+                    
+                }
+                Spacer().frame(height:30)
+                NavigationLink {
+                    EnterInfoView()
                 } label: {
-                    Text("获取验证码")
-                        .font(.system(size: 15))
-                        .foregroundColor(.white).padding()
-                }.frame(maxHeight: 45).background(RoundedRectangle(cornerRadius: 5).fill(.blue)).padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 20))
-
-            }
-            Spacer().frame(height:30)
-            Button {
-                requestLogin()
-            } label: {
-                Text("Login").foregroundColor(.white)
-            }.frame(maxWidth:.infinity,maxHeight: 44).background(RoundedRectangle(cornerRadius: 5).fill(.blue)).padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-
-            Spacer()
-        }).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor))
+                    Text("Login").foregroundColor(.white).frame(maxWidth:.infinity,maxHeight: 44).background(RoundedRectangle(cornerRadius: 5).fill(.blue)).padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
+                }.buttonStyle(PlainButtonStyle())
+                
+                Spacer()
+            }).navigationBarHidden(true).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor))
+        }
     }
     
     func requestSendCode(){

@@ -10,43 +10,6 @@ import SDWebImageSwiftUI
 import JFHeroBrowser
 
 struct RecommandList: View {
-    init(){
-        
-        JFHeroBrowserGlobalConfig.default.networkImageProvider = HeroNetworkImageProvider.shared
-        let navigationBar = UINavigationBar.appearance()
-
-        if #available(iOS 15.0, *)  {
-            let navibarAppearance = UINavigationBarAppearance()
-            navibarAppearance.backgroundColor = .white
-            navibarAppearance.backgroundImage = UIImage.from(color: .white)
-            navibarAppearance.shadowImage = UIImage.from(color: .clear)
-
-            navigationBar.standardAppearance = navibarAppearance
-            navigationBar.scrollEdgeAppearance = navibarAppearance
-        }else{
-            navigationBar.setBackgroundImage(UIImage.from(color: .white), for: .any, barMetrics: .default)
-            navigationBar.shadowImage = UIImage()
-        }
-        let tabBar = UITabBar.appearance()
-        if #available(iOS 13.0, *) {
-            let tabbarAppearance = UITabBarAppearance()
-            tabbarAppearance.backgroundImage = UIImage.from(color: .white)
-            tabbarAppearance.shadowImage = UIImage.from(color: .clear)
-           tabBar.standardAppearance = tabbarAppearance
-            if #available(iOS 15.0, *) {
-                tabBar.scrollEdgeAppearance = tabbarAppearance
-            }
-        }else{
-            tabBar.isTranslucent = false
-            tabBar.backgroundImage = UIImage.from(color: .white)
-            tabBar.shadowImage = UIImage.from(color: .clear)
-            tabBar.tintColor = UIColor.colorWithHexString(hex: "#326291")
-        }
-        
-
-
-    }
-   
     @State var computedModel = ComputedProperty()
     @State var listData : [ReCommandModel] = []
     var body: some View {

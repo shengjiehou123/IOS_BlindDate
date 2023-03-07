@@ -21,6 +21,7 @@
 		A281043729B1EA6200C0B8E8 /* LikeMeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043629B1EA6200C0B8E8 /* LikeMeModel.swift */; };
 		A281043C29B20DD900C0B8E8 /* Me.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043B29B20DD900C0B8E8 /* Me.swift */; };
 		A281043F29B2FCAC00C0B8E8 /* EnterInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043E29B2FCAC00C0B8E8 /* EnterInfoView.swift */; };
+		A2D8270429B6F0070017445D /* NavigationViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D8270329B6F0070017445D /* NavigationViewExtension.swift */; };
 		A2E4E91B299B5104000A46FE /* BlindDateAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E4E91A299B5104000A46FE /* BlindDateAppApp.swift */; };
 		A2E4E91D299B5104000A46FE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E4E91C299B5104000A46FE /* ContentView.swift */; };
 		A2E4E91F299B5107000A46FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2E4E91E299B5107000A46FE /* Assets.xcassets */; };
@@ -45,6 +46,7 @@
 		A281043629B1EA6200C0B8E8 /* LikeMeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMeModel.swift; sourceTree = "<group>"; };
 		A281043B29B20DD900C0B8E8 /* Me.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Me.swift; sourceTree = "<group>"; };
 		A281043E29B2FCAC00C0B8E8 /* EnterInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterInfoView.swift; sourceTree = "<group>"; };
+		A2D8270329B6F0070017445D /* NavigationViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewExtension.swift; sourceTree = "<group>"; };
 		A2E4E917299B5104000A46FE /* BlindDateApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlindDateApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2E4E91A299B5104000A46FE /* BlindDateAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindDateAppApp.swift; sourceTree = "<group>"; };
 		A2E4E91C299B5104000A46FE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -87,6 +89,7 @@
 				A2519B9329A9E5D40098DF3E /* LoadingView.swift */,
 				A281043029B197ED00C0B8E8 /* UIImageExtension.swift */,
 				A2519B9B29A9F1FA0098DF3E /* Header.swift */,
+				A2D8270329B6F0070017445D /* NavigationViewExtension.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -333,6 +336,7 @@
 				A2519BA229AC8CD60098DF3E /* ReCommandModel.swift in Sources */,
 				A2519B9229A9E59D0098DF3E /* ViewExtension.swift in Sources */,
 				A281043729B1EA6200C0B8E8 /* LikeMeModel.swift in Sources */,
+				A2D8270429B6F0070017445D /* NavigationViewExtension.swift in Sources */,
 				A2FFE855299B5E03009642D3 /* BaseRequest.swift in Sources */,
 				A281043429B1E4F700C0B8E8 /* LikeMe.swift in Sources */,
 				A281042F29B0AB4600C0B8E8 /* DateExtension.swift in Sources */,
