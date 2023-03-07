@@ -264,10 +264,14 @@ struct LoveGoalView:View{
             Text("接受对方的年龄")
                 .font(.system(size: 16, weight: .medium, design: .default))
             HStack(alignment: .center, spacing: 10){
-                PullDownButton(title:"最小年龄")
+                PullDownButton(title:.constant("最小年龄")) { chose in
+                    
+                }
                 Text("—")
                     .foregroundColor(.gray)
-                PullDownButton(title:"最大年龄")
+                PullDownButton(title:.constant("最大年龄")) { chose in
+                    
+                }
             }
             
             Spacer()
@@ -297,11 +301,15 @@ struct MyCityAndHomeTownView:View{
             }
             Text("工作居住地")
                 .font(.system(size: 16, weight: .medium, design: .default))
-            PullDownButton().frame(height:45)
+            PullDownButton(title:.constant("请选择"),choseHandle: { chose in
+                
+            }).frame(height:45)
             
             Text("我的家乡")
                 .font(.system(size: 16, weight: .medium, design: .default))
-            PullDownButton().frame(height:45)
+            PullDownButton(title:.constant("请选择"),choseHandle: { chose in
+                
+            }).frame(height:45)
             Spacer()
             BackBtnMergeNextBtnView(nextStepHandle: {
                 scrollIndex = 5
@@ -327,11 +335,15 @@ struct MyJobView:View{
             }
             Text("职业")
                 .font(.system(size: 16, weight: .medium, design: .default))
-            PullDownButton().frame(height:45)
+            PullDownButton(title:.constant("请选择"),choseHandle: { chose in
+                
+            }).frame(height:45)
             
             Text("年收入")
                 .font(.system(size: 16, weight: .medium, design: .default))
-            PullDownButton().frame(height:45)
+            PullDownButton(title:.constant("请选择"),choseHandle: { chose in
+                
+            }).frame(height:45)
             Spacer()
             BackBtnMergeNextBtnView(nextStepHandle: {
                 scrollIndex = 4
@@ -349,37 +361,47 @@ struct EducationInfoView:View{
     @Binding var scrollIndex : Int
     @Binding var educationType : Int
     @Binding var schoolName : String
+    @State var showPicker : Bool = false
+    let educationArr : [String] = ["博士","硕士","本科"," 专科","专科以下"]
+    @State var educationStr : String = "请选择"
     var body: some View{
-        VStack(alignment: .leading, spacing: 20) {
-            HStack{
-                Text("教育信息")
-                    .font(.system(size: 22, weight: .medium, design: .default))
+        ZStack(alignment: .bottom) {
+            VStack(alignment: .leading, spacing: 20) {
+                HStack{
+                    Text("教育信息")
+                        .font(.system(size: 22, weight: .medium, design: .default))
+                    Spacer()
+                }
+                Text("学历")
+                    .font(.system(size: 16, weight: .medium, design: .default))
+                PullDownButton(title:$educationStr,choseHandle: { chose in
+                    showPicker = true
+                }).frame(height:45)
+                
+                Text("学校")
+                    .font(.system(size: 16, weight: .medium, design: .default))
+                TextField("请输入学校名称", text: $schoolName).font(.system(size: 15, weight: .medium, design: .default)).frame(height:45).padding(.leading,10).background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
                 Spacer()
+                BackBtnMergeNextBtnView(nextStepHandle: {
+                    scrollIndex = 3
+                }, backSepHandle: {
+                    scrollIndex = 1
+                })
+                Spacer().frame(height:50)
             }
-            Text("学历")
-                .font(.system(size: 16, weight: .medium, design: .default))
-            PullDownButton().frame(height:45)
-            
-            Text("学校")
-                .font(.system(size: 16, weight: .medium, design: .default))
-            TextField("请输入学校名称", text: $schoolName).font(.system(size: 15, weight: .medium, design: .default)).frame(height:45).padding(.leading,10).background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
-            Spacer()
-            BackBtnMergeNextBtnView(nextStepHandle: {
-                scrollIndex = 3
-            }, backSepHandle: {
-                scrollIndex = 1
-            })
-            Spacer().frame(height:50)
-
+            CustomPicker(show: $showPicker, selection: $educationType, contentArr: educationArr).onChange(of: educationType) { newValue in
+                educationStr = educationArr[newValue]
+            }
         }
     }
 }
 
 struct PullDownButton:View{
-    var title : String = "请选择"
+    @Binding var title : String
+    var choseHandle : (_ chose:String) ->Void
     var body: some View{
         Button {
-            
+            choseHandle(title)
         } label: {
             Text(title)
                 .font(.system(size: 15, weight: .medium, design: .default))
@@ -428,7 +450,11 @@ struct GenderAgeHeightView:View{
     @Binding var birthDay: Double
     @Binding var height: Int
     @State var isShowDatePicker : Bool = false
+    @State var isShowHeightPicker : Bool = false
     @State var birthDayDate : Date = Date().addYear(year: -18)
+    @State var birthDayStr : String = "请选择出生时间"
+    @State var heightStr : String = "请选择身高"
+    @State var heightSelection : Int = 0
     var body: some View{
         ZStack(alignment: .bottom) {
             VStack(alignment: .leading, spacing: 20) {
@@ -444,11 +470,11 @@ struct GenderAgeHeightView:View{
                     .font(.system(size: 16, weight: .medium, design: .default))
                 GenderView(gender: $gender)
                 
-                BirthdayOrHeightView(title: "生日", content: "请选择出生时间") { choseStr in
+                BirthdayOrHeightView(title: "生日", content: $birthDayStr) { choseStr in
                     isShowDatePicker = true
                 }
-                BirthdayOrHeightView(title: "身高", content: "请选择身高") { choseStr in
-                    
+                BirthdayOrHeightView(title: "身高", content: $heightStr) { choseStr in
+                    isShowHeightPicker = true
                 }
                 
                 Spacer()
@@ -461,10 +487,25 @@ struct GenderAgeHeightView:View{
                 
                 Spacer().frame(height:50)
             }
-                let minDate = Date().addYear(year: -70)
-                let maxDate = Date().addYear(year: -18)
-                CustomDatePicker(show:$isShowDatePicker,date: maxDate, selectionDate: $birthDayDate, minDate: minDate, maxDate: maxDate, displayedComponents: [.date])
+            let minDate = Date().addYear(year: -70)
+            let maxDate = Date().addYear(year: -18)
+            CustomDatePicker(show:$isShowDatePicker,date: maxDate, selectionDate: $birthDayDate, minDate: minDate, maxDate: maxDate, displayedComponents: [.date]).onChange(of: birthDayDate) { newValue in
+                birthDayStr = birthDayDate.stringFormat(format: "yyyy年M月d日")
+            }
+            CustomPicker(show: $isShowHeightPicker, selection: $heightSelection, contentArr: getHeightArr()).onChange(of: heightSelection) { newValue in
+                let tempArr = getHeightArr()
+                heightStr = tempArr[newValue]
+            }
         }
+    }
+    
+    func getHeightArr() -> [String]{
+        var tempArr : [String] = []
+        for height in 140...210 {
+            let str = "\(height)cm"
+            tempArr.append(str)
+        }
+        return tempArr
     }
 }
 
@@ -490,7 +531,7 @@ struct BackBtnMergeNextBtnView:View{
 //MARK: 生日、 身高UI
 struct BirthdayOrHeightView:View{
     var title : String
-    var content:String
+    @Binding var content:String
     var choseHandle : (_ choseStr:String) ->Void
     var body: some View{
         HStack(alignment: .center, spacing: 40){
