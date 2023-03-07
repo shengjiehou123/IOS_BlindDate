@@ -402,7 +402,9 @@ struct NickNameView:View{
             VStack(alignment: .leading, spacing: 20) {
                 Text("首先，给自己起个好听的名字吧")
                     .font(.system(size: 22, weight: .medium, design: .default))
-                TextField.init("输入昵称", text: $nickName).padding().background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
+                TextField.init("输入昵称", text: $nickName).padding().background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3"))).onChange(of: nickName) { newValue in
+                    nickName = newValue.trimmingCharacters(in: .whitespaces)
+                }
                 Spacer()
                 NextStepButton(title: "下一步", completion: {
                     scrollIndex = 1
@@ -425,31 +427,43 @@ struct GenderAgeHeightView:View{
     @Binding var gender: Int
     @Binding var birthDay: Double
     @Binding var height: Int
+    @State var isShowDatePicker : Bool = false
+    @State var birthDayDate : Date = Date().addYear(year: -18)
     var body: some View{
-        VStack(alignment: .leading, spacing: 20) {
-            HStack{
-                Text("基本信息")
-                    .font(.system(size: 22, weight: .medium, design: .default))
-                Text("*性别、生日完成注册后不可修改")
-                    .font(.system(size: 13))
-                    .foregroundColor(.red)
+        ZStack(alignment: .bottom) {
+            VStack(alignment: .leading, spacing: 20) {
+                HStack{
+                    Text("基本信息")
+                        .font(.system(size: 22, weight: .medium, design: .default))
+                    Text("*性别、生日完成注册后不可修改")
+                        .font(.system(size: 13))
+                        .foregroundColor(.red)
+                }
+                
+                Text("性别")
+                    .font(.system(size: 16, weight: .medium, design: .default))
+                GenderView(gender: $gender)
+                
+                BirthdayOrHeightView(title: "生日", content: "请选择出生时间") { choseStr in
+                    isShowDatePicker = true
+                }
+                BirthdayOrHeightView(title: "身高", content: "请选择身高") { choseStr in
+                    
+                }
+                
+                Spacer()
+                BackBtnMergeNextBtnView {
+                    
+                    scrollIndex = 2
+                } backSepHandle: {
+                    scrollIndex = 0
+                }
+                
+                Spacer().frame(height:50)
             }
-           
-            Text("性别")
-                .font(.system(size: 16, weight: .medium, design: .default))
-           GenderView()
-           
-           BirthdayOrHeightView(title: "生日", content: "请选择出生时间")
-            BirthdayOrHeightView(title: "身高", content: "请选择身高")
-
-            Spacer()
-            BackBtnMergeNextBtnView {
-                scrollIndex = 2
-            } backSepHandle: {
-                scrollIndex = 0
-            }
-           
-            Spacer().frame(height:50)
+                let minDate = Date().addYear(year: -70)
+                let maxDate = Date().addYear(year: -18)
+                CustomDatePicker(show:$isShowDatePicker,date: maxDate, selectionDate: $birthDayDate, minDate: minDate, maxDate: maxDate, displayedComponents: [.date])
         }
     }
 }
@@ -477,13 +491,14 @@ struct BackBtnMergeNextBtnView:View{
 struct BirthdayOrHeightView:View{
     var title : String
     var content:String
+    var choseHandle : (_ choseStr:String) ->Void
     var body: some View{
-        HStack{
+        HStack(alignment: .center, spacing: 40){
             Text(title)
                 .font(.system(size: 16, weight: .medium, design: .default))
                 .foregroundColor(.black)
             Button {
-                
+                choseHandle(title)
             } label: {
                 HStack(alignment: .center, spacing: 10){
                     Spacer()
@@ -500,24 +515,24 @@ struct BirthdayOrHeightView:View{
 }
 
 struct GenderView:View{
+    @Binding var gender : Int
     var genders : [String] = ["男","女"]
-    @State var isSelectIndex : Int = 0
     var body: some View{
         GeometryReader { reader in
             let width = reader.size.width
             HStack(alignment: .top, spacing: 10) {
                 ForEach(0..<2){ index in
-                    let gender = genders[index]
+                    let genderStr = genders[index]
                     ZStack(alignment: .leading) {
-                        Image("").resizable().frame(width:(width - 10) / 2.0,height:70).background(RoundedRectangle(cornerRadius: 5).fill(isSelectIndex == index + 1 ? Color.red : Color.colorWithHexString(hex: "#F3F3F3")))
+                        Image("").resizable().frame(width:(width - 10) / 2.0,height:70).background(RoundedRectangle(cornerRadius: 5).fill(gender == index + 1 ? Color.red : Color.colorWithHexString(hex: "#F3F3F3")))
                         HStack{
-                            Text(gender)
+                            Text(genderStr)
                                 .font(.system(size: 15, weight: .medium, design: .default))
-                                .foregroundColor(isSelectIndex == index + 1 ? Color.white : Color.gray)
+                                .foregroundColor(gender == index + 1 ? Color.white : Color.gray)
                             Spacer()
                         }.padding(.leading,20)
                     }.onTapGesture {
-                        isSelectIndex = index + 1
+                        gender = index + 1
                     }
                 }
             }

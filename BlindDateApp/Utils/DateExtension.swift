@@ -21,4 +21,9 @@ extension Date{
         let age = calendar.component(components, from: currentDate) - calendar.component(components, from: self) + 1
         return age
     }
+    func addYear(year:Int) ->Date{
+        let calendar = NSCalendar.current
+        let components = Calendar.Component.year
+        return calendar.date(byAdding: components, value: year, to: self)!
+    }
 }

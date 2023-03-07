@@ -22,6 +22,7 @@
 		A281043C29B20DD900C0B8E8 /* Me.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043B29B20DD900C0B8E8 /* Me.swift */; };
 		A281043F29B2FCAC00C0B8E8 /* EnterInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043E29B2FCAC00C0B8E8 /* EnterInfoView.swift */; };
 		A2D8270429B6F0070017445D /* NavigationViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D8270329B6F0070017445D /* NavigationViewExtension.swift */; };
+		A2D8270729B748C40017445D /* CustomDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D8270629B748C40017445D /* CustomDatePicker.swift */; };
 		A2E4E91B299B5104000A46FE /* BlindDateAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E4E91A299B5104000A46FE /* BlindDateAppApp.swift */; };
 		A2E4E91D299B5104000A46FE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E4E91C299B5104000A46FE /* ContentView.swift */; };
 		A2E4E91F299B5107000A46FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2E4E91E299B5107000A46FE /* Assets.xcassets */; };
@@ -47,6 +48,7 @@
 		A281043B29B20DD900C0B8E8 /* Me.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Me.swift; sourceTree = "<group>"; };
 		A281043E29B2FCAC00C0B8E8 /* EnterInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterInfoView.swift; sourceTree = "<group>"; };
 		A2D8270329B6F0070017445D /* NavigationViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewExtension.swift; sourceTree = "<group>"; };
+		A2D8270629B748C40017445D /* CustomDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDatePicker.swift; sourceTree = "<group>"; };
 		A2E4E917299B5104000A46FE /* BlindDateApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlindDateApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2E4E91A299B5104000A46FE /* BlindDateAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindDateAppApp.swift; sourceTree = "<group>"; };
 		A2E4E91C299B5104000A46FE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -153,6 +155,14 @@
 			path = LoginModule;
 			sourceTree = "<group>";
 		};
+		A2D8270529B748B10017445D /* CommonUI */ = {
+			isa = PBXGroup;
+			children = (
+				A2D8270629B748C40017445D /* CustomDatePicker.swift */,
+			);
+			path = CommonUI;
+			sourceTree = "<group>";
+		};
 		A2E4E90E299B5104000A46FE = {
 			isa = PBXGroup;
 			children = (
@@ -185,6 +195,7 @@
 				A281043229B1E4E400C0B8E8 /* LikeMePage */,
 				A281043A29B20DC000C0B8E8 /* MePage */,
 				A2E4E91E299B5107000A46FE /* Assets.xcassets */,
+				A2D8270529B748B10017445D /* CommonUI */,
 				A2519B9029A9E5850098DF3E /* Utils */,
 				A2E4E920299B5107000A46FE /* Preview Content */,
 			);
@@ -260,6 +271,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = A2E4E90E299B5104000A46FE;
 			productRefGroup = A2E4E918299B5104000A46FE /* Products */;
@@ -330,6 +342,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A2D8270729B748C40017445D /* CustomDatePicker.swift in Sources */,
 				A2519B9F29AA01E30098DF3E /* RecommandList.swift in Sources */,
 				A281043C29B20DD900C0B8E8 /* Me.swift in Sources */,
 				A2519B9C29A9F1FA0098DF3E /* Header.swift in Sources */,
