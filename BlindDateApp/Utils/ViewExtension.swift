@@ -20,6 +20,9 @@ extension View{
     func delaysTouches(for duration: TimeInterval = 0.25, onTap action: @escaping () -> Void = {}) -> some View {
            modifier(DelaysTouches(duration: duration, action: action))
        }
+    func hidenKeyBoard(){
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
 }
 
 fileprivate struct DelaysTouches: ViewModifier {

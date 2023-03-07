@@ -33,9 +33,10 @@ struct EnterInfoView: View {
     @State var id : String = ""
     
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            ScrollViewReader { reader in
-                HStack(alignment: .top, spacing: 0) {
+        
+//        ScrollView(.horizontal, showsIndicators: false) {
+//            ScrollViewReader { reader in
+                LazyHStack(alignment: .top, spacing: 0) {
                     NickNameView(nickName: $nickName, scrollIndex: $scrollIndex).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(0)
                     GenderAgeHeightView(scrollIndex: $scrollIndex, gender: $gender, birthDay: $birthDay, height: $height).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(1)
                     EducationInfoView(scrollIndex: $scrollIndex, educationType: $educationType, schoolName: $schoolName).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(2)
@@ -52,15 +53,14 @@ struct EnterInfoView: View {
                         }
                         RealNameVerifyView(name: $name, id: $id).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(11)
                     }
-                }.offset(x:-screenWidth * CGFloat(scrollIndex))
-                    .animation(.linear(duration:0.25), value: scrollIndex)
-                
-            }
-        }.frame(maxWidth:.infinity,maxHeight: .infinity).ignoresSafeArea(.container, edges: .bottom).modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "")).introspectScrollView { sc in
-            sc.isScrollEnabled = false
+                }.frame(width: screenWidth, alignment: .leading).offset(x:-screenWidth * CGFloat(scrollIndex))
+            .animation(.linear(duration:0.25), value: scrollIndex).modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: ""))
+                    
+              
         }
+        //.padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20))
        
-    }
+    
 }
 
 //MARK: 实名认证
@@ -89,6 +89,7 @@ struct RealNameVerifyView:View{
             NextStepButton(title: "认证并完成注册") {
                 
             }
+            Spacer()
         }
     }
 }
@@ -396,16 +397,25 @@ struct NickNameView:View{
     @Binding var nickName : String
     @Binding var scrollIndex : Int
     var body: some View{
-        VStack(alignment: .leading, spacing: 20) {
-            Text("首先，给自己起个好听的名字吧")
-                .font(.system(size: 22, weight: .medium, design: .default))
-            TextField.init("输入昵称", text: $nickName).padding().background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
-            Spacer()
-            NextStepButton(title: "下一步", completion: {
-                scrollIndex = 1
-            }).padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-            Spacer().frame(height:50)
-        }
+//        ScrollView(.vertical,showsIndicators: false){
+       
+            VStack(alignment: .leading, spacing: 20) {
+                Text("首先，给自己起个好听的名字吧")
+                    .font(.system(size: 22, weight: .medium, design: .default))
+                TextField.init("输入昵称", text: $nickName).padding().background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
+                Spacer()
+                NextStepButton(title: "下一步", completion: {
+                    scrollIndex = 1
+                }).padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
+                Spacer().frame(height:50)
+
+            }.contentShape(Rectangle()).onTapGesture {
+                hidenKeyBoard()
+            }
+           
+        
+        
+        
     }
 }
 
@@ -450,6 +460,7 @@ struct BackBtnMergeNextBtnView:View{
     var body: some View{
         HStack(alignment: .center, spacing: 10){
             Button {
+                hidenKeyBoard()
                 backSepHandle()
             } label: {
                 Image("back_btn").resizable().aspectRatio( contentMode: .fill).frame(width: 30, height: 30, alignment: .leading)
@@ -519,6 +530,7 @@ struct NextStepButton:View{
     var completion : (() -> Void)
     var body: some View{
         Button {
+            hidenKeyBoard()
             completion()
         } label: {
             Text(title)
