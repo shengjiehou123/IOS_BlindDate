@@ -65,7 +65,6 @@ struct EnterInfoView: View {
 }
 
 //MARK: 实名认证
-
 struct RealNameVerifyView:View{
     @Binding var name : String
     @Binding var id : String
@@ -327,33 +326,70 @@ struct MyJobView:View{
     @Binding var scrollIndex : Int
     @Binding var job : String
     @Binding var yearIncome : Int
+    @State var showJobList : Bool = false
+    @State var showYearIncomePicker : Bool = false
+    @State var yearIncomeStr : String = "请选择"
     var body: some View{
-        VStack(alignment: .leading, spacing: 20) {
-            HStack{
-                Text("我的工作")
-                    .font(.system(size: 22, weight: .medium, design: .default))
+        ZStack(alignment: .bottom) {
+            VStack(alignment: .leading, spacing: 20) {
+                HStack{
+                    Text("我的工作")
+                        .font(.system(size: 22, weight: .medium, design: .default))
+                    Spacer()
+                }
+                Text("职业")
+                    .font(.system(size: 16, weight: .medium, design: .default))
+                
+                TextField("请输入职业", text: $job,onEditingChanged: { focuse in
+                    showJobList = focuse
+                    if !focuse {
+                        hidenKeyBoard()
+                    }
+                }).font(.system(size: 15, weight: .medium, design: .default)).frame(height:45).padding(.leading,10).background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
+                if showJobList {
+                    ScrollView(.vertical, showsIndicators: false) {
+                        let jobs = LocalData.shared.searchProfessionName(name: job)
+                        VStack(alignment: .leading, spacing: 0){
+                            ForEach(jobs,id:\.self){ profession in
+                                HStack{
+                                    Text(profession).font(.system(size: 15)).padding().frame(height:40)
+                                    Spacer()
+                                }.contentShape(Rectangle()).onTapGesture {
+                                    showJobList = false
+                                    job = profession
+                                    hidenKeyBoard()
+                                }
+                            }
+                        }.background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
+                    }.frame(maxWidth:.infinity,maxHeight: .infinity).background(Color.white)
+                }
+                
+                
+                Text("年收入")
+                    .font(.system(size: 16, weight: .medium, design: .default))
+                PullDownButton(title:$yearIncomeStr,choseHandle: { chose in
+                    showYearIncomePicker = true
+                }).frame(height:45)
                 Spacer()
+                BackBtnMergeNextBtnView(nextStepHandle: {
+                    scrollIndex = 4
+                }, backSepHandle: {
+                    scrollIndex = 2
+                })
+                Spacer().frame(height:50)
+                
+            }.ignoresSafeArea(.keyboard, edges: .bottom).onTapGesture {
+                hidenKeyBoard()
             }
-            Text("职业")
-                .font(.system(size: 16, weight: .medium, design: .default))
-            PullDownButton(title:.constant("请选择"),choseHandle: { chose in
-                
-            }).frame(height:45)
-            
-            Text("年收入")
-                .font(.system(size: 16, weight: .medium, design: .default))
-            PullDownButton(title:.constant("请选择"),choseHandle: { chose in
-                
-            }).frame(height:45)
-            Spacer()
-            BackBtnMergeNextBtnView(nextStepHandle: {
-                scrollIndex = 4
-            }, backSepHandle: {
-                scrollIndex = 2
-            })
-            Spacer().frame(height:50)
-            
+            CustomPicker(show: $showYearIncomePicker, selection: $yearIncome, contentArr:getYearIncomeArr() ) { selectedIndex in
+                let incomeArr = getYearIncomeArr()
+                yearIncomeStr = incomeArr[selectedIndex]
+            }
         }
+    }
+    
+    func getYearIncomeArr() -> [String]{
+        return ["100万以上","60-100万","30-60万","20-30万","10-20万","5-10万","5万以下"]
     }
 }
 
@@ -365,6 +401,7 @@ struct EducationInfoView:View{
     @State var showPicker : Bool = false
     let educationArr : [String] = ["博士","硕士","本科"," 专科","专科以下"]
     @State var educationStr : String = "请选择"
+    @State var showSchoolNameList : Bool = false
     var body: some View{
         ZStack(alignment: .bottom) {
             VStack(alignment: .leading, spacing: 20) {
@@ -381,7 +418,29 @@ struct EducationInfoView:View{
                 
                 Text("学校")
                     .font(.system(size: 16, weight: .medium, design: .default))
-                TextField("请输入学校名称", text: $schoolName).font(.system(size: 15, weight: .medium, design: .default)).frame(height:45).padding(.leading,10).background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
+                TextField("请输入学校名称", text: $schoolName,onEditingChanged: { focuse in
+                    showSchoolNameList = focuse
+                    if !focuse {
+                        hidenKeyBoard()
+                    }
+                }).font(.system(size: 15, weight: .medium, design: .default)).frame(height:45).padding(.leading,10).background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
+                if showSchoolNameList {
+                    ScrollView(.vertical, showsIndicators: false) {
+                        let schoolNames = LocalData.shared.searchSchooName(name: schoolName)
+                        VStack(alignment: .leading, spacing: 0){
+                            ForEach(schoolNames,id:\.self){ school in
+                                HStack{
+                                    Text(school).font(.system(size: 15)).padding().frame(height:40)
+                                  Spacer()
+                                }.contentShape(Rectangle()).onTapGesture {
+                                    showSchoolNameList = false
+                                    schoolName = school
+                                    hidenKeyBoard()
+                                }
+                            }
+                        }.background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
+                    }.frame(maxWidth:.infinity)
+                }
                 Spacer()
                 BackBtnMergeNextBtnView(nextStepHandle: {
                     scrollIndex = 3
@@ -393,6 +452,8 @@ struct EducationInfoView:View{
             CustomPicker(show: $showPicker, selection: $educationType, contentArr: educationArr) { selectedIndex in
                 educationStr = educationArr[selectedIndex]
             }
+        }.ignoresSafeArea(.keyboard, edges: .bottom).onTapGesture {
+            hidenKeyBoard()
         }
     }
 }
