@@ -14,6 +14,7 @@ struct CustomDatePicker: View {
     var minDate : Date
     var maxDate : Date
     var displayedComponents :DatePickerComponents
+    var selectedDate : (_ seletedDate:Date) ->Void
     @State  var showPicker : Bool = false
     var body: some View {
         if show {
@@ -29,6 +30,7 @@ struct CustomDatePicker: View {
                     Text("确定").foregroundColor(.blue).padding(.trailing,15).onTapGesture {
                         selectionDate = date
                         showPicker = false
+                        selectedDate(selectionDate)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                             show = false
                         }

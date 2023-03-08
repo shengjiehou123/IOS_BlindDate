@@ -13,6 +13,7 @@ struct CustomPicker: View {
    @State   var showPicker : Bool = false
    @State   var tempSelection : Int = 0
    var contentArr :[String]
+    var selectedIndex : (_ selectedIndex:Int) ->Void
     var body: some View {
         if show {
             VStack(alignment: .center, spacing: 0) {
@@ -26,6 +27,7 @@ struct CustomPicker: View {
                     Spacer()
                     Text("确定").foregroundColor(.blue).padding(.trailing,15).onTapGesture {
                         selection = tempSelection
+                        selectedIndex(selection)
                         showPicker = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                             show = false
@@ -49,7 +51,9 @@ struct CustomPicker: View {
 
 struct CustomPicker_Previews: PreviewProvider {
     static var previews: some View {
-        CustomPicker(show:.constant(true),selection: .constant(0), contentArr: getHeightArr())
+        CustomPicker(show:.constant(true),selection: .constant(0), contentArr: getHeightArr()) { selectedIndex in
+            
+        }
     }
     
     static func getHeightArr() -> [String]{

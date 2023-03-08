@@ -8,6 +8,7 @@
 import SwiftUI
 import simd
 
+
 struct EnterInfoView: View {
     @State var nickName: String = ""
     @State var scrollIndex: Int = 0
@@ -389,8 +390,8 @@ struct EducationInfoView:View{
                 })
                 Spacer().frame(height:50)
             }
-            CustomPicker(show: $showPicker, selection: $educationType, contentArr: educationArr).onChange(of: educationType) { newValue in
-                educationStr = educationArr[newValue]
+            CustomPicker(show: $showPicker, selection: $educationType, contentArr: educationArr) { selectedIndex in
+                educationStr = educationArr[selectedIndex]
             }
         }
     }
@@ -489,12 +490,15 @@ struct GenderAgeHeightView:View{
             }
             let minDate = Date().addYear(year: -70)
             let maxDate = Date().addYear(year: -18)
-            CustomDatePicker(show:$isShowDatePicker,date: maxDate, selectionDate: $birthDayDate, minDate: minDate, maxDate: maxDate, displayedComponents: [.date]).onChange(of: birthDayDate) { newValue in
+            CustomDatePicker(show:$isShowDatePicker,date: maxDate, selectionDate: $birthDayDate, minDate: minDate, maxDate: maxDate, displayedComponents: [.date]) { seletedDate in
                 birthDayStr = birthDayDate.stringFormat(format: "yyyy年M月d日")
             }
-            CustomPicker(show: $isShowHeightPicker, selection: $heightSelection, contentArr: getHeightArr()).onChange(of: heightSelection) { newValue in
+//                .onChange(of: birthDayDate) { newValue in
+//                birthDayStr = birthDayDate.stringFormat(format: "yyyy年M月d日")
+//            }
+            CustomPicker(show: $isShowHeightPicker, selection: $heightSelection, contentArr: getHeightArr()) { selectedIndex in
                 let tempArr = getHeightArr()
-                heightStr = tempArr[newValue]
+                heightStr = tempArr[selectedIndex]
             }
         }
     }
