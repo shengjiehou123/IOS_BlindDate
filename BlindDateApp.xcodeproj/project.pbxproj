@@ -24,9 +24,13 @@
 		A2D8270429B6F0070017445D /* NavigationViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D8270329B6F0070017445D /* NavigationViewExtension.swift */; };
 		A2D8270729B748C40017445D /* CustomDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D8270629B748C40017445D /* CustomDatePicker.swift */; };
 		A2D8270929B784350017445D /* CustomPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D8270829B784350017445D /* CustomPicker.swift */; };
-		A2D8270D29B851420017445D /* SchoolData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D8270C29B851420017445D /* SchoolData.swift */; };
+		A2D8270D29B851420017445D /* LocalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D8270C29B851420017445D /* LocalData.swift */; };
 		A2D8272C29B86B290017445D /* school_data.json in Resources */ = {isa = PBXBuildFile; fileRef = A2D8272B29B86B290017445D /* school_data.json */; };
 		A2D8272E29B87C750017445D /* profession.json in Resources */ = {isa = PBXBuildFile; fileRef = A2D8272D29B87C750017445D /* profession.json */; };
+		A2D8273129B88E9C0017445D /* city.json in Resources */ = {isa = PBXBuildFile; fileRef = A2D8272F29B88E9C0017445D /* city.json */; };
+		A2D8273229B88E9C0017445D /* province.json in Resources */ = {isa = PBXBuildFile; fileRef = A2D8273029B88E9C0017445D /* province.json */; };
+		A2D8273429B8971A0017445D /* area.json in Resources */ = {isa = PBXBuildFile; fileRef = A2D8273329B8971A0017445D /* area.json */; };
+		A2D8273629B89AB40017445D /* AddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D8273529B89AB40017445D /* AddressView.swift */; };
 		A2E4E91B299B5104000A46FE /* BlindDateAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E4E91A299B5104000A46FE /* BlindDateAppApp.swift */; };
 		A2E4E91D299B5104000A46FE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E4E91C299B5104000A46FE /* ContentView.swift */; };
 		A2E4E91F299B5107000A46FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2E4E91E299B5107000A46FE /* Assets.xcassets */; };
@@ -54,9 +58,13 @@
 		A2D8270329B6F0070017445D /* NavigationViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewExtension.swift; sourceTree = "<group>"; };
 		A2D8270629B748C40017445D /* CustomDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDatePicker.swift; sourceTree = "<group>"; };
 		A2D8270829B784350017445D /* CustomPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPicker.swift; sourceTree = "<group>"; };
-		A2D8270C29B851420017445D /* SchoolData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolData.swift; sourceTree = "<group>"; };
+		A2D8270C29B851420017445D /* LocalData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalData.swift; sourceTree = "<group>"; };
 		A2D8272B29B86B290017445D /* school_data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = school_data.json; sourceTree = "<group>"; };
 		A2D8272D29B87C750017445D /* profession.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = profession.json; sourceTree = "<group>"; };
+		A2D8272F29B88E9C0017445D /* city.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = city.json; sourceTree = "<group>"; };
+		A2D8273029B88E9C0017445D /* province.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = province.json; sourceTree = "<group>"; };
+		A2D8273329B8971A0017445D /* area.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = area.json; sourceTree = "<group>"; };
+		A2D8273529B89AB40017445D /* AddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressView.swift; sourceTree = "<group>"; };
 		A2E4E917299B5104000A46FE /* BlindDateApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlindDateApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2E4E91A299B5104000A46FE /* BlindDateAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindDateAppApp.swift; sourceTree = "<group>"; };
 		A2E4E91C299B5104000A46FE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -99,7 +107,7 @@
 				A2D8270329B6F0070017445D /* NavigationViewExtension.swift */,
 				A2519B9329A9E5D40098DF3E /* LoadingView.swift */,
 				A281043029B197ED00C0B8E8 /* UIImageExtension.swift */,
-				A2D8270C29B851420017445D /* SchoolData.swift */,
+				A2D8270C29B851420017445D /* LocalData.swift */,
 				A2519B9B29A9F1FA0098DF3E /* Header.swift */,
 			);
 			path = Utils;
@@ -169,6 +177,7 @@
 			children = (
 				A2D8270629B748C40017445D /* CustomDatePicker.swift */,
 				A2D8270829B784350017445D /* CustomPicker.swift */,
+				A2D8273529B89AB40017445D /* AddressView.swift */,
 			);
 			path = CommonUI;
 			sourceTree = "<group>";
@@ -207,6 +216,9 @@
 				A2E4E91E299B5107000A46FE /* Assets.xcassets */,
 				A2D8272B29B86B290017445D /* school_data.json */,
 				A2D8272D29B87C750017445D /* profession.json */,
+				A2D8272F29B88E9C0017445D /* city.json */,
+				A2D8273329B8971A0017445D /* area.json */,
+				A2D8273029B88E9C0017445D /* province.json */,
 				A2D8270529B748B10017445D /* CommonUI */,
 				A2519B9029A9E5850098DF3E /* Utils */,
 				A2E4E920299B5107000A46FE /* Preview Content */,
@@ -301,9 +313,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				A2E4E922299B5107000A46FE /* Preview Assets.xcassets in Resources */,
+				A2D8273129B88E9C0017445D /* city.json in Resources */,
 				A2E4E91F299B5107000A46FE /* Assets.xcassets in Resources */,
+				A2D8273429B8971A0017445D /* area.json in Resources */,
 				A2D8272C29B86B290017445D /* school_data.json in Resources */,
 				A2D8272E29B87C750017445D /* profession.json in Resources */,
+				A2D8273229B88E9C0017445D /* province.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -361,7 +376,8 @@
 				A281043C29B20DD900C0B8E8 /* Me.swift in Sources */,
 				A2519B9C29A9F1FA0098DF3E /* Header.swift in Sources */,
 				A2519BA229AC8CD60098DF3E /* ReCommandModel.swift in Sources */,
-				A2D8270D29B851420017445D /* SchoolData.swift in Sources */,
+				A2D8270D29B851420017445D /* LocalData.swift in Sources */,
+				A2D8273629B89AB40017445D /* AddressView.swift in Sources */,
 				A2519B9229A9E59D0098DF3E /* ViewExtension.swift in Sources */,
 				A281043729B1EA6200C0B8E8 /* LikeMeModel.swift in Sources */,
 				A2D8270429B6F0070017445D /* NavigationViewExtension.swift in Sources */,
