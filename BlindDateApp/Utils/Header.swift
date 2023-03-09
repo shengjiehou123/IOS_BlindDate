@@ -31,5 +31,7 @@ public let keyWindow = UIApplication.shared.connectedScenes
                         .compactMap({ $0 })
                         .first?.windows.first
 
+public let kSafeBottom = keyWindow?.safeAreaInsets.bottom ?? 0
+
 public let myAppRootVC : UIViewController? = keyWindow?.rootViewController
 

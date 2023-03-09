@@ -21,6 +21,7 @@
 		A281043729B1EA6200C0B8E8 /* LikeMeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043629B1EA6200C0B8E8 /* LikeMeModel.swift */; };
 		A281043C29B20DD900C0B8E8 /* Me.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043B29B20DD900C0B8E8 /* Me.swift */; };
 		A281043F29B2FCAC00C0B8E8 /* EnterInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043E29B2FCAC00C0B8E8 /* EnterInfoView.swift */; };
+		A2A3A56729B9C0710069C574 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A3A56629B9C0710069C574 /* StringExtension.swift */; };
 		A2D8270429B6F0070017445D /* NavigationViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D8270329B6F0070017445D /* NavigationViewExtension.swift */; };
 		A2D8270729B748C40017445D /* CustomDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D8270629B748C40017445D /* CustomDatePicker.swift */; };
 		A2D8270929B784350017445D /* CustomPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D8270829B784350017445D /* CustomPicker.swift */; };
@@ -55,6 +56,7 @@
 		A281043629B1EA6200C0B8E8 /* LikeMeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMeModel.swift; sourceTree = "<group>"; };
 		A281043B29B20DD900C0B8E8 /* Me.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Me.swift; sourceTree = "<group>"; };
 		A281043E29B2FCAC00C0B8E8 /* EnterInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterInfoView.swift; sourceTree = "<group>"; };
+		A2A3A56629B9C0710069C574 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		A2D8270329B6F0070017445D /* NavigationViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewExtension.swift; sourceTree = "<group>"; };
 		A2D8270629B748C40017445D /* CustomDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDatePicker.swift; sourceTree = "<group>"; };
 		A2D8270829B784350017445D /* CustomPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPicker.swift; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 				A2D8270329B6F0070017445D /* NavigationViewExtension.swift */,
 				A2519B9329A9E5D40098DF3E /* LoadingView.swift */,
 				A281043029B197ED00C0B8E8 /* UIImageExtension.swift */,
+				A2A3A56629B9C0710069C574 /* StringExtension.swift */,
 				A2D8270C29B851420017445D /* LocalData.swift */,
 				A2519B9B29A9F1FA0098DF3E /* Header.swift */,
 			);
@@ -391,6 +394,7 @@
 				A281043129B197ED00C0B8E8 /* UIImageExtension.swift in Sources */,
 				A281043F29B2FCAC00C0B8E8 /* EnterInfoView.swift in Sources */,
 				A2E4E929299B517D000A46FE /* LoginView.swift in Sources */,
+				A2A3A56729B9C0710069C574 /* StringExtension.swift in Sources */,
 				A2E4E91D299B5104000A46FE /* ContentView.swift in Sources */,
 				A2519B9429A9E5D40098DF3E /* LoadingView.swift in Sources */,
 				A2E4E91B299B5104000A46FE /* BlindDateAppApp.swift in Sources */,

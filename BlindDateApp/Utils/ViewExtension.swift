@@ -7,9 +7,27 @@
 
 import SwiftUI
 
+struct ViewControllerHolder {
+    weak var value: UIViewController?
+}
+
+struct ViewControllerKey: EnvironmentKey {
+    static var defaultValue: ViewControllerHolder {
+        return ViewControllerHolder(value: UIApplication.shared.windows.filter {$0.isKeyWindow}.first?.rootViewController)
+
+    }
+}
+
+extension EnvironmentValues {
+    var viewController: UIViewController? {
+        get { return self[ViewControllerKey.self].value }
+        set { self[ViewControllerKey.self].value = newValue }
+    }
+}
 
 
 extension View{
+    
     func toast(isShow:Binding<Bool>,msg:String) -> some View{
         ZStack(alignment: .center) {
             self
@@ -22,6 +40,47 @@ extension View{
        }
     func hidenKeyBoard(){
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+    
+    func alertB<Content:View>(isPresented: Binding<Bool>, @ViewBuilder builder: () -> Content) -> some View {
+        let toPresent = UIHostingController(rootView: AnyView(EmptyView()))
+        toPresent.modalPresentationStyle = .overFullScreen
+        toPresent.modalTransitionStyle = .crossDissolve
+//        toPresent.rootView = AnyView(
+//            builder()
+//                .environment(\.viewController, toPresent)
+//        )
+        toPresent.view.backgroundColor = .clear
+       
+       
+        NotificationCenter.default.addObserver(forName: Notification.Name(rawValue: "dismissModal"), object: nil, queue: nil) { [weak toPresent] _ in
+            toPresent?.dismiss(animated: true, completion: nil)
+        }
+        if isPresented.wrappedValue {
+            toPresent.rootView = AnyView(builder())
+            let topVc = topViewController()
+            topVc?.present(toPresent, animated: false, completion: nil)
+        } else {
+            toPresent.dismiss(animated: true, completion: nil)
+        }
+       
+        return self
+    }
+    
+     func topViewController(baseVC: UIViewController? = UIApplication.shared.windows.filter {$0.isKeyWindow}.first?.rootViewController) -> UIViewController? {
+        
+        if let nav = baseVC as? UINavigationController {
+            return topViewController(baseVC: nav.visibleViewController)
+        }
+        if let tab = baseVC as? UITabBarController {
+            if let selected = tab.selectedViewController {
+                return topViewController(baseVC: selected)
+            }
+        }
+        if let presented = baseVC?.presentedViewController {
+            return topViewController(baseVC: presented)
+        }
+        return baseVC
     }
 }
 

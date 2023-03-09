@@ -7,6 +7,7 @@
 
 import SwiftUI
 import simd
+import SDWebImageSwiftUI
 
 
 struct EnterInfoView: View {
@@ -19,10 +20,8 @@ struct EnterInfoView: View {
     @State var schoolName : String = ""
     @State var job : String = ""
     @State var yearIncome : Int = 0
-    @State var workCity : String = ""
-    @State var workCityCode : Int = 0
-    @State var homeTown : String = ""
-    @State var homeTownCode : Int = 0
+    @State var workAddress : MyAddressModel = MyAddressModel()
+    @State var homeTownAddress : MyAddressModel = MyAddressModel()
     @State var loveGoal : Int = 0
     @State var minAge : Int = 0
     @State var maxAge : Int = 0
@@ -42,7 +41,7 @@ struct EnterInfoView: View {
                     GenderAgeHeightView(scrollIndex: $scrollIndex, gender: $gender, birthDay: $birthDay, height: $height).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(1)
                     EducationInfoView(scrollIndex: $scrollIndex, educationType: $educationType, schoolName: $schoolName).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(2)
                     MyJobView(scrollIndex: $scrollIndex, job: $job, yearIncome: $yearIncome).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(3)
-                    MyCityAndHomeTownView(scrollIndex: $scrollIndex, workCity: $workCity, workCityCode: $workCityCode, homeTown: $homeTown, homeTownCode: $homeTownCode).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(4)
+                    MyCityAndHomeTownView(scrollIndex: $scrollIndex,workAddress:$workAddress,homeTownAddress: $homeTownAddress).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(4)
                     LoveGoalView(scrollIndex: $scrollIndex, loveGoal: $loveGoal, minAge: $minAge, maxAge: $maxAge).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(5)
                     MyAvatarView(scrollIndex: $scrollIndex).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(6)
                     MyLifeView(scrollIndex: $scrollIndex).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(7)
@@ -285,13 +284,25 @@ struct LoveGoalView:View{
     }
 }
 
+class MyAddressModel:ObservableObject{
+   @Published  var provinceId : Int = 0
+   @Published  var provinceName : String = ""
+   @Published  var cityId : Int = 0
+   @Published  var cityName : String = ""
+   @Published  var areaId : Int = 0
+   @Published  var areaName : String = ""
+}
+
 //MARK: 工作居住地 我的家乡
 struct MyCityAndHomeTownView:View{
     @Binding var scrollIndex : Int
-    @Binding var workCity : String
-    @Binding var workCityCode : Int
-    @Binding var homeTown : String
-    @Binding var homeTownCode : Int
+    @Binding var workAddress : MyAddressModel
+    @Binding var homeTownAddress : MyAddressModel
+    @State var isShowWorkCity : Bool = false
+    @State var isShowHomeTown : Bool = false
+    @State var workAddressStr : String = "请选择"
+    @State var homeTownAddressStr : String = "请选择"
+    @Environment(\.viewController) private var viewControllerHolder: UIViewController?
     var body: some View{
         VStack(alignment: .leading, spacing: 20) {
             HStack{
@@ -301,14 +312,14 @@ struct MyCityAndHomeTownView:View{
             }
             Text("工作居住地")
                 .font(.system(size: 16, weight: .medium, design: .default))
-            PullDownButton(title:.constant("请选择"),choseHandle: { chose in
-                
+            PullDownButton(title:$workAddressStr,choseHandle: { chose in
+                isShowWorkCity = true
             }).frame(height:45)
             
             Text("我的家乡")
                 .font(.system(size: 16, weight: .medium, design: .default))
-            PullDownButton(title:.constant("请选择"),choseHandle: { chose in
-                
+            PullDownButton(title:$homeTownAddressStr,choseHandle: { chose in
+                isShowHomeTown = true
             }).frame(height:45)
             Spacer()
             BackBtnMergeNextBtnView(nextStepHandle: {
@@ -318,8 +329,21 @@ struct MyCityAndHomeTownView:View{
             })
             Spacer().frame(height:50)
             
+        }.alertB(isPresented: $isShowWorkCity) {
+            AddressView(show: $isShowWorkCity) { addressModel in
+                workAddress = addressModel
+                workAddressStr = addressModel.provinceName + " " + addressModel.cityName
+            }
+
         }
+            .alertB(isPresented: $isShowHomeTown) {
+                AddressView(show: $isShowHomeTown) { addressModel in
+                    homeTownAddress = addressModel
+                    homeTownAddressStr = addressModel.provinceName + " " + addressModel.cityName
+                }
+            }
     }
+        
 }
 
 struct MyJobView:View{
