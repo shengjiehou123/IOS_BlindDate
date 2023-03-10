@@ -218,7 +218,7 @@ struct MyLifeView:View{
                                 isPresentInterest = true
                             }else if model.title == "旅行照" {
                                 isPresentTravel = true
-                            }else if model.title == ""{
+                            }else if model.title == "其他"{
                                 isPresentOther = true
                             }
                           
@@ -254,7 +254,7 @@ struct MyLifeView:View{
             }
                 
         }
-            Spacer()
+//            Spacer()
             BackBtnMergeNextBtnView(nextStepHandle: {
                 scrollIndex = 8
             }, backSepHandle: {
