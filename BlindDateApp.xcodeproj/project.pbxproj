@@ -22,6 +22,7 @@
 		A281043C29B20DD900C0B8E8 /* Me.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043B29B20DD900C0B8E8 /* Me.swift */; };
 		A281043F29B2FCAC00C0B8E8 /* EnterInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043E29B2FCAC00C0B8E8 /* EnterInfoView.swift */; };
 		A2A3A56729B9C0710069C574 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A3A56629B9C0710069C574 /* StringExtension.swift */; };
+		A2A3A56929BAE1B80069C574 /* CustomPhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A3A56829BAE1B80069C574 /* CustomPhotoPicker.swift */; };
 		A2D8270429B6F0070017445D /* NavigationViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D8270329B6F0070017445D /* NavigationViewExtension.swift */; };
 		A2D8270729B748C40017445D /* CustomDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D8270629B748C40017445D /* CustomDatePicker.swift */; };
 		A2D8270929B784350017445D /* CustomPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D8270829B784350017445D /* CustomPicker.swift */; };
@@ -57,6 +58,7 @@
 		A281043B29B20DD900C0B8E8 /* Me.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Me.swift; sourceTree = "<group>"; };
 		A281043E29B2FCAC00C0B8E8 /* EnterInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterInfoView.swift; sourceTree = "<group>"; };
 		A2A3A56629B9C0710069C574 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
+		A2A3A56829BAE1B80069C574 /* CustomPhotoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPhotoPicker.swift; sourceTree = "<group>"; };
 		A2D8270329B6F0070017445D /* NavigationViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewExtension.swift; sourceTree = "<group>"; };
 		A2D8270629B748C40017445D /* CustomDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDatePicker.swift; sourceTree = "<group>"; };
 		A2D8270829B784350017445D /* CustomPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPicker.swift; sourceTree = "<group>"; };
@@ -180,6 +182,7 @@
 			children = (
 				A2D8270629B748C40017445D /* CustomDatePicker.swift */,
 				A2D8270829B784350017445D /* CustomPicker.swift */,
+				A2A3A56829BAE1B80069C574 /* CustomPhotoPicker.swift */,
 				A2D8273529B89AB40017445D /* AddressView.swift */,
 			);
 			path = CommonUI;
@@ -381,6 +384,7 @@
 				A2519BA229AC8CD60098DF3E /* ReCommandModel.swift in Sources */,
 				A2D8270D29B851420017445D /* LocalData.swift in Sources */,
 				A2D8273629B89AB40017445D /* AddressView.swift in Sources */,
+				A2A3A56929BAE1B80069C574 /* CustomPhotoPicker.swift in Sources */,
 				A2519B9229A9E59D0098DF3E /* ViewExtension.swift in Sources */,
 				A281043729B1EA6200C0B8E8 /* LikeMeModel.swift in Sources */,
 				A2D8270429B6F0070017445D /* NavigationViewExtension.swift in Sources */,

@@ -8,6 +8,9 @@
 import SwiftUI
 import simd
 import SDWebImageSwiftUI
+import PhotosUI
+import Combine
+
 
 
 struct EnterInfoView: View {
@@ -154,10 +157,45 @@ struct AboutUsDescView:View{
     }
 }
 
+class LifeModel:Identifiable{
+    var int : UUID = UUID()
+    var title : String = ""
+    var image : UIImage?
+    init(title:String,image:UIImage? = nil){
+        self.title = title
+        self.image = image
+    }
+}
+
 //MARK: 我的生活
 struct MyLifeView:View{
     @Binding var scrollIndex : Int
-    var  titles :[String] = ["生活照","兴趣照","旅行照","",""]
+    @State var isPresentLife : Bool = false
+    @State var pickerLifeResult : [UIImage] = []
+    
+    @State var isPresentInterest : Bool = false
+    @State var pickerInterestResult : [UIImage] = []
+    
+    @State var isPresentTravel : Bool = false
+    @State var pickerTravelResult : [UIImage] = []
+    
+    @State var isPresentOther : Bool = false
+    @State var pickerOtherResult : [UIImage] = []
+    
+    @State var dicImages : [String:[UIImage]] = [:]
+    
+    var config : PHPickerConfiguration{
+        var config = PHPickerConfiguration(photoLibrary: PHPhotoLibrary.shared())
+        config.filter = .images
+        config.selectionLimit = 6
+        return config
+    }
+    @State var  titles : [LifeModel] = [
+        LifeModel.init(title: "生活照", image: nil),
+        LifeModel.init(title: "兴趣照", image: nil),
+        LifeModel.init(title: "旅行照", image: nil),
+        LifeModel.init(title: "其他", image: nil),
+    ]
     var body: some View{
         VStack(alignment: .leading, spacing: 20) {
             HStack{
@@ -167,26 +205,55 @@ struct MyLifeView:View{
             }
             Text("选几张照片来展示生活中的我，\n照片越丰富，就越容易收到喜欢～")
                 .font(.system(size: 13))
+            ScrollView(.vertical,showsIndicators: false){
             let items = [GridItem(.flexible()),GridItem(.flexible()),GridItem(.flexible())]
+            
             LazyVGrid(columns: items,spacing: 10) {
-                ForEach(0..<titles.count){ index in
-                    let title = titles[index]
-                    Button {
-                        
-                    } label: {
-                        VStack(alignment: .center, spacing: 10){
-                            Image("add_photo").resizable().aspectRatio( contentMode: .fit)
-                                .frame(width: 48, height: 48, alignment: .leading)
-                            if title.count > 0 {
-                                Text(title)
-                                    .font(.system(size: 13))
-                                    .foregroundColor(.red)
+                ForEach(titles,id:\.id){ model in
+                    if model.image == nil {
+                        Button {
+                            if model.title == "生活照" {
+                                isPresentLife = true
+                            }else if model.title == "兴趣照" {
+                                isPresentInterest = true
+                            }else if model.title == "旅行照" {
+                                isPresentTravel = true
+                            }else if model.title == ""{
+                                isPresentOther = true
                             }
-                        }
-                    }.frame(maxWidth:.infinity,minHeight: 150, alignment: .center).background(RoundedRectangle(cornerRadius: 10).strokeBorder(.red,style: .init(lineWidth: 1, lineCap: .round, lineJoin: .round, miterLimit: 0, dash: [4,4], dashPhase: 2)))
-                        .background((Color.colorWithHexString(hex: "#FFF9F9"))).contentShape(Rectangle())
+                          
+                        } label: {
+                            VStack(alignment: .center, spacing: 10){
+                                Image("add_photo").resizable().aspectRatio( contentMode: .fit)
+                                    .frame(width: 48, height: 48, alignment: .leading)
+                                if model.title.count > 0 {
+                                    Text(model.title)
+                                        .font(.system(size: 13))
+                                        .foregroundColor(.red)
+                                }
+                            }
+                        }.contentShape(Rectangle()).frame(maxWidth:.infinity,minHeight: 150,maxHeight: 150, alignment: .center).background(RoundedRectangle(cornerRadius: 10).strokeBorder(.red,style: .init(lineWidth: 1, lineCap: .round, lineJoin: .round, miterLimit: 0, dash: [4,4], dashPhase: 2)))
+                            .background((Color.colorWithHexString(hex: "#FFF9F9")))
+                    }else{
+                        Image(uiImage:  model.image! ).resizable().aspectRatio( contentMode: .fill)
+                            .frame(maxWidth:.infinity,minHeight: 150, maxHeight: 150,alignment: .center).clipShape(RoundedRectangle(cornerRadius: 10)).onTapGesture {
+                                isPresentLife = true
+                            }
+                    }
+                   
+                    
                 }
+            }.sheet(isPresented:$isPresentLife) {
+                CustomPhotoPicker(configuration: config, pickerResult: $pickerLifeResult, isPresented: $isPresentLife)
+            }.sheet(isPresented:$isPresentInterest) {
+                CustomPhotoPicker(configuration: config, pickerResult: $pickerInterestResult, isPresented: $isPresentInterest)
+            }.sheet(isPresented:$isPresentTravel) {
+                CustomPhotoPicker(configuration: config, pickerResult: $pickerTravelResult, isPresented: $isPresentTravel)
+            }.sheet(isPresented:$isPresentOther) {
+                CustomPhotoPicker(configuration: config, pickerResult: $pickerOtherResult, isPresented: $isPresentOther)
             }
+                
+        }
             Spacer()
             BackBtnMergeNextBtnView(nextStepHandle: {
                 scrollIndex = 8
@@ -195,12 +262,74 @@ struct MyLifeView:View{
             })
             Spacer().frame(height:50)
 
+        }.onAppear {
+           
+         
+        }.onChange(of: pickerLifeResult) { newValue in
+            changeTitles()
+        }.onChange(of: pickerInterestResult) { newValue in
+            changeTitles()
+        }.onChange(of: pickerTravelResult) { newValue in
+            changeTitles()
+        }.onChange(of: pickerOtherResult) { newValue in
+            changeTitles()
+        }
+    }
+    
+    func changeTitles(){
+        titles.removeAll()
+        if pickerLifeResult.count > 0 {
+            for item in pickerLifeResult {
+                let model = LifeModel(title: "生活照", image: item)
+                titles.append(model)
+            }
+        }else{
+            let model = LifeModel(title: "生活照", image: nil)
+            titles.append(model)
+        }
+        
+        if pickerInterestResult.count > 0 {
+            for item in pickerInterestResult {
+                let model = LifeModel(title: "兴趣照", image: item)
+                titles.append(model)
+            }
+        }else{
+            let model = LifeModel(title: "兴趣照", image: nil)
+            titles.append(model)
+        }
+        
+        if pickerTravelResult.count > 0 {
+            for item in pickerTravelResult {
+                let model = LifeModel(title: "旅行照", image: item)
+                titles.append(model)
+            }
+        }else{
+            let model = LifeModel(title: "旅行照", image: nil)
+            titles.append(model)
+        }
+        
+        if pickerOtherResult.count > 0 {
+            for item in pickerOtherResult {
+                let model = LifeModel(title: "其他", image: item)
+                titles.append(model)
+            }
+        }else{
+            let model = LifeModel(title: "其他", image: nil)
+            titles.append(model)
         }
     }
 }
 
 struct MyAvatarView:View{
     @Binding var scrollIndex : Int
+    @State var isPresentPhotoAlbum : Bool = false
+    @State var pickerResult: [UIImage] = []
+    var config: PHPickerConfiguration  {
+       var config = PHPickerConfiguration(photoLibrary: PHPhotoLibrary.shared())
+        config.filter = .images //videos, livePhotos...
+        config.selectionLimit = 1 //0 => any, set 1-2-3 for har limit
+        return config
+    }
     var body: some View{
         VStack(alignment: .leading, spacing: 20) {
             HStack{
@@ -210,18 +339,28 @@ struct MyAvatarView:View{
             }
             Text("选张好看的照片做头像，记得露脸哦～")
                 .font(.system(size: 13))
-            Button {
-                
-            } label: {
-                VStack(alignment: .center, spacing: 10){
-                    Image("add_photo").resizable().aspectRatio( contentMode: .fit)
-                        .frame(width: 48, height: 48, alignment: .leading)
-                    Text("上传形象照")
-                        .font(.system(size: 13))
-                        .foregroundColor(.red)
-                }
-            }.frame(width: screenWidth - 40, height: screenWidth - 40, alignment: .center).background(RoundedRectangle(cornerRadius: 10).strokeBorder(.red,style: .init(lineWidth: 1, lineCap: .round, lineJoin: .round, miterLimit: 0, dash: [4,4], dashPhase: 2)))
-                .background((Color.colorWithHexString(hex: "#FFF9F9"))).contentShape(Rectangle())
+           
+            if pickerResult.count > 0 {
+                let uiImage = pickerResult.last!
+                Image(uiImage: uiImage).resizable().aspectRatio( contentMode: .fill).background(Color.colorWithHexString(hex: "#FFF9F9"))
+                    .frame(width: screenWidth - 40, height: screenWidth - 40, alignment: .center).clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous)).onTapGesture {
+                        isPresentPhotoAlbum = true
+                    }
+            }else{
+                Button {
+                    isPresentPhotoAlbum.toggle()
+                } label: {
+                    VStack(alignment: .center, spacing: 10){
+                        Image("add_photo").resizable().aspectRatio( contentMode: .fit)
+                            .frame(width: 48, height: 48, alignment: .leading)
+                        Text("上传形象照")
+                            .font(.system(size: 13))
+                            .foregroundColor(.red)
+                    }
+                }.frame(width: screenWidth - 40, height: screenWidth - 40, alignment: .center).background(RoundedRectangle(cornerRadius: 10).strokeBorder(.red,style: .init(lineWidth: 1, lineCap: .round, lineJoin: .round, miterLimit: 0, dash: [4,4], dashPhase: 2)))
+                    .background((Color.colorWithHexString(hex: "#FFF9F9"))).contentShape(Rectangle())
+            }
+
             Spacer()
             BackBtnMergeNextBtnView(nextStepHandle: {
                 scrollIndex = 7
@@ -229,7 +368,10 @@ struct MyAvatarView:View{
                 scrollIndex = 5
             })
             Spacer().frame(height:50)
-
+        }.sheet(isPresented: $isPresentPhotoAlbum) {
+            
+        } content: {
+            CustomPhotoPicker(configuration: config, pickerResult: $pickerResult, isPresented: $isPresentPhotoAlbum)
         }
     }
 }
@@ -239,7 +381,11 @@ struct LoveGoalView:View{
     @Binding var loveGoal : Int
     @Binding var minAge : Int
     @Binding var maxAge : Int
+    @State var minAgeStr : String = "最小年龄"
+    @State var maxAgeStr : String = "最大年龄"
     @State var selectedIndex : Int = 0
+    @State var showMinAgePicker : Bool = false
+    @State var showMaxAgePicker : Bool = false
     var titles : [String] = ["短期内想结婚","认真谈场恋爱，合适就考虑结婚","先认真谈场恋爱再说","没考虑清楚"]
     var body: some View{
         VStack(alignment: .leading, spacing: 20) {
@@ -263,13 +409,13 @@ struct LoveGoalView:View{
             Text("接受对方的年龄")
                 .font(.system(size: 16, weight: .medium, design: .default))
             HStack(alignment: .center, spacing: 10){
-                PullDownButton(title:.constant("最小年龄")) { chose in
-                    
+                PullDownButton(title:$minAgeStr) { chose in
+                    showMinAgePicker = true
                 }
                 Text("—")
                     .foregroundColor(.gray)
-                PullDownButton(title:.constant("最大年龄")) { chose in
-                    
+                PullDownButton(title:$maxAgeStr) { chose in
+                    showMaxAgePicker = true
                 }
             }
             
@@ -280,7 +426,25 @@ struct LoveGoalView:View{
                 scrollIndex = 4
             })
             Spacer().frame(height:50)
+        }.alertB(isPresented: $showMinAgePicker) {
+            CustomPicker(show: $showMinAgePicker, selection: $minAge, contentArr: ageArr()) { selectedIndex in
+                let ageArr = ageArr()
+                minAgeStr = ageArr[selectedIndex]
+            }
+        }.alertB(isPresented: $showMaxAgePicker) {
+            CustomPicker(show: $showMaxAgePicker, selection: $maxAge, contentArr: ageArr()) { selectedIndex in
+                let ageArr = ageArr()
+                maxAgeStr = ageArr[selectedIndex]
+            }
         }
+    }
+    
+    func ageArr() -> [String]{
+        var tempArr : [String] = []
+        for index in 18...70{
+            tempArr.append("\(index)岁")
+        }
+        return tempArr
     }
 }
 
@@ -354,7 +518,7 @@ struct MyJobView:View{
     @State var showYearIncomePicker : Bool = false
     @State var yearIncomeStr : String = "请选择"
     var body: some View{
-        ZStack(alignment: .bottom) {
+        
             VStack(alignment: .leading, spacing: 20) {
                 HStack{
                     Text("我的工作")
@@ -404,12 +568,14 @@ struct MyJobView:View{
                 
             }.ignoresSafeArea(.keyboard, edges: .bottom).onTapGesture {
                 hidenKeyBoard()
+            }.alertB(isPresented: $showYearIncomePicker) {
+                CustomPicker(show: $showYearIncomePicker, selection: $yearIncome, contentArr:getYearIncomeArr() ) { selectedIndex in
+                    let incomeArr = getYearIncomeArr()
+                    yearIncomeStr = incomeArr[selectedIndex]
+                }
             }
-            CustomPicker(show: $showYearIncomePicker, selection: $yearIncome, contentArr:getYearIncomeArr() ) { selectedIndex in
-                let incomeArr = getYearIncomeArr()
-                yearIncomeStr = incomeArr[selectedIndex]
-            }
-        }
+            
+        
     }
     
     func getYearIncomeArr() -> [String]{
@@ -427,7 +593,7 @@ struct EducationInfoView:View{
     @State var educationStr : String = "请选择"
     @State var showSchoolNameList : Bool = false
     var body: some View{
-        ZStack(alignment: .bottom) {
+        
             VStack(alignment: .leading, spacing: 20) {
                 HStack{
                     Text("教育信息")
@@ -472,13 +638,13 @@ struct EducationInfoView:View{
                     scrollIndex = 1
                 })
                 Spacer().frame(height:50)
-            }
-            CustomPicker(show: $showPicker, selection: $educationType, contentArr: educationArr) { selectedIndex in
-                educationStr = educationArr[selectedIndex]
-            }
-        }.ignoresSafeArea(.keyboard, edges: .bottom).onTapGesture {
+            }.ignoresSafeArea(.keyboard, edges: .bottom).onTapGesture {
             hidenKeyBoard()
-        }
+            }.alertB(isPresented:$showPicker) {
+                CustomPicker(show: $showPicker, selection: $educationType, contentArr: educationArr) { selectedIndex in
+                    educationStr = educationArr[selectedIndex]
+                }
+            }
     }
 }
 
@@ -542,7 +708,7 @@ struct GenderAgeHeightView:View{
     @State var heightStr : String = "请选择身高"
     @State var heightSelection : Int = 0
     var body: some View{
-        ZStack(alignment: .bottom) {
+        
             VStack(alignment: .leading, spacing: 20) {
                 HStack{
                     Text("基本信息")
@@ -572,20 +738,22 @@ struct GenderAgeHeightView:View{
                 }
                 
                 Spacer().frame(height:50)
+            }.alertB(isPresented:$isShowDatePicker , builder: {
+                let minDate = Date().addYear(year: -70)
+                let maxDate = Date().addYear(year: -18)
+                CustomDatePicker(show:$isShowDatePicker,date: maxDate, selectionDate: $birthDayDate, minDate: minDate, maxDate: maxDate, displayedComponents: [.date]) { seletedDate in
+                    birthDayStr = birthDayDate.stringFormat(format: "yyyy年M月d日")
+                }
+            })
+            .alertB(isPresented: $isShowHeightPicker) {
+                CustomPicker(show: $isShowHeightPicker, selection: $heightSelection, contentArr: getHeightArr()) { selectedIndex in
+                    let tempArr = getHeightArr()
+                    heightStr = tempArr[selectedIndex]
+                }
             }
-            let minDate = Date().addYear(year: -70)
-            let maxDate = Date().addYear(year: -18)
-            CustomDatePicker(show:$isShowDatePicker,date: maxDate, selectionDate: $birthDayDate, minDate: minDate, maxDate: maxDate, displayedComponents: [.date]) { seletedDate in
-                birthDayStr = birthDayDate.stringFormat(format: "yyyy年M月d日")
-            }
-//                .onChange(of: birthDayDate) { newValue in
-//                birthDayStr = birthDayDate.stringFormat(format: "yyyy年M月d日")
-//            }
-            CustomPicker(show: $isShowHeightPicker, selection: $heightSelection, contentArr: getHeightArr()) { selectedIndex in
-                let tempArr = getHeightArr()
-                heightStr = tempArr[selectedIndex]
-            }
-        }
+            
+
+        
     }
     
     func getHeightArr() -> [String]{

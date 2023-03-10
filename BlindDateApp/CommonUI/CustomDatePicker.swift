@@ -18,12 +18,15 @@ struct CustomDatePicker: View {
     @State  var showPicker : Bool = false
     var body: some View {
         if show {
-            VStack(alignment: .center, spacing: 0) {
+            ZStack(alignment: .bottomLeading) {
+             Color.black.opacity(0.3).frame(maxWidth:.infinity,maxHeight: .infinity)
+             VStack(alignment: .center, spacing: 0) {
                 HStack(alignment: .center, spacing: 0) {
                     Text("取消").foregroundColor(.gray).padding(.leading,15).onTapGesture {
                         showPicker = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                             show = false
+                            topViewController()?.dismiss(animated: true, completion: nil)
                         }
                     }
                     Spacer()
@@ -33,17 +36,21 @@ struct CustomDatePicker: View {
                         selectedDate(selectionDate)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                             show = false
+                            topViewController()?.dismiss(animated: true, completion: nil)
                         }
                     }
                 }.frame(height:45)
-                DatePicker("", selection: $date,in: minDate...maxDate,displayedComponents: displayedComponents)
-                    .datePickerStyle(WheelDatePickerStyle())
-                    .environment(\.locale, Locale(identifier: "zh-CN"))
-                    .frame(height:200)
-            }.background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3"))).offset(y:showPicker ? 0 : 300).animation(.linear(duration: 0.25), value: showPicker).onAppear {
+                 DatePicker("",selection: $date, in: minDate...maxDate, displayedComponents: displayedComponents).labelsHidden().datePickerStyle(WheelDatePickerStyle())
+                     .environment(\.locale, Locale(identifier: "zh-CN"))
+                     .frame(maxWidth:.infinity,maxHeight:200).background(Color.white)
+                 
+//                 DatePicker(selection: $date,in: minDate...maxDate,displayedComponents: displayedComponents)
+                   
+            }.background(RoundedRectangle(cornerRadius: 5).fill(Color.white)).offset(y:showPicker ? 0 : 300).animation(.linear(duration: 0.25), value: showPicker).onAppear {
                 showPicker = show
                 date = selectionDate
             }
+          }.edgesIgnoringSafeArea(.top)
         }
     }
 }

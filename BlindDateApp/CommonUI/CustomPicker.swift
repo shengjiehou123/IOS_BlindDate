@@ -16,10 +16,13 @@ struct CustomPicker: View {
     var selectedIndex : (_ selectedIndex:Int) ->Void
     var body: some View {
         if show {
+            ZStack(alignment: .bottomLeading) {
+                Color.black.opacity(0.3).frame(maxWidth:.infinity,maxHeight: .infinity)
             VStack(alignment: .center, spacing: 0) {
                 HStack(alignment: .center, spacing: 0) {
                     Text("取消").foregroundColor(.gray).padding(.leading,15).onTapGesture {
                         showPicker = false
+                        self.topViewController()?.dismiss(animated: true, completion: nil)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                             show = false
                         }
@@ -28,6 +31,7 @@ struct CustomPicker: View {
                     Text("确定").foregroundColor(.blue).padding(.trailing,15).onTapGesture {
                         selection = tempSelection
                         selectedIndex(selection)
+                        self.topViewController()?.dismiss(animated: true, completion: nil)
                         showPicker = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                             show = false
@@ -41,11 +45,12 @@ struct CustomPicker: View {
                         Text(content)
                     }
                 }.pickerStyle(WheelPickerStyle()).frame(height:200)
-            }.background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3"))).offset(y:showPicker ? 0 : 300).animation(.linear(duration: 0.25), value: showPicker).onAppear {
+            }.background(RoundedRectangle(cornerRadius: 5).fill(Color.white)).offset(y:showPicker ? 0 : 300).animation(.linear(duration: 0.25), value: showPicker).onAppear {
                 showPicker = show
                 tempSelection = selection
             }
-        }
+            }.edgesIgnoringSafeArea(.top)
+     }
     }
 }
 

@@ -84,18 +84,8 @@ struct ContentView: View {
 //                }
 //            }
 //        }
-       
-//        TabView{
-//
-//                .tabItem {
-//                    Label{
-//                        Text("首页")
-//                    } icon: {
-//                        Image("")
-//                    }
-//
-//                }
-//        }
+//       
+        
     }
 }
 
