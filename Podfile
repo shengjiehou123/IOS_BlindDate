@@ -13,5 +13,6 @@ target 'BlindDateApp' do
   pod 'HandyJSON', '~> 5.0.2'
   pod 'JFHeroBrowser', '1.2.0'
   pod 'Introspect'
+  pod 'TXIMSDK_Plus_Swift_iOS'
 
 end
