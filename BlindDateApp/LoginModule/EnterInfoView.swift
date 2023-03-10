@@ -236,9 +236,7 @@ struct MyLifeView:View{
                             .background((Color.colorWithHexString(hex: "#FFF9F9")))
                     }else{
                         Image(uiImage:  model.image! ).resizable().aspectRatio( contentMode: .fill)
-                            .frame(maxWidth:.infinity,minHeight: 150, maxHeight: 150,alignment: .center).clipShape(RoundedRectangle(cornerRadius: 10)).onTapGesture {
-                                isPresentLife = true
-                            }
+                            .frame(maxWidth:.infinity,minHeight: 150, maxHeight: 150,alignment: .center).clipShape(RoundedRectangle(cornerRadius: 10))
                     }
                    
                     
