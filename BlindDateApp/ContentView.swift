@@ -10,6 +10,7 @@ import JFHeroBrowser
 
 struct ContentView: View {
     init(){
+        UserCenter.shared.setDefaultData()
         JFHeroBrowserGlobalConfig.default.networkImageProvider = HeroNetworkImageProvider.shared
         let navigationBar = UINavigationBar.appearance()
 
@@ -46,45 +47,44 @@ struct ContentView: View {
     }
     @ObservedObject var userCenter : UserCenter = UserCenter.shared
     var body: some View {
-        LoginView()
-//        if !userCenter.isLogin {
-//            LoginView()
-//        }else{
-//            TabView{
-//                RecommandList().tabItem {
-//                    Label {
-//                        Text("推荐")
-//                    } icon: {
-//                        Image(systemName: "arkit").foregroundColor(.red)
-//                    }
-//                }
-//
-//                LikeMe().tabItem {
-//                    Label {
-//                        Text("喜欢")
-//                    } icon: {
-//                        Image(systemName: "arkit").foregroundColor(.red)
-//                    }
-//                }
-//
-//                Text("消息").tabItem {
-//                    Label {
-//                        Text("消息")
-//                    } icon: {
-//                        Image(systemName: "arkit").foregroundColor(.red)
-//                    }
-//                }
-//
-//                Me().tabItem {
-//                    Label {
-//                        Text("我的")
-//                    } icon: {
-//                        Image(systemName: "arkit").foregroundColor(.red)
-//                    }
-//                }
-//            }
-//        }
-//       
+        if !userCenter.isLogin {
+            LoginView()
+        }else{
+            TabView{
+                RecommandList().tabItem {
+                    Label {
+                        Text("推荐")
+                    } icon: {
+                        Image(systemName: "arkit").foregroundColor(.red)
+                    }
+                }
+
+                LikeMe().tabItem {
+                    Label {
+                        Text("喜欢")
+                    } icon: {
+                        Image(systemName: "arkit").foregroundColor(.red)
+                    }
+                }
+
+                MessageView().tabItem {
+                    Label {
+                        Text("消息")
+                    } icon: {
+                        Image(systemName: "arkit").foregroundColor(.red)
+                    }
+                }
+
+                Me().tabItem {
+                    Label {
+                        Text("我的")
+                    } icon: {
+                        Image(systemName: "arkit").foregroundColor(.red)
+                    }
+                }
+            }
+        }
+       
         
     }
 }

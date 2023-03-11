@@ -11,15 +11,68 @@ class UserCenter : NSObject,ObservableObject{
     static let  shared = UserCenter()
     @Published var token : String = ""
     @Published var isLogin : Bool = false
-    override init() {
-        super.init()
+    @Published var userInfoModel : ReCommandModel? = nil
+    func setDefaultData(){
         token = readToken()
         if !token.isEmpty {
             isLogin = true
         }else{
             isLogin = false
         }
+        let model = readUserInfoModel()
+        if model == nil {
+            requestUserInfo()
+        }
     }
+    
+    func requestUserInfo(){
+        NW.request(urlStr: "get/user/info", method: .post, parameters: nil) { response in
+            let dic = response.data
+            guard let model = ReCommandModel.deserialize(from: dic, designatedPath: nil) else{
+                return
+            }
+            self.userInfoModel = model
+            log.info("nickName:\(model.nickName)")
+        } failedHandler: { response in
+            
+        }
+
+    }
+    
+    func saveUserInfoModel(userInfoModel:ReCommandModel?){
+        if userInfoModel == nil {
+            return
+        }
+        
+        let path = getDocumentDir().appendingPathComponent("userInfo")
+        do{
+            let data = try  NSKeyedArchiver.archivedData(withRootObject: userInfoModel!, requiringSecureCoding: true)
+            try data.write(to: path)
+            self.userInfoModel = userInfoModel!
+        } catch{
+            log.info("\(error)")
+        }
+    }
+    
+    func readUserInfoModel() ->ReCommandModel?{
+        let path = getDocumentDir().appendingPathComponent("userInfo")
+        let exist = FileManager.default.fileExists(atPath: path.path)
+        if !exist {
+            return nil
+        }
+        
+        do{
+            let data = try Data.init(contentsOf: path)
+            let userInfoModel = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? ReCommandModel ?? nil
+             return userInfoModel
+        }catch{
+            log.info("\(error)")
+        }
+       return nil
+    }
+    
+    
+    
     func saveToken(token:String){
         if token.isEmpty {
             return
@@ -30,6 +83,7 @@ class UserCenter : NSObject,ObservableObject{
             try data.write(to: path)
             self.token = token
             isLogin = true
+            requestUserInfo()
         } catch{
             log.info("\(error)")
         }

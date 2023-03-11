@@ -6,7 +6,6 @@ target 'BlindDateApp' do
   use_frameworks!
 
   # Pods for BlindDateApp
-
   pod 'Alamofire'
   pod 'XCGLogger', '~> 7.0.1'
   pod 'SDWebImageSwiftUI'
