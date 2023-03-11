@@ -70,7 +70,7 @@ struct MessageView: View {
         if let model =  UserCenter.shared.userInfoModel{
             let userId = "\(model.id)"
             TUILogin.login(1400794630, userID: userId, userSig: userSig) {
-//                requestSendMsg()
+                requestSendMsg()
             } fail: { code, desc in
                 log.info("ailure, code:\(code), desc:\(String(describing: desc))")
             }
