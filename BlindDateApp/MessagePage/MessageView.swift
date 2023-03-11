@@ -46,7 +46,7 @@ struct MessageView: View {
                         Text("消息")
                     }
                 }).onAppear {
-                    requestChatUserSig()
+                   
                 }
             }
            
@@ -66,49 +66,7 @@ struct MessageView: View {
 //        V2TIMManager.shared.addAdvancedMsgListener(listener: msgListener)
     }
     
-    func loginTIM(){
-        if let model =  UserCenter.shared.userInfoModel{
-            let userId = "\(model.id)"
-            TUILogin.login(1400794630, userID: userId, userSig: userSig) {
-                requestSendMsg()
-            } fail: { code, desc in
-                log.info("ailure, code:\(code), desc:\(String(describing: desc))")
-            }
-            
-          
-// V2TIMManager.shared.login(userID: userId, userSig: userSig) {
-////                requestSendMsg()
-//            } fail: { code, desc in
-//                // 如果返回以下错误码，表示使用 UserSig 已过期，请您使用新签发的 UserSig 进行再次登录。
-//                   // 1. ERR_USER_SIG_EXPIRED（6206）
-//                   // 2. ERR_SVR_ACCOUNT_USERSIG_EXPIRED（70001）
-//                   // 注意：其他的错误码，请不要在这里调用登录接口，避免 IM SDK 登录进入死循环
-////                log.info("failure, code:%d, desc:%@", code, desc)
-//                log.info("ailure, code:\(code), desc:\(desc)")
-//            }
-            
-
-        }else{
-            UserCenter.shared.requestUserInfo()
-        }
-       
-    }
-    
-    func requestChatUserSig(){
-        if !UserCenter.shared.isLogin {
-            return
-        }
-        NW.request(urlStr: "chat/user/sig", method: .post, parameters: nil) { response in
-            guard let sig = response.data["sig"] as? String else{
-                return
-            }
-           userSig = sig
-           loginTIM()
-        } failedHandler: { response in
-            
-        }
-    }
-    
+   
     func requestSendMsg(){
         let param = ["fromAccount":68,"toAccount":69,"msgType":"text","msgContent":["Text":"hello"]] as [String : Any]
         NW.request(urlStr: "send/single/message", method: .post, parameters:param) { response in
