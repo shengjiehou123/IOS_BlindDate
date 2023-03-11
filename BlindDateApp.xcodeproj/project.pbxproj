@@ -61,6 +61,7 @@
 		A2A3A56629B9C0710069C574 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		A2A3A56829BAE1B80069C574 /* CustomPhotoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPhotoPicker.swift; sourceTree = "<group>"; };
 		A2A3A56B29BB8B8C0069C574 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
+		A2A3A56D29BC6F570069C574 /* BlindDateApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BlindDateApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		A2D8270329B6F0070017445D /* NavigationViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewExtension.swift; sourceTree = "<group>"; };
 		A2D8270629B748C40017445D /* CustomDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDatePicker.swift; sourceTree = "<group>"; };
 		A2D8270829B784350017445D /* CustomPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPicker.swift; sourceTree = "<group>"; };
@@ -236,6 +237,7 @@
 				A2D8272F29B88E9C0017445D /* city.json */,
 				A2D8273329B8971A0017445D /* area.json */,
 				A2D8273029B88E9C0017445D /* province.json */,
+				A2A3A56D29BC6F570069C574 /* BlindDateApp-Bridging-Header.h */,
 				A2D8270529B748B10017445D /* CommonUI */,
 				A2519B9029A9E5850098DF3E /* Utils */,
 				A2E4E920299B5107000A46FE /* Preview Content */,
@@ -546,7 +548,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"BlindDateApp/Preview Content\"";
-				DEVELOPMENT_TEAM = KAM5B3W9B2;
+				DEVELOPMENT_TEAM = GT49X56UC2;
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -566,6 +568,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.poolin.landmarks.BlindDateApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "BlindDateApp/BlindDateApp-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -581,7 +584,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"BlindDateApp/Preview Content\"";
-				DEVELOPMENT_TEAM = KAM5B3W9B2;
+				DEVELOPMENT_TEAM = GT49X56UC2;
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -601,6 +604,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.poolin.landmarks.BlindDateApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "BlindDateApp/BlindDateApp-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
