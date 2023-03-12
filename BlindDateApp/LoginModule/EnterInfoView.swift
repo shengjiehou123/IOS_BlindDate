@@ -29,7 +29,6 @@ struct EnterInfoView: View {
     @State var minAge : Int = 0
     @State var maxAge : Int = 0
     @State var aboutUsDesc :String = ""
-    var tagTitleArr : [String] = ["选出最符合我的标签"]//,"我的理想中的他是？"
     @State var tagArr : [String] = []
     @State var tagOtherArr : [String] = []
     
@@ -52,7 +51,7 @@ struct EnterInfoView: View {
                     LoveGoalView(scrollIndex: $scrollIndex, loveGoal: $loveGoal, minAge: $minAge, maxAge: $maxAge).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(5)
                     MyAvatarView(scrollIndex: $scrollIndex).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(6)
                     MyLifeView(scrollIndex: $scrollIndex).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(7)
-                    AboutUsDescView(scrollIndex: $scrollIndex, aboutUsDesc: $aboutUsDesc).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(8)
+                    AboutUsDescView(scrollIndex: $scrollIndex, aboutUsDesc: $aboutUsDesc).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(8).ignoresSafeArea(.keyboard, edges: .bottom)
                     Group{
 //                        ForEach(0..<tagTitleArr.count){ index in
 //                            let title = tagTitleArr[index]
@@ -132,8 +131,8 @@ struct RealNameVerifyView:View{
 struct PersonTagView:View{
     @Binding var scrollIndex : Int
     var index : Int
-    @Binding var tagArr : [String] = []
-    @Binding var selectTagArr : [String] = []
+    @Binding var tagArr : [String]
+    @Binding var selectTagArr : [String]
     var title : String
     var body: some View{
         VStack(alignment: .leading, spacing: 20) {
@@ -196,11 +195,14 @@ struct AboutUsDescView:View{
             }
             Text("说说你是什么样的人?")
                 .font(.system(size: 16, weight: .medium, design: .default))
-            TextEditor(text: $aboutUsDesc).foregroundColor(.red).lineSpacing(5)
-                .padding()
-                .background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3"))).frame(height:200).introspectTextView { textView in
-                    textView.backgroundColor = .colorWithHexString(hex: "#F3F3F3")
-                }
+            ZStack(alignment:.topLeft){
+                TextEditor(text: $aboutUsDesc).foregroundColor(.red).lineSpacing(5)
+                    .padding()
+                    .background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3"))).frame(height:200).introspectTextView { textView in
+                        textView.backgroundColor = .colorWithHexString(hex: "#F3F3F3")
+                    }
+                Text("请输入至少10字").font(.system(size:13)).foregroundColor(.colorWithHexString(hex: "#999999"))
+            }
             Text("示例：我是典型的白羊座，性格热情开朗喜欢认识新朋友，也比较喜欢小动物，偶尔多愁善感，容易对一些细节感动。")
                 .font(.system(size: 14))
                 .foregroundColor(.colorWithHexString(hex: "#918FC1"))
@@ -214,6 +216,8 @@ struct AboutUsDescView:View{
             })
             Spacer().frame(height:50)
             
+        }.ignoresSafeArea(.keyboard, edges: .bottom).onTapGesture {
+            hidenKeyBoard()
         }
     }
 }
