@@ -41,14 +41,14 @@ struct LoginView: View {
                     
                 }
                 Spacer().frame(height:30)
-//                NavigationLink {
-//                    EnterInfoView()
-//                } label: {
-//                    Text("Login").foregroundColor(.white).frame(maxWidth:.infinity,maxHeight: 44).background(RoundedRectangle(cornerRadius: 5).fill(.blue)).padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-//                }.buttonStyle(PlainButtonStyle())
-                Text("Login").foregroundColor(.white).frame(maxWidth:.infinity,maxHeight: 44).background(RoundedRectangle(cornerRadius: 5).fill(.blue)).padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)).onTapGesture {
-                    requestLogin()
-                }
+                NavigationLink {
+                    EnterInfoView()
+                } label: {
+                    Text("Login").foregroundColor(.white).frame(maxWidth:.infinity,maxHeight: 44).background(RoundedRectangle(cornerRadius: 5).fill(.blue)).padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
+                }.buttonStyle(PlainButtonStyle())
+//                Text("Login").foregroundColor(.white).frame(maxWidth:.infinity,maxHeight: 44).background(RoundedRectangle(cornerRadius: 5).fill(.blue)).padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)).onTapGesture {
+//                    requestLogin()
+//                }
                 Spacer()
             }).navigationBarHidden(true).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor))
         }

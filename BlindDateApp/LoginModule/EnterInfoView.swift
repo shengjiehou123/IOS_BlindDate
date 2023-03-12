@@ -29,9 +29,13 @@ struct EnterInfoView: View {
     @State var minAge : Int = 0
     @State var maxAge : Int = 0
     @State var aboutUsDesc :String = ""
-    var tagTitleArr : [String] = ["选出最符合我的标签","我的理想中的他是？"]
+    var tagTitleArr : [String] = ["选出最符合我的标签"]//,"我的理想中的他是？"
     @State var tagArr : [String] = []
     @State var tagOtherArr : [String] = []
+    
+    @State var selectTagArr : [String] = []
+    @State var selectTagOtherArr : [String] = []
+    
     @State var name : String = ""
     @State var id : String = ""
     
@@ -50,18 +54,45 @@ struct EnterInfoView: View {
                     MyLifeView(scrollIndex: $scrollIndex).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(7)
                     AboutUsDescView(scrollIndex: $scrollIndex, aboutUsDesc: $aboutUsDesc).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(8)
                     Group{
-                        ForEach(0..<tagTitleArr.count){ index in
-                            let title = tagTitleArr[index]
-                            PersonTagView(scrollIndex: $scrollIndex, index: index,tagArr: $tagArr,title: title).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(9+index)
-                        }
+//                        ForEach(0..<tagTitleArr.count){ index in
+//                            let title = tagTitleArr[index]
+//
+//                        }
+                        PersonTagView(scrollIndex: $scrollIndex, index: 0,tagArr:$tagArr,selectTagArr:$selectTagArr,title: "选出最符合我的标签").padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(9)
+                        PersonTagView(scrollIndex: $scrollIndex, index: 1,tagArr:$tagOtherArr,selectTagArr:$selectTagOtherArr,title: "我的理想中的他是？").padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(10)
                         RealNameVerifyView(name: $name, id: $id).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(11)
                     }
                 }.frame(width: screenWidth, alignment: .leading).offset(x:-screenWidth * CGFloat(scrollIndex))
-            .animation(.linear(duration:0.25), value: scrollIndex).modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: ""))
+            .animation(.linear(duration:0.25), value: scrollIndex).modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "")).onAppear {
+                requestMyTagArr()
+                requestLikePersonTagArr()
+            }
                     
               
         }
         //.padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20))
+    
+    func requestMyTagArr(){
+        NW.request(urlStr: "my/tag/list", method: .post, parameters: nil) { response in
+            if let tags = response.data["tag"] as? [String]{
+               tagArr = tags
+            }
+        } failedHandler: { response in
+            
+        }
+
+    }
+    
+    func requestLikePersonTagArr(){
+        NW.request(urlStr: "like/person/tag/list", method: .post, parameters: nil) { response in
+            if let tags = response.data["tag"] as? [String]{
+               tagOtherArr = tags
+            }
+        } failedHandler: { response in
+            
+        }
+
+    }
        
     
 }
@@ -101,7 +132,8 @@ struct RealNameVerifyView:View{
 struct PersonTagView:View{
     @Binding var scrollIndex : Int
     var index : Int
-    @Binding var tagArr : [String]
+    @Binding var tagArr : [String] = []
+    @Binding var selectTagArr : [String] = []
     var title : String
     var body: some View{
         VStack(alignment: .leading, spacing: 20) {
@@ -112,7 +144,35 @@ struct PersonTagView:View{
             }
             Text("最少3个，牵手会自动帮你生成自我介绍")
                 .font(.system(size: 16))
-            Spacer()
+            ScrollView(.vertical,showsIndicators: false){
+                VStack(alignment: .leading, spacing: 20){
+                    ForEach(0..<tagArr.count,id:\.self){ index in
+                        if index % 2 == 1{
+                            EmptyView()
+                        }else{
+                            HStack(alignment: .top, spacing: 10){
+                                ForEach(index...index+1,id:\.self){ tagIndex in
+                                    if tagIndex < tagArr.count {
+                                        let tag = tagArr[tagIndex]
+                                        Text(tag).font(.system(size: 13)).foregroundColor(selectTagArr.contains(tag) ? Color.red:Color.black).lineLimit(1).padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)).background(Capsule().fill(Color.colorWithHexString(hex: "#F3F3F3"))).onTapGesture {
+                                            if selectTagArr.contains(tag) {
+                                                selectTagArr.removeAll(where: {$0 == tag})
+                                            }else{
+                                                selectTagArr.append(tag)
+                                            }
+                                            
+                                        }
+                                    }
+                                }
+                                
+                            }
+                        }
+                        
+                    }
+                }
+                
+            }
+                
             BackBtnMergeNextBtnView(nextStepHandle: {
                 scrollIndex = 10 + index
             }, backSepHandle: {
@@ -121,6 +181,7 @@ struct PersonTagView:View{
             Spacer().frame(height:50)
         }
     }
+    
 }
 
 struct AboutUsDescView:View{
