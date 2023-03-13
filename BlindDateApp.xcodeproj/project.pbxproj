@@ -78,6 +78,7 @@
 		A2E4E91E299B5107000A46FE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A2E4E921299B5107000A46FE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		A2E4E928299B517D000A46FE /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		A2F64C1129BF0D5100B68B82 /* BlindDateApp.profdata */ = {isa = PBXFileReference; lastKnownFileType = file; path = BlindDateApp.profdata; sourceTree = "<group>"; };
 		A2FFE854299B5E03009642D3 /* BaseRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseRequest.swift; sourceTree = "<group>"; };
 		A2FFE856299B61E8009642D3 /* Consts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Consts.swift; sourceTree = "<group>"; };
 		A2FFE858299B6ABA009642D3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -206,6 +207,7 @@
 				A2E4E918299B5104000A46FE /* Products */,
 				B5C5E14EEBD53F916B567301 /* Pods */,
 				363D64CA92C3E6867018CC70 /* Frameworks */,
+				A2F64C1029BF0D5100B68B82 /* OptimizationProfiles */,
 			);
 			sourceTree = "<group>";
 		};
@@ -251,6 +253,14 @@
 				A2E4E921299B5107000A46FE /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		A2F64C1029BF0D5100B68B82 /* OptimizationProfiles */ = {
+			isa = PBXGroup;
+			children = (
+				A2F64C1129BF0D5100B68B82 /* BlindDateApp.profdata */,
+			);
+			path = OptimizationProfiles;
 			sourceTree = "<group>";
 		};
 		A2FFE853299B5DE9009642D3 /* NetWork */ = {
@@ -544,6 +554,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -551,6 +562,7 @@
 				DEVELOPMENT_TEAM = GT49X56UC2;
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
+				GCC_OPTIMIZATION_LEVEL = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BlindDateApp/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "上传头像或者发送图片，需要访问相机";
@@ -584,6 +596,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;

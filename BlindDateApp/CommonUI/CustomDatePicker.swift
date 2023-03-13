@@ -10,7 +10,7 @@ import SwiftUI
 struct CustomDatePicker: View {
     @Binding var show : Bool
     @State var date : Date
-    @Binding var selectionDate : Date
+    @Binding var selectionDate : Date?
     var minDate : Date
     var maxDate : Date
     var displayedComponents :DatePickerComponents
@@ -33,7 +33,7 @@ struct CustomDatePicker: View {
                     Text("确定").foregroundColor(.blue).padding(.trailing,15).onTapGesture {
                         selectionDate = date
                         showPicker = false
-                        selectedDate(selectionDate)
+                        selectedDate(selectionDate!)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                             show = false
                             topViewController()?.dismiss(animated: true, completion: nil)
@@ -48,7 +48,7 @@ struct CustomDatePicker: View {
                    
             }.background(RoundedRectangle(cornerRadius: 5).fill(Color.white)).offset(y:showPicker ? 0 : 300).animation(.linear(duration: 0.25), value: showPicker).onAppear {
                 showPicker = show
-                date = selectionDate
+                date = selectionDate ?? Date().addYear(year: -18)
             }
           }.edgesIgnoringSafeArea(.top)
         }

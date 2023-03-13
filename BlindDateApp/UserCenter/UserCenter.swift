@@ -94,6 +94,10 @@ class UserCenter : NSObject,ObservableObject{
 
     }
     
+    func requestUploadPhoto(scenes:String){
+        
+    }
+    
     func saveUserInfoModel(userInfoModel:ReCommandModel?){
         if userInfoModel == nil {
             return

@@ -61,7 +61,7 @@ struct EnterInfoView: View {
                         PersonTagView(scrollIndex: $scrollIndex, index: 1,tagArr:$tagOtherArr,selectTagArr:$selectTagOtherArr,title: "我的理想中的他是？").padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(10)
                         RealNameVerifyView(name: $name, id: $id).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(11)
                     }
-                }.frame(width: screenWidth, alignment: .leading).offset(x:-screenWidth * CGFloat(scrollIndex))
+                }.frame(width: screenWidth, alignment: .leading).offset(x:-screenWidth * CGFloat(6))
             .animation(.linear(duration:0.25), value: scrollIndex).modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "")).onAppear {
                 requestMyTagArr()
                 requestLikePersonTagArr()
@@ -133,6 +133,8 @@ struct PersonTagView:View{
     var index : Int
     @Binding var tagArr : [String]
     @Binding var selectTagArr : [String]
+    @State var showToast : Bool = false
+    @State var toastMsg : String = ""
     var title : String
     var body: some View{
         VStack(alignment: .leading, spacing: 20) {
@@ -173,12 +175,17 @@ struct PersonTagView:View{
             }
                 
             BackBtnMergeNextBtnView(nextStepHandle: {
+                if selectTagArr.count  < 3 {
+                    showToast = true
+                    toastMsg = "请选择至少3个标签"
+                    return
+                }
                 scrollIndex = 10 + index
             }, backSepHandle: {
                 scrollIndex = 8 + index
             })
             Spacer().frame(height:50)
-        }
+        }.toast(isShow: $showToast, msg: toastMsg)
     }
     
 }
@@ -186,6 +193,9 @@ struct PersonTagView:View{
 struct AboutUsDescView:View{
     @Binding var scrollIndex : Int
     @Binding var aboutUsDesc : String
+    @State var showPlaceHolder : Bool = true
+    @State var showToast : Bool = false
+    @State var toastMsg : String = ""
     var body: some View{
         VStack(alignment: .leading, spacing: 20) {
             HStack{
@@ -195,13 +205,21 @@ struct AboutUsDescView:View{
             }
             Text("说说你是什么样的人?")
                 .font(.system(size: 16, weight: .medium, design: .default))
-            ZStack(alignment:.topLeft){
+            ZStack(alignment:.topLeading){
                 TextEditor(text: $aboutUsDesc).foregroundColor(.red).lineSpacing(5)
                     .padding()
                     .background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3"))).frame(height:200).introspectTextView { textView in
                         textView.backgroundColor = .colorWithHexString(hex: "#F3F3F3")
+                    }.onChange(of: aboutUsDesc) { newValue in
+                        if newValue.count == 0 {
+                            showPlaceHolder = true
+                        }else{
+                            showPlaceHolder = false
+                        }
                     }
-                Text("请输入至少10字").font(.system(size:13)).foregroundColor(.colorWithHexString(hex: "#999999"))
+                if showPlaceHolder {
+                    Text("请输入至少10字").font(.system(size:13)).foregroundColor(.colorWithHexString(hex: "#999999")).padding()
+                }
             }
             Text("示例：我是典型的白羊座，性格热情开朗喜欢认识新朋友，也比较喜欢小动物，偶尔多愁善感，容易对一些细节感动。")
                 .font(.system(size: 14))
@@ -210,6 +228,16 @@ struct AboutUsDescView:View{
                 .background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F1F1FE")))
             Spacer()
             BackBtnMergeNextBtnView(nextStepHandle: {
+                if aboutUsDesc.isEmpty{
+                    showToast = true
+                    toastMsg = "请输入关于我的描述"
+                    return
+                }
+                if aboutUsDesc.count < 10 {
+                    showToast = true
+                    toastMsg = "最少10个字符"
+                    return
+                }
                 scrollIndex = 9
             }, backSepHandle: {
                 scrollIndex = 7
@@ -218,7 +246,7 @@ struct AboutUsDescView:View{
             
         }.ignoresSafeArea(.keyboard, edges: .bottom).onTapGesture {
             hidenKeyBoard()
-        }
+        }.toast(isShow: $showToast, msg: toastMsg)
     }
 }
 
@@ -247,8 +275,8 @@ struct MyLifeView:View{
     @State var isPresentOther : Bool = false
     @State var pickerOtherResult : [UIImage] = []
     
-    @State var dicImages : [String:[UIImage]] = [:]
-    
+    @State var showToast : Bool = false
+    @State var toastMsg : String = ""
     var config : PHPickerConfiguration{
         var config = PHPickerConfiguration(photoLibrary: PHPhotoLibrary.shared())
         config.filter = .images
@@ -387,6 +415,8 @@ struct MyAvatarView:View{
     @Binding var scrollIndex : Int
     @State var isPresentPhotoAlbum : Bool = false
     @State var pickerResult: [UIImage] = []
+    @State var showToast : Bool = false
+    @State var toastMsg : String = ""
     var config: PHPickerConfiguration  {
        var config = PHPickerConfiguration(photoLibrary: PHPhotoLibrary.shared())
         config.filter = .images //videos, livePhotos...
@@ -426,6 +456,12 @@ struct MyAvatarView:View{
 
             Spacer()
             BackBtnMergeNextBtnView(nextStepHandle: {
+                if pickerResult.count == 0 {
+                    showToast = true
+                    toastMsg = "请添加头像图片"
+                    return
+                }
+                upLoadAvatar()
                 scrollIndex = 7
             }, backSepHandle: {
                 scrollIndex = 5
@@ -435,7 +471,16 @@ struct MyAvatarView:View{
             
         } content: {
             CustomPhotoPicker(configuration: config, pickerResult: $pickerResult, isPresented: $isPresentPhotoAlbum)
+        }.toast(isShow: $showToast, msg: toastMsg)
+    }
+    
+    func upLoadAvatar(){
+        NW.uploadingImage(urlStr: "upload/photos", params: ["scenes":"avatar"], imageArr:pickerResult) { response in
+            
+        } failedHandler: { response in
+            
         }
+
     }
 }
 
@@ -450,6 +495,8 @@ struct LoveGoalView:View{
     @State var showMinAgePicker : Bool = false
     @State var showMaxAgePicker : Bool = false
     var titles : [String] = ["短期内想结婚","认真谈场恋爱，合适就考虑结婚","先认真谈场恋爱再说","没考虑清楚"]
+    @State var showToast : Bool = false
+    @State var toastMsg : String = ""
     var body: some View{
         VStack(alignment: .leading, spacing: 20) {
             HStack{
@@ -484,6 +531,30 @@ struct LoveGoalView:View{
             
             Spacer()
             BackBtnMergeNextBtnView(nextStepHandle: {
+                if selectedIndex == 0 {
+                    showToast = true
+                    toastMsg = "请选择我的恋爱目标"
+                    return
+                }
+                if minAgeStr == "最小年龄"{
+                    showToast = true
+                    toastMsg = "请选择最小年龄"
+                    return
+                }
+                
+                if maxAgeStr == "最大年龄"{
+                    showToast = true
+                    toastMsg = "请选择最大年龄"
+                    return
+                }
+                
+                if minAge > maxAge{
+                    showToast = true
+                    toastMsg = "最小年龄不应大于最大年龄，请重新选择"
+                    return
+                }
+                
+                
                 scrollIndex = 6
             }, backSepHandle: {
                 scrollIndex = 4
@@ -499,7 +570,7 @@ struct LoveGoalView:View{
                 let ageArr = ageArr()
                 maxAgeStr = ageArr[selectedIndex]
             }
-        }
+        }.toast(isShow: $showToast, msg: toastMsg)
     }
     
     func ageArr() -> [String]{
@@ -530,6 +601,8 @@ struct MyCityAndHomeTownView:View{
     @State var workAddressStr : String = "请选择"
     @State var homeTownAddressStr : String = "请选择"
     @Environment(\.viewController) private var viewControllerHolder: UIViewController?
+    @State var showToast : Bool = false
+    @State var toastMsg : String = ""
     var body: some View{
         VStack(alignment: .leading, spacing: 20) {
             HStack{
@@ -550,6 +623,16 @@ struct MyCityAndHomeTownView:View{
             }).frame(height:45)
             Spacer()
             BackBtnMergeNextBtnView(nextStepHandle: {
+                if workAddressStr == "请选择" {
+                    showToast = true
+                    toastMsg = "请选择工作居住地"
+                    return
+                }
+                if homeTownAddressStr == "请选择" {
+                    showToast = true
+                    toastMsg = "请选择家乡地址"
+                    return
+                }
                 scrollIndex = 5
             }, backSepHandle: {
                 scrollIndex = 3
@@ -568,7 +651,7 @@ struct MyCityAndHomeTownView:View{
                     homeTownAddress = addressModel
                     homeTownAddressStr = addressModel.provinceName + " " + addressModel.cityName
                 }
-            }
+            }.toast(isShow: $showToast, msg: toastMsg)
     }
         
 }
@@ -580,6 +663,8 @@ struct MyJobView:View{
     @State var showJobList : Bool = false
     @State var showYearIncomePicker : Bool = false
     @State var yearIncomeStr : String = "请选择"
+    @State var showToast : Bool = false
+    @State var toastMsg : String = ""
     var body: some View{
         
             VStack(alignment: .leading, spacing: 20) {
@@ -623,6 +708,16 @@ struct MyJobView:View{
                 }).frame(height:45)
                 Spacer()
                 BackBtnMergeNextBtnView(nextStepHandle: {
+                    if job.isEmpty {
+                        showToast = true
+                        toastMsg = "请输入职业"
+                        return
+                    }
+                    if yearIncomeStr == "请选择"{
+                        showToast = true
+                        toastMsg = "请选择年收入"
+                        return
+                    }
                     scrollIndex = 4
                 }, backSepHandle: {
                     scrollIndex = 2
@@ -636,13 +731,13 @@ struct MyJobView:View{
                     let incomeArr = getYearIncomeArr()
                     yearIncomeStr = incomeArr[selectedIndex]
                 }
-            }
+            }.toast(isShow: $showToast, msg: toastMsg)
             
         
     }
     
     func getYearIncomeArr() -> [String]{
-        return ["100万以上","60-100万","30-60万","20-30万","10-20万","5-10万","5万以下"]
+        return ["100万以上","60-100万","30-60万","20-30万","10-20万","5-10万","5万以下"].reversed()
     }
 }
 
@@ -652,9 +747,11 @@ struct EducationInfoView:View{
     @Binding var educationType : Int
     @Binding var schoolName : String
     @State var showPicker : Bool = false
-    let educationArr : [String] = ["博士","硕士","本科"," 专科","专科以下"]
+    let educationArr : [String] = ["博士","硕士","本科"," 专科","专科以下"].reversed()
     @State var educationStr : String = "请选择"
     @State var showSchoolNameList : Bool = false
+    @State var showToast : Bool = false
+    @State var toastMsg : String = ""
     var body: some View{
         
             VStack(alignment: .leading, spacing: 20) {
@@ -696,6 +793,16 @@ struct EducationInfoView:View{
                 }
                 Spacer()
                 BackBtnMergeNextBtnView(nextStepHandle: {
+                    if educationStr == "请选择" {
+                        showToast = true
+                        toastMsg = "请选择学历"
+                        return
+                    }
+                    if educationType > 0 && schoolName.count == 0 {
+                        showToast = true
+                        toastMsg = "请输入学校名称"
+                        return
+                    }
                     scrollIndex = 3
                 }, backSepHandle: {
                     scrollIndex = 1
@@ -707,7 +814,7 @@ struct EducationInfoView:View{
                 CustomPicker(show: $showPicker, selection: $educationType, contentArr: educationArr) { selectedIndex in
                     educationStr = educationArr[selectedIndex]
                 }
-            }
+            }.toast(isShow: $showToast, msg: toastMsg)
     }
 }
 
@@ -733,6 +840,8 @@ struct PullDownButton:View{
 struct NickNameView:View{
     @Binding var nickName : String
     @Binding var scrollIndex : Int
+    @State var showToast : Bool = false
+    @State var toastMsg : String = ""
     var body: some View{
 //        ScrollView(.vertical,showsIndicators: false){
        
@@ -744,11 +853,16 @@ struct NickNameView:View{
                 }
                 Spacer()
                 NextStepButton(title: "下一步", completion: {
+                    if nickName.count  == 0 {
+                        showToast = true
+                        toastMsg = "请输入昵称"
+                        return
+                    }
                     scrollIndex = 1
                 }).padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
                 Spacer().frame(height:50)
 
-            }.contentShape(Rectangle()).onTapGesture {
+            }.contentShape(Rectangle()).toast(isShow: $showToast, msg: toastMsg).onTapGesture {
                 hidenKeyBoard()
             }
            
@@ -766,10 +880,12 @@ struct GenderAgeHeightView:View{
     @Binding var height: Int
     @State var isShowDatePicker : Bool = false
     @State var isShowHeightPicker : Bool = false
-    @State var birthDayDate : Date = Date().addYear(year: -18)
+    @State var birthDayDate : Date? = nil
     @State var birthDayStr : String = "请选择出生时间"
     @State var heightStr : String = "请选择身高"
     @State var heightSelection : Int = 0
+    @State var showToast : Bool = false
+    @State var toastMsg : String = ""
     var body: some View{
         
             VStack(alignment: .leading, spacing: 20) {
@@ -794,6 +910,22 @@ struct GenderAgeHeightView:View{
                 
                 Spacer()
                 BackBtnMergeNextBtnView {
+                    if gender == 0 {
+                        showToast = true
+                        toastMsg = "请选择性别"
+                        return
+                    }
+                    if birthDayDate == nil {
+                        showToast = true
+                        toastMsg = "请选择出生时间"
+                        return
+                    }
+                    
+                    if heightStr == "请选择身高" {
+                        showToast = true
+                        toastMsg = "请选择身高"
+                        return
+                    }
                     
                     scrollIndex = 2
                 } backSepHandle: {
@@ -805,7 +937,7 @@ struct GenderAgeHeightView:View{
                 let minDate = Date().addYear(year: -70)
                 let maxDate = Date().addYear(year: -18)
                 CustomDatePicker(show:$isShowDatePicker,date: maxDate, selectionDate: $birthDayDate, minDate: minDate, maxDate: maxDate, displayedComponents: [.date]) { seletedDate in
-                    birthDayStr = birthDayDate.stringFormat(format: "yyyy年M月d日")
+                    birthDayStr = birthDayDate?.stringFormat(format: "yyyy年M月d日") ?? ""
                 }
             })
             .alertB(isPresented: $isShowHeightPicker) {
@@ -813,7 +945,7 @@ struct GenderAgeHeightView:View{
                     let tempArr = getHeightArr()
                     heightStr = tempArr[selectedIndex]
                 }
-            }
+            }.toast(isShow: $showToast, msg: toastMsg)
             
 
         

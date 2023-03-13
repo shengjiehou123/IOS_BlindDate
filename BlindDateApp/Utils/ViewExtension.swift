@@ -35,6 +35,7 @@ extension View{
         }
     }
     
+    
     func delaysTouches(for duration: TimeInterval = 0.25, onTap action: @escaping () -> Void = {}) -> some View {
            modifier(DelaysTouches(duration: duration, action: action))
        }

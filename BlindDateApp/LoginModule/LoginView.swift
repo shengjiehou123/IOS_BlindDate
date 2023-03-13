@@ -13,6 +13,7 @@ struct LoginView: View {
     @State var code: String = ""
     @State var codeKey : String = ""
     @ObservedObject var computedModel = ComputedProperty()
+    @State var isActive : Bool = false
     var body: some View {
         NavigationView{
             VStack(alignment: .leading, spacing: 0, content: {
@@ -41,14 +42,14 @@ struct LoginView: View {
                     
                 }
                 Spacer().frame(height:30)
-                NavigationLink {
+                NavigationLink(isActive: $isActive) {
                     EnterInfoView()
                 } label: {
-                    Text("Login").foregroundColor(.white).frame(maxWidth:.infinity,maxHeight: 44).background(RoundedRectangle(cornerRadius: 5).fill(.blue)).padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-                }.buttonStyle(PlainButtonStyle())
-//                Text("Login").foregroundColor(.white).frame(maxWidth:.infinity,maxHeight: 44).background(RoundedRectangle(cornerRadius: 5).fill(.blue)).padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)).onTapGesture {
-//                    requestLogin()
-//                }
+                    Text("")
+                }
+                Text("Login").foregroundColor(.white).frame(maxWidth:.infinity,maxHeight: 44).background(RoundedRectangle(cornerRadius: 5).fill(.blue)).padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)).onTapGesture {
+                    requestLogin()
+                }
                 Spacer()
             }).navigationBarHidden(true).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor))
         }
@@ -77,6 +78,7 @@ struct LoginView: View {
             computedModel.showToast = false
            let token = response.data["token"] as? String ?? ""
            UserCenter.shared.saveToken(token: token)
+          isActive = true
         } failedHandler: { response in
             computedModel.showLoading = false
             computedModel.showToast = true

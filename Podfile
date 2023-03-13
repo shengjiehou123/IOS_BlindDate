@@ -3,6 +3,8 @@
 
 target 'BlindDateApp' do
   # Comment the next line if you don't want to use dynamic frameworks
+  plugin 'cocoapods-imy-bin'
+  use_binaries!
   use_frameworks!
   use_modular_headers!
 

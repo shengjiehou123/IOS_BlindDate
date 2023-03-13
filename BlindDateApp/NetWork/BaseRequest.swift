@@ -65,4 +65,57 @@ open class BaseRequest: NSObject {
         }
     }
   
+    
+    //MARK: 上传图片 -
+    func uploadingImage(urlStr:String,params:[String:String],imageArr:[UIImage],completionHandler:@escaping (_ response: ResponseData) -> Void,failedHandler: @escaping (_ response: ResponseData) -> Void){
+        let requestUrlStr = Consts.shared.domain + "/" + urlStr
+        print("requestUrlStr:\(requestUrlStr), method: Post")
+        let headers :HTTPHeaders = [
+        "Authorization": "Bearer " + UserCenter.shared.token,
+        "Content-type": "multipart/form-data",
+        ]
+        AF.upload(multipartFormData: { multipartFormData in
+            for (key,value) in params {
+                multipartFormData.append(value.data(using: .utf8)!, withName: key)
+            }
+            
+            for image in imageArr {
+                let data = image.jpegData(compressionQuality: 1)!
+                
+                multipartFormData.append(data, withName: "userPhoto",fileName:"\(data.base64EncodedString())" + ".jpeg" ,mimeType: "image/jpeg")
+            }
+            
+        }, to: requestUrlStr,headers:headers).uploadProgress{ progress in
+            log.info("fractionCompleted:\(progress.fractionCompleted)")
+            log.info("totalUnitCount:\(progress.totalUnitCount)")
+            log.info("completedUnitCount:\(progress.completedUnitCount)")
+        }.response{ response in
+            switch response.result{
+            case .failure(_):
+            let code = response.response?.statusCode ?? 0
+            let data : [String:Any] = [:]
+            let message = response.error?.errorDescription ?? ""
+            let res = ResponseData(code: code, data: data, message: message)
+            failedHandler(res)
+            case .success(_):
+            if let dic = try? JSONSerialization.jsonObject(with: response.data ?? Data(), options: JSONSerialization.ReadingOptions.mutableContainers) as? [String:Any]{
+                print("dic:\(String(describing: dic))")
+                let code = dic["code"] as? Int ?? 0
+                let data = dic["data"] as? [String:Any] ?? [:]
+                let message = dic["message"] as? String ?? ""
+                let res = ResponseData(code: code, data: data, message: message)
+                if res.code == 0 {
+                    completionHandler(res)
+                }else{
+                    failedHandler(res)
+                }
+                
+              }
+            }
+        }
+            
+    }
+        
+    
+
 }
