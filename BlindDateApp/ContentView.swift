@@ -47,7 +47,8 @@ struct ContentView: View {
     }
     @ObservedObject var userCenter : UserCenter = UserCenter.shared
     var body: some View {
-        if userCenter.userInfoModel?.myTag.count == 0 {
+        if !userCenter.isLogin {
+            //?.myTag.count == 0
             LoginView()
         }else{
             TabView{

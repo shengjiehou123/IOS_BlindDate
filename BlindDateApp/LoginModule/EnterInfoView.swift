@@ -16,7 +16,7 @@ import Combine
 struct EnterInfoView: View {
     @State var nickName: String = ""
     @State var scrollIndex: Int = 0
-    @State var gender: Int = 0
+    @State var gender: Int = 3
     @State var birthDay: Double = 0
     @State var height: Int = 0
     @State var educationType : Int = 0
@@ -57,11 +57,35 @@ struct EnterInfoView: View {
 //                            let title = tagTitleArr[index]
 //
 //                        }
-                        PersonTagView(scrollIndex: $scrollIndex, index: 0,tagArr:$tagArr,selectTagArr:$selectTagArr,title: "选出最符合我的标签").padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(9)
-                        PersonTagView(scrollIndex: $scrollIndex, index: 1,tagArr:$tagOtherArr,selectTagArr:$selectTagOtherArr,title: "我的理想中的他是？").padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(10)
+                        PersonTagView(scrollIndex: $scrollIndex, index: 0,tagArr:$tagArr,selectTagArr:$selectTagArr,title: "选出最符合我的标签",nextHandle: {
+                            
+                        }).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(9)
+                        PersonTagView(scrollIndex: $scrollIndex, index: 1,tagArr:$tagOtherArr,selectTagArr:$selectTagOtherArr,title: "我的理想中的他是？",nextHandle:{
+                            log.info("nickName:\(nickName)")
+                            log.info("gendar:\(gender)")
+                            log.info("birthday:\(birthDay)")
+                            log.info("height:\(height)")
+                            log.info("educationType:\(educationType)")
+                            log.info("schoolName:\(schoolName)")
+                            log.info("job:\(job)")
+                            log.info("yearIncome:\(yearIncome)")
+                            log.info("provinceName: \(workAddress.provinceName) provinceId:\(workAddress.provinceId)")
+                            log.info("cityName: \(workAddress.cityName) cityId:\(workAddress.cityId)")
+                            log.info("areaName: \(workAddress.areaName) areaId:\(workAddress.areaId)")
+                            log.info("HprovinceName: \(homeTownAddress.provinceName) HprovinceId:\(homeTownAddress.provinceId)")
+                            log.info("HcityName: \(homeTownAddress.cityName) HcityId:\(workAddress.cityId)")
+                            log.info("HareaName: \(homeTownAddress.areaName) HareaId:\(workAddress.areaId)")
+                            log.info("loveGoal:\(loveGoal)")
+                            log.info("minAge:\(minAge)")
+                            log.info("maxAge:\(maxAge)")
+                            log.info("aboutUsDesc:\(aboutUsDesc)")
+                            log.info("myTag:\(selectTagArr)")
+                            log.info("otherTag:\(selectTagOtherArr)")
+                            requestSetUserInfo()
+                        }).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(10)
                         RealNameVerifyView(name: $name, id: $id).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(11)
                     }
-                }.frame(width: screenWidth, alignment: .leading).offset(x:-screenWidth * CGFloat(6))
+                }.frame(width: screenWidth, alignment: .leading).offset(x:-screenWidth * CGFloat(scrollIndex))
             .animation(.linear(duration:0.25), value: scrollIndex).modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "")).onAppear {
                 requestMyTagArr()
                 requestLikePersonTagArr()
@@ -91,6 +115,43 @@ struct EnterInfoView: View {
             
         }
 
+    }
+    
+    func requestSetUserInfo(){
+        let mytag = selectTagArr.joined(separator: ",")
+        let oterTag = selectTagOtherArr.joined(separator: ",")
+        let param = ["nickName":nickName,
+                     "gender":gender,
+                     "birthday":birthDay,
+                     "height":height,
+                     "educationType":educationType,
+                     "school":schoolName,
+                     "job":job,
+                     "yearIncome":yearIncome,
+                     "workProvinceCode":workAddress.provinceId,
+                     "workProvinceName":workAddress.provinceName,
+                     "workCityCode":workAddress.cityId,
+                     "workCityName":workAddress.cityName,
+                     "workAreaCode":workAddress.areaId,
+                     "workAreaName":workAddress.areaName,
+                     "homeTownProvinceCode":homeTownAddress.provinceId,
+                     "homeTownProvinceName":homeTownAddress.provinceName,
+                     "homeTownCityCode":homeTownAddress.cityId,
+                     "homeTownCityName":homeTownAddress.cityName,
+                     "homeTownAreaCode":homeTownAddress.areaId,
+                     "homeTownAreaName":homeTownAddress.areaName,
+                     "loveGoals":loveGoal,
+                     "acceptOtherPersonMinAge":minAge,
+                     "acceptOtherPersonMaxAge":maxAge,
+                     "aboutMeDesc":aboutUsDesc,
+                     "myTag":mytag,
+                     "likePersonTag":oterTag
+        ] as [String : Any]
+        NW.request(urlStr: "set/user/info", method: .post, parameters: param) { response in
+            UserCenter.shared.requestUserInfo(needUserSig: true)
+        } failedHandler: { response in
+            
+        }
     }
        
     
@@ -136,6 +197,7 @@ struct PersonTagView:View{
     @State var showToast : Bool = false
     @State var toastMsg : String = ""
     var title : String
+    var nextHandle : ()->Void
     var body: some View{
         VStack(alignment: .leading, spacing: 20) {
             HStack{
@@ -178,6 +240,10 @@ struct PersonTagView:View{
                 if selectTagArr.count  < 3 {
                     showToast = true
                     toastMsg = "请选择至少3个标签"
+                    return
+                }
+                nextHandle()
+                if index == 1 {
                     return
                 }
                 scrollIndex = 10 + index
@@ -347,6 +413,12 @@ struct MyLifeView:View{
         }
 //            Spacer()
             BackBtnMergeNextBtnView(nextStepHandle: {
+                if pickerLifeResult.count == 0 && pickerInterestResult.count == 0 && pickerTravelResult.count == 0 && pickerOtherResult.count == 0 {
+                    showToast = true
+                    toastMsg = "请添加图片展示自己"
+                    return
+                }
+                upLoadPhotos()
                 scrollIndex = 8
             }, backSepHandle: {
                 scrollIndex = 6
@@ -364,7 +436,16 @@ struct MyLifeView:View{
             changeTitles()
         }.onChange(of: pickerOtherResult) { newValue in
             changeTitles()
+        }.toast(isShow: $showToast, msg: toastMsg)
+    }
+    
+    func upLoadPhotos(){
+        NW.uploadingImage(urlStr: "upload/photos", params: ["scenes":"life"], imageArr:pickerLifeResult) { response in
+            
+        } failedHandler: { response in
+            
         }
+
     }
     
     func changeTitles(){
@@ -513,6 +594,7 @@ struct LoveGoalView:View{
                     .foregroundColor(selectedIndex == index + 1 ? .red : .black)
                     .background(RoundedRectangle(cornerRadius: 5).strokeBorder(selectedIndex == index + 1 ? .red : .gray,style: .init(lineWidth: selectedIndex == index + 1 ? 2 : 1, lineCap: .round, lineJoin: .round))).contentShape(Rectangle()).onTapGesture {
                         selectedIndex = index + 1
+                        loveGoal = selectedIndex - 1
                     }
             }
             
@@ -564,11 +646,15 @@ struct LoveGoalView:View{
             CustomPicker(show: $showMinAgePicker, selection: $minAge, contentArr: ageArr()) { selectedIndex in
                 let ageArr = ageArr()
                 minAgeStr = ageArr[selectedIndex]
+                let str = minAgeStr.replacingOccurrences(of: "岁", with: "")
+                minAge = Int(str) ?? 0
             }
         }.alertB(isPresented: $showMaxAgePicker) {
             CustomPicker(show: $showMaxAgePicker, selection: $maxAge, contentArr: ageArr()) { selectedIndex in
                 let ageArr = ageArr()
                 maxAgeStr = ageArr[selectedIndex]
+                let str = maxAgeStr.replacingOccurrences(of: "岁", with: "")
+                maxAge = Int(str) ?? 0
             }
         }.toast(isShow: $showToast, msg: toastMsg)
     }
@@ -910,7 +996,7 @@ struct GenderAgeHeightView:View{
                 
                 Spacer()
                 BackBtnMergeNextBtnView {
-                    if gender == 0 {
+                    if gender > 1 {
                         showToast = true
                         toastMsg = "请选择性别"
                         return
@@ -937,6 +1023,7 @@ struct GenderAgeHeightView:View{
                 let minDate = Date().addYear(year: -70)
                 let maxDate = Date().addYear(year: -18)
                 CustomDatePicker(show:$isShowDatePicker,date: maxDate, selectionDate: $birthDayDate, minDate: minDate, maxDate: maxDate, displayedComponents: [.date]) { seletedDate in
+                    birthDay = seletedDate.timeIntervalSince1970
                     birthDayStr = birthDayDate?.stringFormat(format: "yyyy年M月d日") ?? ""
                 }
             })
@@ -944,6 +1031,8 @@ struct GenderAgeHeightView:View{
                 CustomPicker(show: $isShowHeightPicker, selection: $heightSelection, contentArr: getHeightArr()) { selectedIndex in
                     let tempArr = getHeightArr()
                     heightStr = tempArr[selectedIndex]
+                    let str = heightStr.replacingOccurrences(of: "cm", with: "")
+                    height = Int(str) ?? 0
                 }
             }.toast(isShow: $showToast, msg: toastMsg)
             
@@ -1009,6 +1098,7 @@ struct BirthdayOrHeightView:View{
 
 struct GenderView:View{
     @Binding var gender : Int
+    @State   var selectedIndex : Int = 0
     var genders : [String] = ["男","女"]
     var body: some View{
         GeometryReader { reader in
@@ -1017,15 +1107,16 @@ struct GenderView:View{
                 ForEach(0..<2){ index in
                     let genderStr = genders[index]
                     ZStack(alignment: .leading) {
-                        Image("").resizable().frame(width:(width - 10) / 2.0,height:70).background(RoundedRectangle(cornerRadius: 5).fill(gender == index + 1 ? Color.red : Color.colorWithHexString(hex: "#F3F3F3")))
+                        Image("").resizable().frame(width:(width - 10) / 2.0,height:70).background(RoundedRectangle(cornerRadius: 5).fill(selectedIndex == index + 1 ? Color.red : Color.colorWithHexString(hex: "#F3F3F3")))
                         HStack{
                             Text(genderStr)
                                 .font(.system(size: 15, weight: .medium, design: .default))
-                                .foregroundColor(gender == index + 1 ? Color.white : Color.gray)
+                                .foregroundColor(selectedIndex == index + 1 ? Color.white : Color.gray)
                             Spacer()
                         }.padding(.leading,20)
                     }.onTapGesture {
-                        gender = index + 1
+                        selectedIndex = index + 1
+                        gender = selectedIndex - 1
                     }
                 }
             }
