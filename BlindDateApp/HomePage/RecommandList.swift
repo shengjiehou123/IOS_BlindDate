@@ -90,13 +90,13 @@ struct ScrollCardView:View{
                     HomePageAboutUsView(title: "恋爱目标",content: recommandModel.loveGoalsDesc,userPhotos: [])
                 }
                 
-            }
-        }.navigationViewStyle(.stack).background(RoundedRectangle(cornerRadius: 10).fill(Color.white).shadow(color: Color.black.opacity(0.2), radius: 3, x: 0, y: 1)).padding(EdgeInsets(top: 0, leading: 10, bottom: CGFloat(topOffset) + 10, trailing: 10))
-            .offset(x:offset,y:CGFloat(topOffset))
-            .rotationEffect(.init(degrees: getRotation(angle: 8)),anchor: .bottom)
-            .introspectScrollView(customize: { scrollView in
+            }.introspectScrollView(customize: { scrollView in
                 scrollView.bounces = false
             })
+//            .cornerRadius(10).clipped()
+        }.navigationViewStyle(.stack).clipShape(RoundedRectangle(cornerRadius: 10)).background(RoundedRectangle(cornerRadius: 10).fill(Color.white).shadow(color: Color.black.opacity(0.2), radius: 3, x: 0, y: 2)).padding(EdgeInsets(top: 0, leading: 10, bottom: CGFloat(topOffset) + 10, trailing: 10))
+            .offset(x:offset,y:CGFloat(topOffset))
+            .rotationEffect(.init(degrees: getRotation(angle: 8)),anchor: .bottom)
             .delaysTouches(for: 0.1, onTap: {
                 
             }).alertB(isPresented: $showLikeEachOther, builder: {
@@ -171,10 +171,10 @@ struct HomePageAboutUsView:View{
             HStack(alignment: .top, spacing: 0) {
                 Text(title)
                     .foregroundColor(.gray)
-                    .font(.system(size: 17, weight: .medium, design: .default))
+                    .font(.system(size: 15, weight: .medium, design: .default))
                 Spacer()
             }.padding(EdgeInsets(top: 20, leading: 10, bottom: 0, trailing: 10))
-            Text(content).lineSpacing(5).padding(EdgeInsets(top: 0, leading: 10, bottom: 20, trailing: 10))
+            Text(content).lineSpacing(10).font(.system(size: 17)).padding(EdgeInsets(top: 0, leading: 10, bottom: 20, trailing: 10))
             
             ForEach(0..<userPhotos.count) { index in
                 let model = userPhotos[index]
@@ -201,7 +201,7 @@ struct CardView:View{
     var bgColor : Color
     var body: some View{
         VStack(alignment: .leading, spacing: 0) {
-            Spacer().frame(height:10)
+//            Spacer().frame(height:10)
             CardHeaderView(bgColor: bgColor).environmentObject(recommandModel)
 //            Spacer()
         }
@@ -216,6 +216,12 @@ struct CardHeaderView:View{
     @State var rows :[Int] = []
     var bgColor : Color
     var body: some View{
+        ZStack(alignment: .top) {
+            GeometryReader { reader in
+                let size = reader.size
+                WebImage(url: URL(string: recommandModel.bgImageUrl)).resizable().aspectRatio(contentMode: .fill).frame(width: size.width, height: size.height, alignment: .center).clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+       
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .center, spacing: 0, content: {
                 let avatarUrl = URL(string: recommandModel.avatar)
@@ -234,7 +240,7 @@ struct CardHeaderView:View{
                     HStack(alignment: .center, spacing: 10) {
 //                        Image(systemName:"arkit").resizable().frame(width: 20, height: 20, alignment: .leading).background(Color.red).padding(EdgeInsets(top: 4, leading: 10, bottom: 4, trailing: 4))
                         Text("实名 真实头像")
-                            .font(.system(size: 13))
+                            .font(.system(size: 13,weight: .medium))
                             .foregroundColor(.white)
                             .padding(EdgeInsets(top: 4, leading: 10, bottom: 4, trailing: 10))
                     }.background(RoundedRectangle(cornerRadius: 4).fill(Color.blue)).padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 0))
@@ -254,7 +260,7 @@ struct CardHeaderView:View{
             
             
 //            Spacer()
-        }.background(WebImage(url: URL(string: recommandModel.bgImageUrl)).resizable().aspectRatio(contentMode: .fill).clipShape(RoundedRectangle(cornerRadius: 10))).padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 10)).onAppear {
+        }.padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 10)).onAppear {
             if !recommandModel.school.isEmpty {
                 titles = ["\(recommandModel.height)cm",recommandModel.educationTypeDesc,recommandModel.school,recommandModel.job]
             }else{
@@ -263,6 +269,7 @@ struct CardHeaderView:View{
             sortTitles()
             
         }
+    }
       
     }
     
@@ -307,7 +314,7 @@ struct CardHeaderView:View{
 struct BackColorText:View{
     var title:String = ""
     var body: some View{
-        Text(title).foregroundColor(.white).font(.system(size: 13)).lineLimit(1).padding(EdgeInsets(top: 7, leading: 7, bottom: 7, trailing: 7)).background(Capsule().fill(Color.white.opacity(0.2)))
+        Text(title).foregroundColor(.white).font(.system(size: 14)).lineLimit(1).padding(EdgeInsets(top: 7, leading: 10, bottom: 7, trailing: 10)).background(Capsule().fill(Color.black.opacity(0.4)))
     }
 }
 
@@ -334,15 +341,18 @@ struct LikeEachOtherView:View{
                 isShow = false
                 self.topViewController()?.dismiss(animated: true, completion: nil)
             } label: {
-                Text("发消息").foregroundColor(.white).font(.system(size: 17, weight: .medium, design: .default))
-            }.frame(width: 200, height: 50, alignment: .center).background(Capsule().fill(Color.red)).buttonStyle(PlainButtonStyle())
+                HStack{
+                    Text("发消息").foregroundColor(.white).font(.system(size: 17, weight: .medium, design: .default))
+                }.frame(width: 200, height: 50, alignment: .center).background(Capsule().fill(Color.red))
+               
+            }.buttonStyle(PlainButtonStyle())
             
             Button {
                 isShow = false
                 self.topViewController()?.dismiss(animated: true, completion: nil)
             } label: {
-                Text("继续探索").foregroundColor(.gray).font(.system(size: 17, weight: .medium, design: .default))
-            }.frame(width: 200, height: 50, alignment: .center).buttonStyle(PlainButtonStyle())
+                Text("继续探索").foregroundColor(.gray).font(.system(size: 17, weight: .medium, design: .default)).frame(maxWidth:.infinity,maxHeight: .infinity)
+            }.frame(width: 200, height: 50, alignment: .center).contentShape(Rectangle()).buttonStyle(PlainButtonStyle())
             Spacer()
 
         }.frame(maxWidth:.infinity).background( Rectangle().fill(Color.gray.opacity(0.3)).blur(radius: 20)).onAppear {

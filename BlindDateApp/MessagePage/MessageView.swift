@@ -43,7 +43,7 @@ struct MessageView: View {
                     isActive = true
                 }).navigationBarTitleDisplayMode(.inline).toolbar(content: {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        Text("消息")
+                        Text("消息").font(.system(size: 30, weight: .medium, design: .default))
                     }
                 }).onAppear {
                    
