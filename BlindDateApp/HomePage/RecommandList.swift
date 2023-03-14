@@ -77,7 +77,8 @@ struct ScrollCardView:View{
     @State var offset : CGFloat = 0;
     @GestureState var isDragging : Bool = false
     @State var endSwipe : Bool = false
-    
+    @State var likeUseAvatar : String = ""
+    @State var showLikeEachOther : Bool = false
     var body: some View{
         let topOffset = index <= 2 ? index * 15 : 0
         ScrollView(.vertical, showsIndicators: false) {
@@ -98,6 +99,8 @@ struct ScrollCardView:View{
             })
             .delaysTouches(for: 0.1, onTap: {
                 
+            }).alertB(isPresented: $showLikeEachOther, builder: {
+                LikeEachOtherView(isShow: $showLikeEachOther,avatar: UserCenter.shared.userInfoModel?.avatar ?? "",likeUserAvatar: recommandModel.avatar)
             }).gesture(DragGesture().updating($isDragging, body: { value, out, _ in
                 out = true
             }).onChanged({ value in
@@ -139,7 +142,16 @@ struct ScrollCardView:View{
     func requestLikePerson(toUserId:Int,like:Bool){
         let param = ["toUserId":toUserId,"like":like] as [String : Any]
         NW.request(urlStr: "like/person", method: .post, parameters: param) { response in
-            
+            let dic = response.data
+//            let likeUserid = dic["likeUserId"]
+            guard let likeUserAvatar = dic["likeUseAvatar"] as? String else{
+                likeUseAvatar = ""
+                return
+            }
+            likeUseAvatar = likeUserAvatar
+            if !likeUserAvatar.isEmpty {
+                showLikeEachOther = true
+            }
         } failedHandler: { response in
         
         }
@@ -212,16 +224,17 @@ struct CardHeaderView:View{
                     HStack(alignment: .center, spacing: 10) {
                         Text( recommandModel.nickName)
                             .foregroundColor(.white)
-                            .font(.system(size: 16, weight: .medium, design: .default))
+                            .font(.system(size: 20, weight: .medium, design: .default))
                         let birthDayDate =  Date.init(timeIntervalSince1970: recommandModel.birthday)
                         
                         Text("\(birthDayDate.getAge())")
                             .foregroundColor(.white)
-                            .font(.system(size: 16, weight: .medium, design: .default))
+                            .font(.system(size: 20, weight: .medium, design: .default))
                     }.padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                     HStack(alignment: .center, spacing: 10) {
 //                        Image(systemName:"arkit").resizable().frame(width: 20, height: 20, alignment: .leading).background(Color.red).padding(EdgeInsets(top: 4, leading: 10, bottom: 4, trailing: 4))
                         Text("实名 真实头像")
+                            .font(.system(size: 13))
                             .foregroundColor(.white)
                             .padding(EdgeInsets(top: 4, leading: 10, bottom: 4, trailing: 10))
                     }.background(RoundedRectangle(cornerRadius: 4).fill(Color.blue)).padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 0))
@@ -294,7 +307,54 @@ struct CardHeaderView:View{
 struct BackColorText:View{
     var title:String = ""
     var body: some View{
-        Text(title).foregroundColor(.white).lineLimit(1).padding(EdgeInsets(top: 7, leading: 7, bottom: 7, trailing: 7)).background(Capsule().fill(Color.white.opacity(0.2)))
+        Text(title).foregroundColor(.white).font(.system(size: 13)).lineLimit(1).padding(EdgeInsets(top: 7, leading: 7, bottom: 7, trailing: 7)).background(Capsule().fill(Color.white.opacity(0.2)))
+    }
+}
+
+//MARK: 互相喜欢View
+struct LikeEachOtherView:View{
+    @Binding var isShow : Bool
+    var avatar : String
+    var likeUserAvatar : String
+    @State var isShowAnimation : Bool = false
+    var body: some View{
+        if isShow {
+        VStack(alignment: .center, spacing: 20) {
+            Spacer().frame(height:100)
+            HStack(alignment: .center, spacing: -10) {
+                WebImage(url: URL(string: likeUserAvatar)).resizable().aspectRatio( contentMode: .fill).frame(width: 100, height: 100, alignment: .center).clipShape(Circle()).offset(x: isShowAnimation ? 0 : -50).animation(.spring(response: 0.4, dampingFraction: 0.2, blendDuration: 0.2), value: isShowAnimation).zIndex(1)
+        
+                WebImage(url:  URL(string: avatar)).resizable().aspectRatio( contentMode: .fill).clipShape(Circle()).frame(width: 100, height: 100, alignment: .center).offset(x: isShowAnimation ? 0 :  50).animation(.spring(response: 0.4, dampingFraction: 0.2, blendDuration: 0.2), value: isShowAnimation)
+            }
+            Text("你们相互喜欢了对方").font(.system(size: 22, weight: .medium, design: .default))
+            Text("配对成功，可以开始聊天啦").font(.system(size: 18, weight: .medium, design: .default))
+            Spacer().frame(height:50)
+            
+            Button {
+                isShow = false
+                self.topViewController()?.dismiss(animated: true, completion: nil)
+            } label: {
+                Text("发消息").foregroundColor(.white).font(.system(size: 17, weight: .medium, design: .default))
+            }.frame(width: 200, height: 50, alignment: .center).background(Capsule().fill(Color.red)).buttonStyle(PlainButtonStyle())
+            
+            Button {
+                isShow = false
+                self.topViewController()?.dismiss(animated: true, completion: nil)
+            } label: {
+                Text("继续探索").foregroundColor(.gray).font(.system(size: 17, weight: .medium, design: .default))
+            }.frame(width: 200, height: 50, alignment: .center).buttonStyle(PlainButtonStyle())
+            Spacer()
+
+        }.frame(maxWidth:.infinity).background( Rectangle().fill(Color.gray.opacity(0.3)).blur(radius: 20)).onAppear {
+            isShowAnimation = true
+        }
+     }
+    }
+}
+
+struct LikeEachOtherView_Previews: PreviewProvider {
+    static var previews: some View {
+        LikeEachOtherView(isShow: .constant(true),avatar: "",likeUserAvatar: "")
     }
 }
 
