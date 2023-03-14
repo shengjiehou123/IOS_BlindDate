@@ -22,7 +22,8 @@ class UserCenter : NSObject,ObservableObject{
         }
         let model = readUserInfoModel()
         self.userInfoModel = model
-        if model == nil {            requestUserInfo(needUserSig: true)
+        if model == nil {
+            requestUserInfo(needUserSig: true)
         }else{
             requestChatUserSig()
         }

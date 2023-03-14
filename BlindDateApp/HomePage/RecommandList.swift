@@ -9,18 +9,23 @@ import SwiftUI
 import SDWebImageSwiftUI
 import JFHeroBrowser
 
+class RecommandData:ObservableObject{
+    var id : UUID = UUID()
+    @Published var listData : [ReCommandModel] = []
+}
+
 struct RecommandList: View {
     @State var computedModel = ComputedProperty()
-    @State var listData : [ReCommandModel] = []
+    @StateObject var recommnadData : RecommandData = RecommandData()
     var body: some View {
 //        Text("Hello, World!").onAppear {
 ////            requestRecommandList(state: .normal)
 //        }
     NavigationView{
         ZStack(alignment: .top){
-            ForEach(0..<listData.count,id:\.self){ index in
-                let model = listData[index]
-                ScrollCardView(bgColor: .orange, recommandModel: model,index: index)
+            ForEach(0..<recommnadData.listData.count,id:\.self){ index in
+                let model = recommnadData.listData[index]
+                ScrollCardView(bgColor: .orange,index: index).environmentObject(model)
             }
         }.navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(leading: Text("推荐").font(.system(size: 30, weight: .medium, design: .default))).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).toast(isShow: $computedModel.showToast, msg: computedModel.toastMsg)
@@ -42,7 +47,7 @@ struct RecommandList: View {
         NW.request(urlStr: "recommended/list", method: .post, parameters: param) { response in
             computedModel.showLoading = false
             if state == .normal || state == .pullDown || state == .refresh {
-                listData.removeAll()
+                recommnadData.listData.removeAll()
             }
             guard let list = response.data["list"] as? [[String:Any]] else{
                 return
@@ -55,7 +60,7 @@ struct RecommandList: View {
                 }
                 tempArr.append(recommandModel)
             }
-            listData.append(contentsOf: tempArr)
+            recommnadData.listData.append(contentsOf: tempArr)
         } failedHandler: { response in
             computedModel.showLoading = false
             computedModel.showToast = true
@@ -67,7 +72,7 @@ struct RecommandList: View {
 
 struct ScrollCardView:View{
     var bgColor : Color
-    var recommandModel : ReCommandModel
+    @EnvironmentObject var recommandModel : ReCommandModel
     var index:Int
     @State var offset : CGFloat = 0;
     @GestureState var isDragging : Bool = false
@@ -76,10 +81,14 @@ struct ScrollCardView:View{
     var body: some View{
         let topOffset = index <= 2 ? index * 15 : 0
         ScrollView(.vertical, showsIndicators: false) {
-            LazyVStack{
-                CardView(recommandModel: recommandModel, bgColor: bgColor)
-                HomePageAboutUsView(title: "关于我",content: recommandModel.aboutMeDesc,userPhotos: recommandModel.userPhotos)
-                HomePageAboutUsView(title: "希望对方",content: recommandModel.likePersonDesc,userPhotos: [])
+            VStack{
+                CardView(bgColor: bgColor).environmentObject(recommandModel)
+                HomePageAboutUsView(title: "关于我",content: recommandModel.myTag.count > 0 ? (recommandModel.aboutMeDesc + "\n" + recommandModel.myTag) : recommandModel.aboutMeDesc,userPhotos: recommandModel.userPhotos)
+                HomePageAboutUsView(title: "希望对方",content: recommandModel.likePersonTag,userPhotos: [])
+                if !recommandModel.loveGoalsDesc.isEmpty {
+                    HomePageAboutUsView(title: "恋爱目标",content: recommandModel.loveGoalsDesc,userPhotos: [])
+                }
+                
             }
         }.navigationViewStyle(.stack).background(RoundedRectangle(cornerRadius: 10).fill(Color.white).shadow(color: Color.black.opacity(0.2), radius: 3, x: 0, y: 1)).padding(EdgeInsets(top: 0, leading: 10, bottom: CGFloat(topOffset) + 10, trailing: 10))
             .offset(x:offset,y:CGFloat(topOffset))
@@ -158,7 +167,7 @@ struct HomePageAboutUsView:View{
             ForEach(0..<userPhotos.count) { index in
                 let model = userPhotos[index]
                 let url = URL.init(string:model.photo)
-                WebImage(url: url).resizable().interpolation(.high).aspectRatio(contentMode:.fill).frame(width: screenWidth - 40, height: 500, alignment: .leading).padding(.leading,10)
+                WebImage(url: url).resizable().interpolation(.high).aspectRatio(contentMode:.fill).frame(width: screenWidth - 20, height: 500, alignment: .leading)
                     .clipped(antialiased: true).onTapGesture {
                    var list: [HeroBrowserViewModule] = []
                    for i in 0..<userPhotos.count {
@@ -175,19 +184,19 @@ struct HomePageAboutUsView:View{
 }
 
 struct CardView:View{
-    var recommandModel : ReCommandModel
+    @EnvironmentObject var recommandModel : ReCommandModel
     var bgColor : Color
     var body: some View{
         VStack(alignment: .leading, spacing: 0) {
-           CardHeaderView(recommandModel: recommandModel, bgColor: bgColor)
+            CardHeaderView(bgColor: bgColor).environmentObject(recommandModel)
 //            Spacer()
         }
     }
 }
 
 struct CardHeaderView:View{
-    var recommandModel : ReCommandModel
-    @State var titles = ["163cm","电商","搞笑女孩","搞笑女孩2","搞笑女孩3"]
+    @EnvironmentObject var recommandModel : ReCommandModel
+    @State var titles : [String] = []
     @State var sumWidth : CGFloat = 0
     @State var overParentWidthDic :[Int:[String]] = [:]
     @State var rows :[Int] = []
@@ -229,7 +238,13 @@ struct CardHeaderView:View{
             
 //            Spacer()
         }.background(RoundedRectangle(cornerRadius: 10).fill(bgColor)).padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)).onAppear {
+            if !recommandModel.school.isEmpty {
+                titles = ["\(recommandModel.height)cm",recommandModel.educationTypeDesc,recommandModel.school,recommandModel.job]
+            }else{
+                titles = ["\(recommandModel.height)cm",recommandModel.educationTypeDesc,recommandModel.job]
+            }
             sortTitles()
+            
         }
     }
     

@@ -14,8 +14,8 @@ import Combine
 
 
 struct EnterInfoView: View {
-    @State var nickName: String = ""
     @State var scrollIndex: Int = 0
+    @State var nickName: String = ""
     @State var gender: Int = 3
     @State var birthDay: Double = 0
     @State var height: Int = 0
@@ -118,7 +118,7 @@ struct EnterInfoView: View {
     }
     
     func requestSetUserInfo(){
-        let mytag = selectTagArr.joined(separator: ",")
+        let mytag = selectTagArr.joined(separator: " ")
         let oterTag = selectTagOtherArr.joined(separator: ",")
         let param = ["nickName":nickName,
                      "gender":gender,
@@ -272,8 +272,8 @@ struct AboutUsDescView:View{
             Text("说说你是什么样的人?")
                 .font(.system(size: 16, weight: .medium, design: .default))
             ZStack(alignment:.topLeading){
-                TextEditor(text: $aboutUsDesc).foregroundColor(.red).lineSpacing(5)
-                    .padding()
+                TextEditor(text: $aboutUsDesc).foregroundColor(.black).lineSpacing(5)
+                    .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
                     .background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3"))).frame(height:200).introspectTextView { textView in
                         textView.backgroundColor = .colorWithHexString(hex: "#F3F3F3")
                     }.onChange(of: aboutUsDesc) { newValue in
@@ -284,7 +284,7 @@ struct AboutUsDescView:View{
                         }
                     }
                 if showPlaceHolder {
-                    Text("请输入至少10字").font(.system(size:13)).foregroundColor(.colorWithHexString(hex: "#999999")).padding()
+                    Text("请输入至少10字").font(.system(size:15)).foregroundColor(.colorWithHexString(hex: "#999999")).padding(EdgeInsets(top: 30, leading: 10, bottom: 0, trailing: 0))
                 }
             }
             Text("示例：我是典型的白羊座，性格热情开朗喜欢认识新朋友，也比较喜欢小动物，偶尔多愁善感，容易对一些细节感动。")
@@ -418,7 +418,8 @@ struct MyLifeView:View{
                     toastMsg = "请添加图片展示自己"
                     return
                 }
-                upLoadPhotos()
+                
+                uploadPhotos()
                 scrollIndex = 8
             }, backSepHandle: {
                 scrollIndex = 6
@@ -439,8 +440,24 @@ struct MyLifeView:View{
         }.toast(isShow: $showToast, msg: toastMsg)
     }
     
-    func upLoadPhotos(){
-        NW.uploadingImage(urlStr: "upload/photos", params: ["scenes":"life"], imageArr:pickerLifeResult) { response in
+    func uploadPhotos(){
+        for item in pickerLifeResult {
+            requestUpLoadPhotos(scenes: "life", image: item)
+        }
+        for item in pickerInterestResult {
+            requestUpLoadPhotos(scenes: "interest", image: item)
+        }
+        for item in pickerTravelResult {
+            requestUpLoadPhotos(scenes: "travel", image: item)
+        }
+        
+        for item in pickerOtherResult {
+            requestUpLoadPhotos(scenes: "other", image: item)
+        }
+    }
+    
+    func requestUpLoadPhotos(scenes:String,image:UIImage){
+        NW.uploadingImage(urlStr: "upload/photos", params: ["scenes":scenes], image:image) { response in
             
         } failedHandler: { response in
             
@@ -556,7 +573,7 @@ struct MyAvatarView:View{
     }
     
     func upLoadAvatar(){
-        NW.uploadingImage(urlStr: "upload/photos", params: ["scenes":"avatar"], imageArr:pickerResult) { response in
+        NW.uploadingImage(urlStr: "upload/photos", params: ["scenes":"avatar"], image:pickerResult.last!) { response in
             
         } failedHandler: { response in
             
@@ -824,6 +841,7 @@ struct MyJobView:View{
     
     func getYearIncomeArr() -> [String]{
         return ["100万以上","60-100万","30-60万","20-30万","10-20万","5-10万","5万以下"].reversed()
+      
     }
 }
 
@@ -1116,7 +1134,7 @@ struct GenderView:View{
                         }.padding(.leading,20)
                     }.onTapGesture {
                         selectedIndex = index + 1
-                        gender = selectedIndex - 1
+                        gender = (selectedIndex - 1 == 0) ? 1 : 0
                     }
                 }
             }

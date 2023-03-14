@@ -45,10 +45,12 @@ open class BaseRequest: NSObject {
                     let res = ResponseData(code: code, data: data, message: message)
                     if res.code == 0 {
                         completionHandler(res)
+                        log.info("requestSuc:\(requestUrlStr) response:\(dic)")
                     }else{
                         failedHandler(res)
+                        log.info("requestFailed:\(requestUrlStr) response:\(dic)")
                     }
-                    print("\(res)")
+                    
                 }else{
                     
                 }
@@ -58,7 +60,7 @@ open class BaseRequest: NSObject {
                 let message = response.error?.errorDescription ?? ""
                 let res = ResponseData(code: code, data: data, message: message)
                 failedHandler(res)
-                print("\(res)")
+                log.info("requestFailed:\(requestUrlStr) response:\(res)")
             }
            
            
@@ -67,7 +69,7 @@ open class BaseRequest: NSObject {
   
     
     //MARK: 上传图片 -
-    func uploadingImage(urlStr:String,params:[String:String],imageArr:[UIImage],completionHandler:@escaping (_ response: ResponseData) -> Void,failedHandler: @escaping (_ response: ResponseData) -> Void){
+    func uploadingImage(urlStr:String,params:[String:String],image:UIImage,completionHandler:@escaping (_ response: ResponseData) -> Void,failedHandler: @escaping (_ response: ResponseData) -> Void){
         let requestUrlStr = Consts.shared.domain + "/" + urlStr
         print("requestUrlStr:\(requestUrlStr), method: Post")
         let headers :HTTPHeaders = [
@@ -78,12 +80,8 @@ open class BaseRequest: NSObject {
             for (key,value) in params {
                 multipartFormData.append(value.data(using: .utf8)!, withName: key)
             }
-            
-            for image in imageArr {
-                let data = image.jpegData(compressionQuality: 1)!
-                
-                multipartFormData.append(data, withName: "userPhoto",fileName:"\(data.base64EncodedString())" + ".jpeg" ,mimeType: "image/jpeg")
-            }
+            let data = image.jpegData(compressionQuality: 0.5)!
+            multipartFormData.append(data, withName: "userPhoto",fileName:"\(data.base64EncodedString())" + ".jpeg" ,mimeType: "image/jpeg")
             
         }, to: requestUrlStr,headers:headers).uploadProgress{ progress in
             log.info("fractionCompleted:\(progress.fractionCompleted)")
