@@ -167,6 +167,7 @@ struct HomePageAboutUsView:View{
             ForEach(0..<userPhotos.count) { index in
                 let model = userPhotos[index]
                 let url = URL.init(string:model.photo)
+                Spacer().frame(height:10)
                 WebImage(url: url).resizable().interpolation(.high).aspectRatio(contentMode:.fill).frame(width: screenWidth - 20, height: 500, alignment: .leading)
                     .clipped(antialiased: true).onTapGesture {
                    var list: [HeroBrowserViewModule] = []
@@ -188,6 +189,7 @@ struct CardView:View{
     var bgColor : Color
     var body: some View{
         VStack(alignment: .leading, spacing: 0) {
+            Spacer().frame(height:10)
             CardHeaderView(bgColor: bgColor).environmentObject(recommandModel)
 //            Spacer()
         }
@@ -210,22 +212,24 @@ struct CardHeaderView:View{
                     HStack(alignment: .center, spacing: 10) {
                         Text( recommandModel.nickName)
                             .foregroundColor(.white)
+                            .font(.system(size: 16, weight: .medium, design: .default))
                         let birthDayDate =  Date.init(timeIntervalSince1970: recommandModel.birthday)
                         
                         Text("\(birthDayDate.getAge())")
                             .foregroundColor(.white)
+                            .font(.system(size: 16, weight: .medium, design: .default))
                     }.padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                     HStack(alignment: .center, spacing: 10) {
-                        Image(systemName:"arkit").resizable().frame(width: 20, height: 20, alignment: .leading).background(Color.red).padding(EdgeInsets(top: 4, leading: 10, bottom: 4, trailing: 4))
+//                        Image(systemName:"arkit").resizable().frame(width: 20, height: 20, alignment: .leading).background(Color.red).padding(EdgeInsets(top: 4, leading: 10, bottom: 4, trailing: 4))
                         Text("实名 真实头像")
                             .foregroundColor(.white)
-                            .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 4))
-                    }.background(RoundedRectangle(cornerRadius: 4).fill(Color.orange)).padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 0))
+                            .padding(EdgeInsets(top: 4, leading: 10, bottom: 4, trailing: 10))
+                    }.background(RoundedRectangle(cornerRadius: 4).fill(Color.blue)).padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 0))
                    
 
                 }
                 Spacer()
-            }).background(Color.blue).padding(EdgeInsets(top: 30, leading: 10, bottom: 0, trailing: 0))
+            }).padding(EdgeInsets(top: 30, leading: 10, bottom: 0, trailing: 0))
             ForEach(rows,id:\.self){ row in
                 let titleContents = overParentWidthDic[row] ?? []
                 HStack(alignment: .top, spacing: 10) {
@@ -237,7 +241,7 @@ struct CardHeaderView:View{
             
             
 //            Spacer()
-        }.background(RoundedRectangle(cornerRadius: 10).fill(bgColor)).padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)).onAppear {
+        }.background(WebImage(url: URL(string: recommandModel.bgImageUrl)).resizable().aspectRatio(contentMode: .fill).clipShape(RoundedRectangle(cornerRadius: 10))).padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 10)).onAppear {
             if !recommandModel.school.isEmpty {
                 titles = ["\(recommandModel.height)cm",recommandModel.educationTypeDesc,recommandModel.school,recommandModel.job]
             }else{
@@ -246,6 +250,7 @@ struct CardHeaderView:View{
             sortTitles()
             
         }
+      
     }
     
     func sortTitles(){
@@ -289,7 +294,7 @@ struct CardHeaderView:View{
 struct BackColorText:View{
     var title:String = ""
     var body: some View{
-        Text(title).lineLimit(1).padding(EdgeInsets(top: 7, leading: 7, bottom: 7, trailing: 7)).background(Capsule().fill(Color.black.opacity(0.2)))
+        Text(title).foregroundColor(.white).lineLimit(1).padding(EdgeInsets(top: 7, leading: 7, bottom: 7, trailing: 7)).background(Capsule().fill(Color.white.opacity(0.2)))
     }
 }
 

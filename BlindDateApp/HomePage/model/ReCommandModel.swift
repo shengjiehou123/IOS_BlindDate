@@ -44,6 +44,8 @@ class ReCommandModel: HandyJSON,Identifiable,ObservableObject {
     var myTag:String = ""
     var likePersonTag:String = ""
     var userPhotos: [UserPhotoModel] = []
+    var bgImageId : Int = 0
+    var bgImageUrl : String = ""
     required  init() {
         
     }
