@@ -8,6 +8,7 @@
 import SwiftUI
 import SDWebImageSwiftUI
 import HandyJSON
+import JFHeroBrowser
 
 class CircleModel:HandyJSON{
     var uid : Int = 0
@@ -87,19 +88,26 @@ struct CircleRow:View{
                 Spacer()
             }.frame(maxWidth:.infinity).padding(.leading,15)
             VStack(alignment: .leading, spacing: 10){
-                
                 ForEach(0..<getRow(total: images.count)){ i in
                     HStack(alignment: .center,spacing: 10){
                         ForEach(0..<3){ j in
-                            if getIndex(i: i, j: j) < images.count {
-                                WebImage(url:URL(string:"\(images[getIndex(i:i,j:j)])")).resizable().aspectRatio( contentMode: .fill).background(RoundedRectangle(cornerRadius: 10).fill(Color.red))
-                                    .frame(width:100,height:100).clipShape(RoundedRectangle(cornerRadius: 10))
+                            let index = getIndex(i: i, j: j)
+                            if index < images.count {
+                                WebImage(url:URL(string:"\(images[index])")).resizable().renderingMode(.original).aspectRatio(contentMode: .fill)
+                                    .frame(width:100,height:100,alignment: .center).background(Color.red).clipShape(RoundedRectangle(cornerRadius: 10)).contentShape(Rectangle()).onTapGesture {
+                                        var list: [HeroBrowserViewModule] = []
+                                        for imageUrlStr in images {
+                                            list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: imageUrlStr, originImgUrl: imageUrlStr))
+                                        }
+                                        myAppRootVC?.hero.browserPhoto(viewModules: list, initIndex: index)
+                                    }
                             }else{
-                                EmptyView()
+                                EmptyView().frame(width: 0, height: 0, alignment: .leading)
                             }
                         }
+                        Spacer()
                     }
-                    }.padding(.horizontal)
+                }
                 Spacer()
             }.padding(EdgeInsets(top: 0, leading: 40, bottom: 0, trailing: 10))
             HStack(alignment:.center,spacing:50){
