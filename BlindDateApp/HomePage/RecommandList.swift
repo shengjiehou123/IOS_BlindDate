@@ -9,6 +9,7 @@ import SwiftUI
 import SDWebImageSwiftUI
 import JFHeroBrowser
 
+
 class RecommandData:ObservableObject{
     var id : UUID = UUID()
     @Published var listData : [ReCommandModel] = []
@@ -100,7 +101,7 @@ struct ScrollCardView:View{
             .delaysTouches(for: 0.1, onTap: {
                 
             }).alertB(isPresented: $showLikeEachOther, builder: {
-                LikeEachOtherView(isShow: $showLikeEachOther,avatar: UserCenter.shared.userInfoModel?.avatar ?? "",likeUserAvatar: recommandModel.avatar)
+                LikeEachOtherView(isShow: $showLikeEachOther,avatar: UserCenter.shared.userInfoModel?.avatar ?? "",likeUserAvatar: recommandModel.avatar,toUserId: recommandModel.id)
             }).gesture(DragGesture().updating($isDragging, body: { value, out, _ in
                 out = true
             }).onChanged({ value in
@@ -323,15 +324,16 @@ struct LikeEachOtherView:View{
     @Binding var isShow : Bool
     var avatar : String
     var likeUserAvatar : String
+    var toUserId : Int
     @State var isShowAnimation : Bool = false
     var body: some View{
         if isShow {
         VStack(alignment: .center, spacing: 20) {
             Spacer().frame(height:100)
             HStack(alignment: .center, spacing: -10) {
-                WebImage(url: URL(string: likeUserAvatar)).resizable().aspectRatio( contentMode: .fill).frame(width: 100, height: 100, alignment: .center).clipShape(Circle()).offset(x: isShowAnimation ? 0 : -50).animation(.spring(response: 0.4, dampingFraction: 0.2, blendDuration: 0.2), value: isShowAnimation).zIndex(1)
+                WebImage(url: URL(string: likeUserAvatar)).resizable().aspectRatio( contentMode: .fill).frame(width: 100, height: 100, alignment: .center).clipShape(Circle()).contentShape(Rectangle()).offset(x: isShowAnimation ? 0 : -50).animation(.spring(response: 0.5, dampingFraction: 0.3, blendDuration: 0.2), value: isShowAnimation).zIndex(1)
         
-                WebImage(url:  URL(string: avatar)).resizable().aspectRatio( contentMode: .fill).clipShape(Circle()).frame(width: 100, height: 100, alignment: .center).offset(x: isShowAnimation ? 0 :  50).animation(.spring(response: 0.4, dampingFraction: 0.2, blendDuration: 0.2), value: isShowAnimation)
+                WebImage(url:  URL(string: avatar)).resizable().aspectRatio( contentMode: .fill).clipShape(Circle()).frame(width: 100, height: 100, alignment: .center).offset(x: isShowAnimation ? 0 :  50).animation(.spring(response: 0.5, dampingFraction: 0.3, blendDuration: 0.2), value: isShowAnimation)
             }
             Text("你们相互喜欢了对方").font(.system(size: 22, weight: .medium, design: .default))
             Text("配对成功，可以开始聊天啦").font(.system(size: 18, weight: .medium, design: .default))
@@ -339,7 +341,9 @@ struct LikeEachOtherView:View{
             
             Button {
                 isShow = false
-                self.topViewController()?.dismiss(animated: true, completion: nil)
+//                self.topViewController()?.dismiss(animated: true, completion: nil)
+                self.topViewController()?.dismiss(animated: false, completion: nil)
+               
             } label: {
                 HStack{
                     Text("发消息").foregroundColor(.white).font(.system(size: 17, weight: .medium, design: .default))
@@ -364,7 +368,7 @@ struct LikeEachOtherView:View{
 
 struct LikeEachOtherView_Previews: PreviewProvider {
     static var previews: some View {
-        LikeEachOtherView(isShow: .constant(true),avatar: "",likeUserAvatar: "")
+        LikeEachOtherView(isShow: .constant(true),avatar: "",likeUserAvatar: "",toUserId: 0)
     }
 }
 

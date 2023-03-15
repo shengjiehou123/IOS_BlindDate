@@ -8,6 +8,14 @@
 import SwiftUI
 import JFHeroBrowser
 
+enum TableSelectionTagType:Hashable{
+    case recommandTagType
+    case likeTagType
+    case circleTagType
+    case messageTagType
+    case meTagType
+}
+
 struct ContentView: View {
     init(){
         UserCenter.shared.setDefaultData()
@@ -46,6 +54,7 @@ struct ContentView: View {
 
     }
     @ObservedObject var userCenter : UserCenter = UserCenter.shared
+    @State var tabSelection : TableSelectionTagType = .recommandTagType
     var body: some View {
         if !userCenter.isLogin {
             LoginView()
@@ -53,14 +62,14 @@ struct ContentView: View {
             if (userCenter.userInfoModel?.nickName ?? "").isEmpty {
                 EnterInfoView()
             }else{
-                TabView{
+                TabView(selection: $tabSelection){
                     RecommandList().tabItem {
                         Label {
                             Text("推荐")
                         } icon: {
                             Image(systemName: "arkit").foregroundColor(.red)
                         }
-                    }
+                    }.tag(TableSelectionTagType.recommandTagType)
                     
                     LikeMe().tabItem {
                         Label {
@@ -68,7 +77,7 @@ struct ContentView: View {
                         } icon: {
                             Image(systemName: "arkit").foregroundColor(.red)
                         }
-                    }
+                    }.tag(TableSelectionTagType.likeTagType)
                     
                     DynamicCircleView().tabItem {
                         Label {
@@ -76,7 +85,7 @@ struct ContentView: View {
                         } icon: {
                             Image(systemName: "arkit").foregroundColor(.red)
                         }
-                    }
+                    }.tag(TableSelectionTagType.circleTagType)
                     
                     MessageView().tabItem {
                         Label {
@@ -84,7 +93,7 @@ struct ContentView: View {
                         } icon: {
                             Image(systemName: "arkit").foregroundColor(.red)
                         }
-                    }
+                    }.tag(TableSelectionTagType.messageTagType)
                     
                     Me().tabItem {
                         Label {
@@ -92,7 +101,7 @@ struct ContentView: View {
                         } icon: {
                             Image(systemName: "arkit").foregroundColor(.red)
                         }
-                    }
+                    }.tag(TableSelectionTagType.meTagType)
                 }
             }
         }

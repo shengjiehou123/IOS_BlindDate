@@ -83,13 +83,13 @@ struct CircleRow:View{
             }.frame(maxWidth:.infinity).padding(.leading,15)
             
             HStack(alignment: .center, spacing: 0){
-                Spacer().frame(width:40)
+                Spacer().frame(width:50)
                 Text(model.content).lineSpacing(10)
                 Spacer()
             }.frame(maxWidth:.infinity).padding(.leading,15)
             VStack(alignment: .leading, spacing: 10){
                 ForEach(0..<getRow(total: images.count)){ i in
-                    HStack(alignment: .center,spacing: 10){
+                    HStack(alignment: .center,spacing: 5){
                         ForEach(0..<3){ j in
                             let index = getIndex(i: i, j: j)
                             if index < images.count {
@@ -109,7 +109,7 @@ struct CircleRow:View{
                     }
                 }
                 Spacer()
-            }.padding(EdgeInsets(top: 0, leading: 40, bottom: 0, trailing: 10))
+            }.padding(EdgeInsets(top: 0, leading: 65, bottom: 0, trailing: 10))
             HStack(alignment:.center,spacing:50){
                 Spacer()
                 Text("点赞")
