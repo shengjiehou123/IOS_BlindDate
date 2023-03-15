@@ -70,6 +70,14 @@ struct ContentView: View {
                         }
                     }
                     
+                    DynamicCircleView().tabItem {
+                        Label {
+                            Text("广场")
+                        } icon: {
+                            Image(systemName: "arkit").foregroundColor(.red)
+                        }
+                    }
+                    
                     MessageView().tabItem {
                         Label {
                             Text("消息")

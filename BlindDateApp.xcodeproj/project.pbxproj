@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		55219B014EB8F3FB048E4E7B /* Pods_BlindDateApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA46E149846F89A84C1EE6CF /* Pods_BlindDateApp.framework */; };
+		A24B376729C1D5D500D1D003 /* DynamicCircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A24B376629C1D5D500D1D003 /* DynamicCircleView.swift */; };
 		A2519B9229A9E59D0098DF3E /* ViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2519B9129A9E59D0098DF3E /* ViewExtension.swift */; };
 		A2519B9429A9E5D40098DF3E /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2519B9329A9E5D40098DF3E /* LoadingView.swift */; };
 		A2519B9729A9E95B0098DF3E /* UserCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2519B9629A9E95B0098DF3E /* UserCenter.swift */; };
@@ -45,6 +46,7 @@
 
 /* Begin PBXFileReference section */
 		664FC701655135A14D8BE38C /* Pods-BlindDateApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlindDateApp.debug.xcconfig"; path = "Target Support Files/Pods-BlindDateApp/Pods-BlindDateApp.debug.xcconfig"; sourceTree = "<group>"; };
+		A24B376629C1D5D500D1D003 /* DynamicCircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicCircleView.swift; sourceTree = "<group>"; };
 		A2519B9129A9E59D0098DF3E /* ViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtension.swift; sourceTree = "<group>"; };
 		A2519B9329A9E5D40098DF3E /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		A2519B9629A9E95B0098DF3E /* UserCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCenter.swift; sourceTree = "<group>"; };
@@ -104,6 +106,14 @@
 				EA46E149846F89A84C1EE6CF /* Pods_BlindDateApp.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A24B376529C1D5BC00D1D003 /* DynamicCirclePage */ = {
+			isa = PBXGroup;
+			children = (
+				A24B376629C1D5D500D1D003 /* DynamicCircleView.swift */,
+			);
+			path = DynamicCirclePage;
 			sourceTree = "<group>";
 		};
 		A2519B9029A9E5850098DF3E /* Utils */ = {
@@ -235,6 +245,7 @@
 				A2E4E91E299B5107000A46FE /* Assets.xcassets */,
 				A2A3A56A29BB8B7F0069C574 /* MessagePage */,
 				A2D8272B29B86B290017445D /* school_data.json */,
+				A24B376529C1D5BC00D1D003 /* DynamicCirclePage */,
 				A2D8272D29B87C750017445D /* profession.json */,
 				A2D8272F29B88E9C0017445D /* city.json */,
 				A2D8273329B8971A0017445D /* area.json */,
@@ -420,6 +431,7 @@
 				A2519B9729A9E95B0098DF3E /* UserCenter.swift in Sources */,
 				A2A3A56C29BB8B8C0069C574 /* MessageView.swift in Sources */,
 				A281043129B197ED00C0B8E8 /* UIImageExtension.swift in Sources */,
+				A24B376729C1D5D500D1D003 /* DynamicCircleView.swift in Sources */,
 				A281043F29B2FCAC00C0B8E8 /* EnterInfoView.swift in Sources */,
 				A2E4E929299B517D000A46FE /* LoginView.swift in Sources */,
 				A2A3A56729B9C0710069C574 /* StringExtension.swift in Sources */,
