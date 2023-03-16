@@ -22,15 +22,14 @@ class LikeMeViewModel:ObservableObject{
             guard let list = response.data["likeMeList"] as? [[String:Any]] else{
                 return
             }
-            var temArr : [LikeMeModel] = []
+//            var temArr : [LikeMeModel] = []
             for dic in list {
                 guard let model = LikeMeModel.deserialize(from: dic, designatedPath: nil) else{
                     continue
                 }
-                temArr.append(model)
+                self.listData.append(model)
             }
             
-            self.listData.append(contentsOf: temArr)
 //            for index in 0..<20{
 //                let model = LikeMeModel()
 //                model.id = 200 + index
@@ -47,7 +46,7 @@ class LikeMeViewModel:ObservableObject{
 }
 
 struct LikeMe: View {
-    @ObservedObject var model : LikeMeViewModel = LikeMeViewModel()
+    @StateObject var model : LikeMeViewModel = LikeMeViewModel()
     var body: some View {
         NavigationView{
             ScrollView(.vertical, showsIndicators: false) {
@@ -65,7 +64,7 @@ struct LikeMe: View {
                     ForEach(model.listData,id:\.id){ model in
                         WebImage(url: URL(string: model.avatar)).resizable().aspectRatio( contentMode: .fill).frame(height:250).clipShape(RoundedRectangle(cornerRadius: 10))
                     }
-                }.padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
+                }.frame(maxWidth:.infinity,maxHeight: .infinity).padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
             }.navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
