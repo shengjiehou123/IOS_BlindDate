@@ -16,6 +16,11 @@ enum TableSelectionTagType:Hashable{
     case meTagType
 }
 
+open class NavigationCenter : ObservableObject{
+    static let shared = NavigationCenter()
+    @Published var tableSelectionType : TableSelectionTagType = .recommandTagType
+}
+
 struct ContentView: View {
     init(){
         UserCenter.shared.setDefaultData()
@@ -54,7 +59,7 @@ struct ContentView: View {
 
     }
     @ObservedObject var userCenter : UserCenter = UserCenter.shared
-    @State var tabSelection : TableSelectionTagType = .recommandTagType
+    @ObservedObject var naviCenter : NavigationCenter = NavigationCenter.shared
     var body: some View {
         if !userCenter.isLogin {
             LoginView()
@@ -62,7 +67,8 @@ struct ContentView: View {
             if (userCenter.userInfoModel?.nickName ?? "").isEmpty {
                 EnterInfoView()
             }else{
-                TabView(selection: $tabSelection){
+                
+                TabView(selection: $naviCenter.tableSelectionType){
                     RecommandList().tabItem {
                         Label {
                             Text("推荐")

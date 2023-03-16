@@ -35,3 +35,9 @@ public let kSafeBottom = keyWindow?.safeAreaInsets.bottom ?? 0
 
 public let myAppRootVC : UIViewController? = keyWindow?.rootViewController
 
+
+
+
+//MARK: Notification
+
+public let kNotiChatToUserId = "kChatToUserId"

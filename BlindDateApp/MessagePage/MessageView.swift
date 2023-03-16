@@ -46,7 +46,14 @@ struct MessageView: View {
                         Text("消息").font(.system(size: 30, weight: .medium, design: .default))
                     }
                 }).onAppear {
-                   
+                    
+                        NotificationCenter.default.addObserver(forName: .init(rawValue: kNotiChatToUserId), object: nil, queue: OperationQueue.main) { noti in
+                            
+                            toUserId = String(noti.object as? Int ?? 0)
+                            log.info("toUserId:\(toUserId)")
+                            isActive = true
+                        }
+                    
                 }
             }
            

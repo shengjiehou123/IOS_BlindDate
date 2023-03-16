@@ -12,13 +12,20 @@ import JFHeroBrowser
 
 class CircleModel:HandyJSON{
     var uid : Int = 0
+    var content : String = ""
+    var images : String = ""
+    var userInfo : CircleUserInfo = CircleUserInfo()
+    required init() {
+        
+    }
+}
+
+class CircleUserInfo:HandyJSON{
     var avatar : String = ""
     var nickName : String = ""
     var birthday : Double = 0
     var workCityName : String = ""
     var job : String = ""
-    var content : String = ""
-    var images : String = ""
     required init() {
         
     }
@@ -70,13 +77,13 @@ struct CircleRow:View{
     var body: some View{
         VStack(alignment: .leading, spacing: 15) {
             HStack(alignment: .center, spacing: 10) {
-                WebImage(url: URL(string:model.avatar)).resizable().aspectRatio( contentMode: .fill).frame(width: 40, height: 40, alignment: .center).background(Color.red).clipShape(Circle())
+                WebImage(url: URL(string:model.userInfo.avatar)).resizable().aspectRatio( contentMode: .fill).frame(width: 40, height: 40, alignment: .center).background(Color.red).clipShape(Circle())
                 VStack(alignment: .leading, spacing: 5){
-                    Text(model.nickName).font(.system(size: 13,weight:.medium))
+                    Text(model.userInfo.nickName).font(.system(size: 13,weight:.medium))
                     HStack(alignment: .center, spacing: 3){
-                        Text("\(Date.init(timeIntervalSince1970: model.birthday).getAge())").font(.system(size: 13)).foregroundColor(.gray)
-                        Text(model.workCityName).font(.system(size: 13)).foregroundColor(.gray)
-                        Text(model.job).font(.system(size: 13)).foregroundColor(.gray)
+                        Text("\(Date.init(timeIntervalSince1970: model.userInfo.birthday).getAge())岁").font(.system(size: 13)).foregroundColor(.gray)
+                        Text(model.userInfo.workCityName).font(.system(size: 13)).foregroundColor(.gray)
+                        Text(model.userInfo.job).font(.system(size: 13)).foregroundColor(.gray)
                     }
                 }
                 Spacer()

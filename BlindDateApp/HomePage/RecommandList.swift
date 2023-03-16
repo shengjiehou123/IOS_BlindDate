@@ -326,6 +326,7 @@ struct LikeEachOtherView:View{
     var likeUserAvatar : String
     var toUserId : Int
     @State var isShowAnimation : Bool = false
+    @ObservedObject var naviCenter : NavigationCenter = NavigationCenter.shared
     var body: some View{
         if isShow {
         VStack(alignment: .center, spacing: 20) {
@@ -343,6 +344,10 @@ struct LikeEachOtherView:View{
                 isShow = false
 //                self.topViewController()?.dismiss(animated: true, completion: nil)
                 self.topViewController()?.dismiss(animated: false, completion: nil)
+                naviCenter.tableSelectionType = .messageTagType
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                    NotificationCenter.default.post(name: .init(rawValue: kNotiChatToUserId), object: toUserId)
+                }
                
             } label: {
                 HStack{
