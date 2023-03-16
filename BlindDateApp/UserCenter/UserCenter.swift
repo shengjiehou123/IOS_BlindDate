@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TUICore
 
 class UserCenter : NSObject,ObservableObject{
     static let  shared = UserCenter()
@@ -32,6 +33,16 @@ class UserCenter : NSObject,ObservableObject{
     func loginTIM(){
         if let model =  UserCenter.shared.userInfoModel{
             let userId = "\(model.id)"
+            
+            let config = TUIConfig.default()
+            config?.avatarType = .TAvatarTypeRounded
+
+            let chatConfig = TUIChatConfig.default()
+            chatConfig.backgroudColor = .white
+            chatConfig.enableLink  = false
+            chatConfig.enablePopMenuEmojiReactAction = false
+
+            
             TUILogin.login(1400794630, userID: userId, userSig: userSig) {
 //                requestSendMsg()
                 log.info("TIM Chat login suc")
@@ -181,4 +192,23 @@ class UserCenter : NSObject,ObservableObject{
         return urls[0]
     }
     
+    func clearLocalInfo(){
+        let tokenPath = getDocumentDir().appendingPathComponent("userToken").path
+        if FileManager.default.fileExists(atPath: tokenPath) {
+           try? FileManager.default.removeItem(atPath: tokenPath)
+        }
+       
+        
+        let userInfoPath = getDocumentDir().appendingPathComponent("userInfo").path
+        if FileManager.default.fileExists(atPath: userInfoPath){
+            try? FileManager.default.removeItem(atPath: userInfoPath)
+        }
+        isLogin = false
+        token = ""
+        userInfoModel = nil
+    }
+    
+    func LogOut(){
+        clearLocalInfo()
+    }
 }

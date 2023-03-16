@@ -22,7 +22,9 @@ struct Me: View {
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 80, height: 80, alignment: .leading)
                     .background(Color.red)
-                    .clipShape(Circle(), style: .init(eoFill: true, antialiased: true))
+                    .clipShape(Circle()).contentShape(Rectangle()).onTapGesture {
+                        UserCenter.shared.LogOut()
+                    }
                 VStack(alignment: .leading, spacing: 5) {
                     Text(userInfoModel.nickName)
                         .font(.system(size: 20, weight: .medium, design: .default))

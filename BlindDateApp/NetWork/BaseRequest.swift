@@ -48,6 +48,10 @@ open class BaseRequest: NSObject {
                         log.info("requestSuc:\(requestUrlStr) response:\(dic)")
                     }else{
                         failedHandler(res)
+                        if res.code == 4001{
+                            //token失效
+                            UserCenter.shared.LogOut()
+                        }
                         log.info("requestFailed:\(requestUrlStr) response:\(dic)")
                     }
                     
