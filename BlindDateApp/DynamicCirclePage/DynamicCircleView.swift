@@ -145,8 +145,12 @@ struct CircleRow:View{
     }
 }
 
-class ObserVedCommentModel:ObservableObject,Identifiable{
-    @Published var titles : [CommentModel] = []
+class ObserverTapModel:ObservableObject,Identifiable{
+    @Published var sectionTap : Bool = false
+    @Published var commentId : Int = 0
+    @Published var nickName : String = ""
+    @Published var atUid : Int = 0
+    @Published var sendMsgSuc : Bool = false
 }
 
 struct CommentListView:View{
@@ -154,6 +158,7 @@ struct CommentListView:View{
     @Binding var circleId : Int
 //    @StateObject var obModel : ObserVedCommentModel = ObserVedCommentModel()
     @State var titles : [CommentModel] = []
+    @StateObject var observerTapModel : ObserverTapModel = ObserverTapModel()
     @State var showSecondaryList : Bool = false
     @State var showAnimation : Bool = false
     @State var comment : String = ""
@@ -185,15 +190,18 @@ struct CommentListView:View{
                 LazyVStack(alignment: .leading, spacing: 10){
                 
                 ForEach(titles,id:\.id){ model in
-                    Section(header: CommentSection(model:model)) {
-                        SecondaryRowList(model: model)
+                    Section(header: CommentSection(model:model).environmentObject(observerTapModel)) {
+                        SecondaryRowList(model: model){
+                            reader.scrollTo(model.list.last?.id, anchor: .center)
+                        }.environmentObject(observerTapModel)
+                        
                     }
                     
                 }
                     
                 }.onChange(of: titles) { _ in
                  reader.scrollTo(titles[0].id, anchor: .center)
-             }
+                }
             }
                 
         }.padding(.bottom,65 + kSafeBottom)
@@ -209,8 +217,10 @@ struct CommentListView:View{
             
         CommentSendMsgView(circleId: $circleId,sendCommentSucHandle: {
             requestCommentList(state: .normal)
-        })
-    }.ignoresSafeArea(edges: .bottom)
+        }).environmentObject(observerTapModel)
+    }.ignoresSafeArea(edges: .bottom).onTapGesture {
+        observerTapModel.sectionTap = false
+    }
      }
     }
     func requestCommentList(state:RefreshState){
@@ -244,27 +254,57 @@ struct CommentSendMsgView:View{
     @State var comment : String = ""
     var sendCommentSucHandle : () ->Void
     @State var keyBoardShow : Bool = false
+    @State var introSepectTextField : UITextField? = nil
+    @EnvironmentObject var tapModel : ObserverTapModel
     var body: some View{
         HStack(alignment: .center, spacing: 0) {
-            TextField("评论...", text: $comment,onCommit: {
+            TextField(tapModel.nickName.count > 0 ? "回复\(tapModel.nickName)" : "评论...", text: $comment,onCommit: {
+                tapModel.sectionTap = false
+                tapModel.nickName = ""
                 if !comment.isEmpty {
-                    requestCreateComment()
+                    if tapModel.commentId > 0 && tapModel.atUid > 0 {
+                        requestCreateSecondaryComment()
+                    }else{
+                        requestCreateComment()
+                    }
                 }
             }).frame(maxWidth:.infinity,maxHeight:50).padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)).background(Capsule().fill(Color.colorWithHexString(hex: "#F3F3F3"))).onChange(of: comment) { newValue in
                 comment = comment.trimmingCharacters(in: .whitespaces)
             }.onReceive(Publishers.keyboardHeight) {
                 let keyboardHeight = $0
                 keyBoardShow  = keyboardHeight > 0 ? true : false
+            }.introspectTextField { textField in
+               introSepectTextField = textField
+            }.onChange(of: tapModel.sectionTap) { newValue in
+                if tapModel.sectionTap {
+                    introSepectTextField?.becomeFirstResponder()
+                }else{
+                    introSepectTextField?.resignFirstResponder()
+                }
             }
         }.padding(EdgeInsets(top: 10, leading: 20, bottom: keyBoardShow ? 5 : kSafeBottom, trailing: 20)).introspectTextField { textfield in
             textfield.returnKeyType = .send
         }.background(Color.white).keyboardAdaptive()
     }
+    
     func requestCreateComment(){
         let params = ["circleId":circleId,"comment":comment] as [String : Any]
         NW.request(urlStr: "create/comment", method: .post, parameters: params) { response in
             comment = ""
             sendCommentSucHandle()
+        } failedHandler: { response in
+            
+        }
+
+    }
+    
+    func requestCreateSecondaryComment(){
+        let params = ["commentId":tapModel.commentId,"atUid":tapModel.atUid,"comment":comment] as [String : Any]
+        NW.request(urlStr: "create/secondary/comment", method: .post, parameters: params) { response in
+            tapModel.sendMsgSuc = true
+            tapModel.atUid = 0
+            tapModel.nickName = ""
+            comment = ""
         } failedHandler: { response in
             
         }
@@ -276,15 +316,23 @@ struct SecondaryRowList:View{
     @State var page : Int = 1
     @StateObject var model : CommentModel
     @State var show:Bool = true
+    var listChangeHandle : () ->Void
+    @EnvironmentObject var tapModel : ObserverTapModel
     var body: some View{
         
         if show {
             ForEach(model.list,id:\.id){ secondaryCommentModel in
                 SecondaryCommentRow(model: secondaryCommentModel)
+            }.onChange(of: model.list) { _ in
+                listChangeHandle()
+            }.onChange(of: tapModel.sendMsgSuc) { newValue in
+                if model.id == tapModel.commentId {
+                    requestSecondaryCommentList(commentId: tapModel.commentId, state: .normal)
+                }
             }
         }
         
-        if model.secondaryCount > 0{
+        if model.secondaryCount > 0 || model.list.count > 0{
             if model.list.count < model.secondaryCount || !show{
                 HStack(alignment: .center, spacing: 0) {
                     Spacer().frame(width:60)
@@ -296,7 +344,7 @@ struct SecondaryRowList:View{
                         show = true
                         return
                     }
-                    requestSecondaryCommentList(model: model,state: .pullUp)
+                    requestSecondaryCommentList(commentId: model.id, state: .pullUp)
                 }
             }else{
                 HStack(alignment: .center, spacing: 0) {
@@ -311,16 +359,19 @@ struct SecondaryRowList:View{
         }
     }
     
-    func requestSecondaryCommentList(model:CommentModel,state:RefreshState){
+    func requestSecondaryCommentList(commentId:Int,state:RefreshState){
         if state != .pullUp {
             self.page = 1
         }
-        let params = ["commentId":model.id,"page":self.page,"pageLimit":1]
+        let params = ["commentId":commentId,"page":self.page,"pageLimit":1]
         NW.request(urlStr: "secondary/comment/list", method: .post, parameters: params) { response in
             guard let list = response.data["list"] as? [[String:Any]] else{
                 return
             }
             self.page += 1
+            if state != .pullUp {
+                model.list.removeAll()
+            }
             for item in list {
                 guard let secondaryCommentModel = SecondaryCommentModel.deserialize(from: item, designatedPath: nil) else{
                     continue
@@ -336,6 +387,7 @@ struct SecondaryRowList:View{
 
 struct CommentSection:View{
     var model : CommentModel
+    @EnvironmentObject var tapModel : ObserverTapModel
     var body: some View{
         VStack(alignment: .leading, spacing: 5) {
             HStack(alignment: .top, spacing: 5){
@@ -352,8 +404,14 @@ struct CommentSection:View{
                     Text(model.createAt).font(.system(size: 12)).foregroundColor(.colorWithHexString(hex: "#999999"))
                     Text("回复").font(.system(size: 12, weight: .medium, design: .default)).foregroundColor(.colorWithHexString(hex: "#999999"))
                 }
+        }.background(Color.white).onTapGesture {
+            tapModel.sectionTap = true
+            tapModel.commentId = model.id
+            tapModel.atUid = model.uid
+            tapModel.nickName = model.userInfo.nickName
         }
     }
+    
 }
 
 struct SecondaryCommentRow:View{
@@ -399,7 +457,10 @@ class CommentModel:HandyJSON,ObservableObject,Identifiable,Equatable{
     }
 }
 
-class SecondaryCommentModel:HandyJSON,Identifiable{
+class SecondaryCommentModel:HandyJSON,Identifiable,Equatable{
+    static func == (lhs: SecondaryCommentModel, rhs: SecondaryCommentModel) -> Bool{
+        return lhs.id == rhs.id
+    }
     var id :Int = 0
     var commentId :Int = 0
     var uid : Int = 0
