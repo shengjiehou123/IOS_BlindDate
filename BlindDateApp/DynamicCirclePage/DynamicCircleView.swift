@@ -275,7 +275,7 @@ struct CommentSendMsgView:View{
                 keyBoardShow  = keyboardHeight > 0 ? true : false
             }.introspectTextField { textField in
                introSepectTextField = textField
-            }.onChange(of: tapModel.sectionTap) { newValue in
+            }.onReceive(tapModel.$sectionTap) { _ in
                 if tapModel.sectionTap {
                     introSepectTextField?.becomeFirstResponder()
                 }else{
@@ -325,8 +325,10 @@ struct SecondaryRowList:View{
                 SecondaryCommentRow(model: secondaryCommentModel)
             }.onChange(of: model.list) { _ in
                 listChangeHandle()
-            }.onChange(of: tapModel.sendMsgSuc) { newValue in
-                if model.id == tapModel.commentId {
+            }.onReceive(tapModel.$sendMsgSuc) { newValue in
+                log.info("model.id\(model.id) tapModel.commentId\(tapModel.commentId) tapModel.sendMsgSuc \(newValue)")
+                if model.id == tapModel.commentId && newValue{
+                    tapModel.sendMsgSuc = false
                     requestSecondaryCommentList(commentId: tapModel.commentId, state: .normal)
                 }
             }
@@ -363,12 +365,16 @@ struct SecondaryRowList:View{
         if state != .pullUp {
             self.page = 1
         }
-        let params = ["commentId":commentId,"page":self.page,"pageLimit":1]
+        let params = ["commentId":commentId,"page":self.page,"pageLimit":10]
         NW.request(urlStr: "secondary/comment/list", method: .post, parameters: params) { response in
             guard let list = response.data["list"] as? [[String:Any]] else{
                 return
             }
-            self.page += 1
+            guard let totalCount = response.data["total"] as? Int else{
+                return
+            }
+            model.secondaryCount = totalCount
+//            self.page += 1
             if state != .pullUp {
                 model.list.removeAll()
             }
