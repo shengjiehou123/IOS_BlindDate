@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		55219B014EB8F3FB048E4E7B /* Pods_BlindDateApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA46E149846F89A84C1EE6CF /* Pods_BlindDateApp.framework */; };
+		A238F28B29C74F7C00F1B4F7 /* ButtonExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A238F28A29C74F7B00F1B4F7 /* ButtonExtension.swift */; };
 		A24B376729C1D5D500D1D003 /* DynamicCircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A24B376629C1D5D500D1D003 /* DynamicCircleView.swift */; };
 		A2519B9229A9E59D0098DF3E /* ViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2519B9129A9E59D0098DF3E /* ViewExtension.swift */; };
 		A2519B9429A9E5D40098DF3E /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2519B9329A9E5D40098DF3E /* LoadingView.swift */; };
@@ -46,6 +47,7 @@
 
 /* Begin PBXFileReference section */
 		664FC701655135A14D8BE38C /* Pods-BlindDateApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlindDateApp.debug.xcconfig"; path = "Target Support Files/Pods-BlindDateApp/Pods-BlindDateApp.debug.xcconfig"; sourceTree = "<group>"; };
+		A238F28A29C74F7B00F1B4F7 /* ButtonExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonExtension.swift; sourceTree = "<group>"; };
 		A24B376629C1D5D500D1D003 /* DynamicCircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicCircleView.swift; sourceTree = "<group>"; };
 		A2519B9129A9E59D0098DF3E /* ViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtension.swift; sourceTree = "<group>"; };
 		A2519B9329A9E5D40098DF3E /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 				A2519B9329A9E5D40098DF3E /* LoadingView.swift */,
 				A281043029B197ED00C0B8E8 /* UIImageExtension.swift */,
 				A2A3A56629B9C0710069C574 /* StringExtension.swift */,
+				A238F28A29C74F7B00F1B4F7 /* ButtonExtension.swift */,
 				A2D8270C29B851420017445D /* LocalData.swift */,
 				A2519B9B29A9F1FA0098DF3E /* Header.swift */,
 			);
@@ -432,6 +435,7 @@
 				A2A3A56C29BB8B8C0069C574 /* MessageView.swift in Sources */,
 				A281043129B197ED00C0B8E8 /* UIImageExtension.swift in Sources */,
 				A24B376729C1D5D500D1D003 /* DynamicCircleView.swift in Sources */,
+				A238F28B29C74F7C00F1B4F7 /* ButtonExtension.swift in Sources */,
 				A281043F29B2FCAC00C0B8E8 /* EnterInfoView.swift in Sources */,
 				A2E4E929299B517D000A46FE /* LoginView.swift in Sources */,
 				A2A3A56729B9C0710069C574 /* StringExtension.swift in Sources */,

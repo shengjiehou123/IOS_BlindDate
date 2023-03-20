@@ -158,6 +158,7 @@ struct CommentListView:View{
     @Binding var circleId : Int
 //    @StateObject var obModel : ObserVedCommentModel = ObserVedCommentModel()
     @State var titles : [CommentModel] = []
+    @State var totalCommentListCount = 0
     @StateObject var observerTapModel : ObserverTapModel = ObserverTapModel()
     @State var showSecondaryList : Bool = false
     @State var showAnimation : Bool = false
@@ -169,7 +170,7 @@ struct CommentListView:View{
             Rectangle().fill(Color.black.opacity(0.3))
         VStack(alignment: .leading, spacing: 0){
             HStack(alignment: .center, spacing: 0){
-                Text(titles.count > 0 ? "评论\(titles.count)" : "评论").font(.system(size: 18, weight: .medium, design: .default))
+                Text(totalCommentListCount > 0 ? "评论\(totalCommentListCount)" : "评论").font(.system(size: 18, weight: .medium, design: .default))
                 Spacer()
                 Button {
                     showAnimation = false
@@ -192,7 +193,7 @@ struct CommentListView:View{
                 ForEach(titles,id:\.id){ model in
                     Section(header: CommentSection(model:model).environmentObject(observerTapModel)) {
                         SecondaryRowList(model: model) { show in
-                            show ? reader.scrollTo(model.list.last?.id, anchor: .center) : reader.scrollTo(model.id, anchor: .center)
+                            show ? reader.scrollTo(model.list.last?.id) : reader.scrollTo(model.id)
                         }.environmentObject(observerTapModel)
                         
                     }
@@ -207,17 +208,24 @@ struct CommentListView:View{
         }.padding(.bottom,65 + kSafeBottom)
         
            
-        }.background((RoundedCorner(corners: [.topLeft,.topRight], radius: 10).fill(Color.white))).frame(maxWidth:.infinity,maxHeight: 600).offset(y:showAnimation ? 0: 620).animation(.linear(duration: 0.25), value: showAnimation).onAppear {
+        }.background((RoundedCorner(corners: [.topLeft,.topRight], radius: 10).fill(Color.white))).frame(maxWidth:.infinity,maxHeight: screenHeight * 0.8).offset(y:showAnimation ? 0: screenHeight * 0.8 + 20).animation(.linear(duration: 0.25), value: showAnimation).onAppear {
             showAnimation = true
          }
             
         }.edgesIgnoringSafeArea(.all).onAppear {
             requestCommentList(state: .normal)
        }
-            
+        if observerTapModel.sectionTap {
+            Rectangle().fill(Color.black.opacity(0.3)).onTapGesture {
+                hidenKeyBoard()
+                observerTapModel.sectionTap = false
+            }.edgesIgnoringSafeArea(.top)
+        }
+       
         CommentSendMsgView(circleId: $circleId,sendCommentSucHandle: {
             requestCommentList(state: .normal)
         }).environmentObject(observerTapModel)
+        
     }.ignoresSafeArea(edges: .bottom).onTapGesture {
         observerTapModel.sectionTap = false
     }
@@ -238,6 +246,11 @@ struct CommentListView:View{
                 }
                 titles.append(model)
             }
+            guard let total = response.data["total"] as? Int else{
+                totalCommentListCount = 0
+                return
+            }
+            totalCommentListCount = total
         } failedHandler: { response in
             
         }
@@ -305,6 +318,7 @@ struct CommentSendMsgView:View{
             tapModel.atUid = 0
             tapModel.nickName = ""
             comment = ""
+            sendCommentSucHandle()
         } failedHandler: { response in
             
         }
@@ -318,7 +332,7 @@ struct SecondaryRowList:View{
     @StateObject var model : CommentModel
     var listChangeHandle : (_ show:Bool) ->Void
     @EnvironmentObject var tapModel : ObserverTapModel
-    private let pageLimit = 10
+    private let pageLimit = 5
     var body: some View{
         
         if show {
@@ -350,7 +364,7 @@ struct SecondaryRowList:View{
                         Image("pull_down_indicator").resizable().renderingMode(.template).foregroundColor(.black).aspectRatio(contentMode: .fill)
                             .frame(width: 14, height: 14, alignment: .center)
                         Spacer().frame(width:45)
-                    }
+                    }.padding(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0))
                 }.buttonStyle(PlainButtonStyle()).foregroundColor(.black)
 
                
@@ -365,7 +379,7 @@ struct SecondaryRowList:View{
                         Text("–– 收起").font(.system(size: 13, weight: .medium, design: .default))
                         Image("pull_down_indicator").resizable().renderingMode(.template).foregroundColor(.black).aspectRatio(contentMode: .fill)
                             .frame(width: 14, height: 14, alignment: .center)
-                    }
+                    }.padding(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0))
                 }.buttonStyle(PlainButtonStyle()).foregroundColor(.black)
 
                
@@ -389,7 +403,6 @@ struct SecondaryRowList:View{
                 return
             }
             model.secondaryCount = totalCount
-//            self.page += 1
             for item in list {
                 guard let secondaryCommentModel = SecondaryCommentModel.deserialize(from: item, designatedPath: nil) else{
                     continue
@@ -409,6 +422,7 @@ struct SecondaryRowList:View{
 struct CommentSection:View{
     var model : CommentModel
     @EnvironmentObject var tapModel : ObserverTapModel
+    @State var hight : Bool = false
     var body: some View{
         Button {
             tapModel.sectionTap = true
@@ -432,8 +446,8 @@ struct CommentSection:View{
                     Text("回复").font(.system(size: 12, weight: .medium, design: .default)).foregroundColor(.colorWithHexString(hex: "#999999"))
                     Spacer()
                 }
-            }.contentShape(Rectangle()).background(Color.white).id(model.id)
-        }.buttonStyle(PlainButtonStyle()).foregroundColor(.black)
+            }.contentShape(Rectangle()).id(model.id)
+        }.buttonStyle(HighlightButtonStyle()).foregroundColor(.black)
 
           
         
@@ -472,7 +486,7 @@ struct SecondaryCommentRow:View{
                     Spacer()
                 }
             }.contentShape(Rectangle())
-        }.buttonStyle(PlainButtonStyle()).foregroundColor(.black)
+        }.buttonStyle(HighlightButtonStyle()).foregroundColor(.black)
 
           
         
@@ -492,6 +506,7 @@ class CommentModel:HandyJSON,ObservableObject,Identifiable,Equatable{
     var secondaryCount :Int = 0
     var userInfo : CircleUserInfo = CircleUserInfo()
     @Published var list : [SecondaryCommentModel] = []
+    @Published var total : Int = 0
     required init() {
         
     }
