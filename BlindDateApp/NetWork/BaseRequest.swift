@@ -7,6 +7,7 @@
 
 import UIKit
 import Alamofire
+import SwiftUI
 
 struct ResponseData{
     var code : Int
@@ -16,7 +17,15 @@ struct ResponseData{
 
 open class BaseRequest: NSObject {
    static let shared  = BaseRequest()
+   var dataRequest : DataRequest? = nil
+   var uploadRequest :UploadRequest? = nil
    var httpHeaders : HTTPHeaders = HTTPHeaders()
+   var url :String = ""
+   var method :HTTPMethod = .post
+   var params : Parameters? = nil
+   var encoding : ParameterEncoding = JSONEncoding.default
+   var uploadImageParams : [String:String]? = nil
+   var uploadImage:UIImage? = nil
     public override init() {
         httpHeaders.add(name: "Content-type", value: "application/json")
     }
@@ -34,7 +43,7 @@ open class BaseRequest: NSObject {
         let requestUrlStr = Consts.shared.domain + "/" + urlStr
         print("requestUrlStr:\(requestUrlStr), method:\(method), params:\(String(describing: parameters))")
         updateHeaders()
-        AF.request(requestUrlStr, method: method, parameters: parameters, encoding: encoding, headers: httpHeaders).response{ response in
+       dataRequest = AF.request(requestUrlStr, method: method, parameters: parameters, encoding: encoding, headers: httpHeaders).response{ response in
             print("\(response)")
             if response.response?.statusCode == 200 {
                 if let dic = try? JSONSerialization.jsonObject(with: response.data ?? Data(), options: JSONSerialization.ReadingOptions.mutableContainers) as? [String:Any]{
@@ -69,6 +78,12 @@ open class BaseRequest: NSObject {
            
            
         }
+       
+    }
+    
+    func cancel(){
+        dataRequest?.cancel()
+        uploadRequest?.cancel()
     }
   
     
@@ -80,7 +95,7 @@ open class BaseRequest: NSObject {
         "Authorization": "Bearer " + UserCenter.shared.token,
         "Content-type": "multipart/form-data",
         ]
-        AF.upload(multipartFormData: { multipartFormData in
+       uploadRequest = AF.upload(multipartFormData: { multipartFormData in
             for (key,value) in params {
                 multipartFormData.append(value.data(using: .utf8)!, withName: key)
             }

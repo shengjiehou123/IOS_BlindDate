@@ -201,7 +201,8 @@ class ObserverTapModel:ObservableObject,Identifiable{
     @Published var commentId : Int = 0
     @Published var nickName : String = ""
     @Published var atUid : Int = 0
-    @Published var sendMsgSuc : Bool = false
+    @Published var sendCommentMsgSuc : Bool = false
+    @Published var sendSecondaryCommentMsgSuc : Bool = false
 }
 
 struct CommentListView:View{
@@ -248,11 +249,14 @@ struct CommentListView:View{
                 ForEach(titles,id:\.id){ model in
                     Section(header: CommentSection(model:model).environmentObject(observerTapModel)) {
                         SecondaryRowList(model: model) { show in
-                            show ? reader.scrollTo(model.list.last?.id) : reader.scrollTo(model.id)
+                            show ? reader.scrollTo(model.list.first?.id) : reader.scrollTo(model.id)
                         }.environmentObject(observerTapModel)
                         
-                    }.onChange(of: titles) { _ in
-                      reader.scrollTo(titles[0].id, anchor: .center)
+                    }.onChange(of: observerTapModel.sendCommentMsgSuc) { newValue in
+                        if newValue {
+                            observerTapModel.sendCommentMsgSuc = false
+                            reader.scrollTo(titles[0].id, anchor: .center)
+                        }
                     }
                 }
               
@@ -287,6 +291,7 @@ struct CommentListView:View{
         }
        
         CommentSendMsgView(circleId: $circleId,sendCommentSucHandle: {
+            
             requestCommentList(state: .normal)
         }).environmentObject(observerTapModel)
         
@@ -388,6 +393,7 @@ struct CommentSendMsgView:View{
         let params = ["circleId":circleId,"comment":comment] as [String : Any]
         NW.request(urlStr: "create/comment", method: .post, parameters: params) { response in
             comment = ""
+            tapModel.sendCommentMsgSuc = true
             sendCommentSucHandle()
         } failedHandler: { response in
             
@@ -398,7 +404,7 @@ struct CommentSendMsgView:View{
     func requestCreateSecondaryComment(){
         let params = ["commentId":tapModel.commentId,"atUid":tapModel.atUid,"comment":comment] as [String : Any]
         NW.request(urlStr: "create/secondary/comment", method: .post, parameters: params) { response in
-            tapModel.sendMsgSuc = true
+            tapModel.sendSecondaryCommentMsgSuc = true
             tapModel.atUid = 0
             tapModel.nickName = ""
             comment = ""
@@ -424,10 +430,10 @@ struct SecondaryRowList:View{
                 SecondaryCommentRow(model: secondaryCommentModel).environmentObject(tapModel).id(secondaryCommentModel.id)
             }.onChange(of: model.list) { _ in
                 listChangeHandle(show)
-            }.onReceive(tapModel.$sendMsgSuc) { newValue in
-                log.info("model.id\(model.id) tapModel.commentId\(tapModel.commentId) tapModel.sendMsgSuc \(newValue)")
+            }.onReceive(tapModel.$sendSecondaryCommentMsgSuc) { newValue in
+                log.info("model.id\(model.id) tapModel.commentId\(tapModel.commentId) tapModel.sendSecondaryCommentMsgSuc \(newValue)")
                 if model.id == tapModel.commentId && newValue{
-                    tapModel.sendMsgSuc = false
+                    tapModel.sendSecondaryCommentMsgSuc = false
                     requestSecondaryCommentList(commentId: tapModel.commentId, state: .normal)
                 }
             }
