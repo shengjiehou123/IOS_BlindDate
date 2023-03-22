@@ -17,6 +17,8 @@ class CircleModel:HandyJSON,ObservableObject{
     var content : String = ""
     var images : String = ""
     var userInfo : CircleUserInfo = CircleUserInfo()
+    var likeCount : Int = 0
+    var commentCount : Int = 0
     required init() {
         
     }
@@ -35,30 +37,69 @@ class CircleUserInfo:HandyJSON{
 
 struct DynamicCircleView: View {
     @State var listData : [CircleModel] = []
+    @State var page : Int = 1
+    @State var pageLimit : Int = 10
+    @StateObject var computedModel : MyComputedProperty = MyComputedProperty()
     var body: some View {
-     NavigationView{
-        ScrollView(.vertical,showsIndicators: false){
-            LazyVStack(alignment:.leading,spacing:30){
-                ForEach(listData,id:\.uid){ model in
-                    CircleRow(model:model)
-                }
-            }
-        }.modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "")).navigationBarTitleDisplayMode(.inline).toolbar(content:{
-            ToolbarItem(placement:.navigationBarLeading){
-                Text("广场").font(.system(size:25,weight:.medium))
-            }
-        }).onAppear {
-            requestCircleList()
-        }
+        NavigationView{
+         RefreshableScrollView(refreshing: $computedModel.pullDown, pullDown: {
+             requestCircleList(state: .pullDown)
+         }, footerRefreshing: $computedModel.footerRefreshing, loadMore: $computedModel.loadMore) {
+             requestCircleList(state: .pullUp)
+         } content: {
+             ForEach(listData,id:\.uid){ model in
+                 CircleRow(model:model)
+             }
+         }.modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "")).navigationBarTitleDisplayMode(.inline).toolbar(content:{
+             ToolbarItem(placement:.navigationBarLeading){
+                 Text("广场").font(.system(size:25,weight:.medium))
+             }
+             ToolbarItem(placement: .navigationBarTrailing) {
+                 Button {
+                     
+                 } label: {
+                     HStack{
+                         Text("发动态").font(.system(size: 15, weight: .medium, design: .default)).foregroundColor(.white)
+                     }.padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)).background(RoundedRectangle(cornerRadius: 5).fill(Color.red))
+                 }.buttonStyle(PlainButtonStyle())
+
+             }
+         }).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).onAppear {
+             requestCircleList(state: .normal)
+         }
+        
     }
   }
     
-    func requestCircleList(){
-        NW.request(urlStr: "circle/list", method: .post, parameters: nil) { response in
+    func requestCreateCircle(){
+        let params = ["":"","":""]
+        NW.request(urlStr: "", method: .post, parameters: params) { response in
+            
+        } failedHandler: { response in
+            
+        }
+    }
+    
+    func requestCircleList(state:RefreshState){
+        if state == .normal {
+            computedModel.loadingBgColor = .white
+            computedModel.showLoading = true
+        }
+        let params = ["page":page,"pageLimit":pageLimit]
+        NW.request(urlStr: "circle/list", method: .post, parameters: params) { response in
+            computedModel.showLoading = false
+            computedModel.pullDown = false
             guard let list = response.data["list"] as? [[String:Any]] else{
                 return
             }
-            listData.removeAll()
+            if state == .normal || state == .pullDown {
+                listData.removeAll()
+            }
+            if list.count < pageLimit {
+                computedModel.loadMore = false
+            }else{
+                computedModel.loadMore = true
+            }
             for item in list {
                 guard let model = CircleModel.deserialize(from: item, designatedPath: nil) else{
                     continue
@@ -67,7 +108,8 @@ struct DynamicCircleView: View {
             }
             
         } failedHandler: { response in
-            
+            computedModel.pullDown = false
+            computedModel.loadMore = true
         }
 
     }
@@ -120,12 +162,21 @@ struct CircleRow:View{
                 }
                 Spacer()
             }.padding(EdgeInsets(top: 0, leading: 65, bottom: 0, trailing: 10))
-            HStack(alignment:.center,spacing:50){
+            HStack(alignment:.center,spacing:35){
                 Spacer()
-                Text("点赞")
-                Text("评论").onTapGesture {
+                HStack(alignment: .center, spacing: 8) {
+                    Image("like").resizable().aspectRatio(contentMode: .fill).frame(width: 24, height: 24, alignment: .center)
+                    Text("\(model.likeCount)").foregroundColor(.colorWithHexString(hex: "#999999"))
+                }.onTapGesture {
+//                    showComment = true
+                }
+                HStack(alignment: .center, spacing: 8) {
+                    Image("comment").resizable().aspectRatio(contentMode: .fill).frame(width: 24, height: 24, alignment: .center)
+                    Text("\(model.commentCount)").foregroundColor(.colorWithHexString(hex: "#999999"))
+                }.onTapGesture {
                     showComment = true
                 }
+                
             }.padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 20))
             
         }.onAppear {
@@ -163,6 +214,8 @@ struct CommentListView:View{
     @State var showSecondaryList : Bool = false
     @State var showAnimation : Bool = false
     @State var comment : String = ""
+    @StateObject var computedModel : MyComputedProperty = MyComputedProperty()
+    @State var page : Int = 1
     var body: some View{
         if show{
     ZStack(alignment: .bottomLeading){
@@ -186,26 +239,37 @@ struct CommentListView:View{
 
                 
             }.padding(EdgeInsets(top: 0, leading: 25, bottom: 0, trailing: 0)).frame(height:50)
-        ScrollView(.vertical,showsIndicators: false){
-            ScrollViewReader { reader in
-                LazyVStack(alignment: .leading, spacing: 10){
-                
+        
+            RefreshableScrollView(refreshing: $computedModel.pullDown, pullDown: {
+                requestCommentList(state: .pullDown)
+            }, footerRefreshing: $computedModel.footerRefreshing, loadMore: $computedModel.loadMore) {
+                requestCommentList(state: .pullUp)
+            } content: {
+               
                 ForEach(titles,id:\.id){ model in
                     Section(header: CommentSection(model:model).environmentObject(observerTapModel)) {
                         SecondaryRowList(model: model) { show in
-                            show ? reader.scrollTo(model.list.last?.id) : reader.scrollTo(model.id)
+//                            show ? reader.scrollTo(model.list.last?.id) : reader.scrollTo(model.id)
                         }.environmentObject(observerTapModel)
                         
+                    }.onChange(of: titles) { _ in
+//                      reader.scrollTo(titles[0].id, anchor: .center)
                     }
-                    
                 }
-                    
-                }.onChange(of: titles) { _ in
-                 reader.scrollTo(titles[0].id, anchor: .center)
-                }
-            }
-                
-        }.padding(.bottom,65 + kSafeBottom)
+              
+            }.padding(.bottom,65 + kSafeBottom)
+
+            
+//        ScrollView(.vertical,showsIndicators: false){
+//            ScrollViewReader { reader in
+//                LazyVStack(alignment: .leading, spacing: 10){
+//
+//
+//
+//                }
+//            }
+//
+//        }.padding(.bottom,65 + kSafeBottom)
         
            
         }.background((RoundedCorner(corners: [.topLeft,.topRight], radius: 10).fill(Color.white))).frame(maxWidth:.infinity,maxHeight: screenHeight * 0.8).offset(y:showAnimation ? 0: screenHeight * 0.8 + 20).animation(.linear(duration: 0.25), value: showAnimation).onAppear {
@@ -232,13 +296,30 @@ struct CommentListView:View{
      }
     }
     func requestCommentList(state:RefreshState){
-        let params = ["circleId":circleId,"page":1,"pageLimit":10]
+        if state == .pullUp {
+            page += 1
+        }else{
+            page = 1
+        }
+        if state == .normal {
+            computedModel.showLoading  = true
+            computedModel.loadingBgColor = .white
+        }
+        let params = ["circleId":circleId,"page":page,"pageLimit":10]
         NW.request(urlStr: "comment/list",method: .post,parameters: params) { response in
+            computedModel.showLoading = false
+            computedModel.pullDown = false
+            computedModel.footerRefreshing = false
             guard let list = response.data["list"] as? [[String:Any]] else{
                 return
             }
             if state == .normal || state == .pullDown {
                 titles.removeAll()
+            }
+            if list.count < 10 {
+                computedModel.loadMore = false
+            }else{
+                computedModel.loadMore = true
             }
             for item in list {
                 guard let model = CommentModel.deserialize(from: item, designatedPath: nil) else{
@@ -252,7 +333,10 @@ struct CommentListView:View{
             }
             totalCommentListCount = total
         } failedHandler: { response in
-            
+            computedModel.showLoading = false
+            computedModel.pullDown = false
+            computedModel.loadMore = true
+            computedModel.footerRefreshing = false
         }
     }
     
@@ -348,43 +432,53 @@ struct SecondaryRowList:View{
                 }
             }
         }
+       
         
-        if model.secondaryCount > 0 || model.list.count > 0{
-            if model.list.count < model.secondaryCount || !show{
-                Button {
-                    if(model.secondaryCount > 0 && model.secondaryCount == model.list.count){
-                        show = true
-                        return
+            
+            if model.secondaryCount > 0 || model.list.count > 0{
+             VStack(alignment: .leading, spacing: 0) {
+                if model.list.count < model.secondaryCount || !show{
+                    HStack{
+                        Button {
+                            if(model.secondaryCount > 0 && model.secondaryCount == model.list.count){
+                                show = true
+                                return
+                            }
+                            requestSecondaryCommentList(commentId: model.id, state: .pullUp)
+                        } label: {
+                            HStack(alignment: .center, spacing: 0) {
+                                Spacer().frame(width:60)
+                                Text("–– 展开\(!show ? model.list.count : model.secondaryCount-model.list.count)条回复").font(.system(size: 13, weight: .medium, design: .default))
+                                Image("pull_down_indicator").resizable().renderingMode(.template).foregroundColor(.black).aspectRatio(contentMode: .fill)
+                                    .frame(width: 14, height: 14, alignment: .center)
+                                Spacer().frame(width:45)
+                            }.padding(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0))
+                        }.buttonStyle(PlainButtonStyle()).foregroundColor(.black).frame(alignment:.leading)
+                        Spacer()
                     }
-                    requestSecondaryCommentList(commentId: model.id, state: .pullUp)
-                } label: {
-                    HStack(alignment: .center, spacing: 0) {
-                        Spacer().frame(width:60)
-                        Text("–– 展开\(!show ? model.list.count : model.secondaryCount-model.list.count)条回复").font(.system(size: 13, weight: .medium, design: .default))
-                        Image("pull_down_indicator").resizable().renderingMode(.template).foregroundColor(.black).aspectRatio(contentMode: .fill)
-                            .frame(width: 14, height: 14, alignment: .center)
-                        Spacer().frame(width:45)
-                    }.padding(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0))
-                }.buttonStyle(PlainButtonStyle()).foregroundColor(.black)
-
-               
-            }else{
-                
-                Button {
-                    show = false
-                    listChangeHandle(show)
-                } label: {
-                    HStack(alignment: .center, spacing: 0) {
-                        Spacer().frame(width:60)
-                        Text("–– 收起").font(.system(size: 13, weight: .medium, design: .default))
-                        Image("pull_down_indicator").resizable().renderingMode(.template).foregroundColor(.black).aspectRatio(contentMode: .fill)
-                            .frame(width: 14, height: 14, alignment: .center)
-                    }.padding(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0))
-                }.buttonStyle(PlainButtonStyle()).foregroundColor(.black)
-
-               
-            }
-        }
+                    
+                    
+                }else{
+                    HStack{
+                        
+                        Button {
+                            show = false
+                            listChangeHandle(show)
+                        } label: {
+                            HStack(alignment: .center, spacing: 0) {
+                                Spacer().frame(width:60)
+                                Text("–– 收起").font(.system(size: 13, weight: .medium, design: .default))
+                                Image("pull_down_indicator").resizable().renderingMode(.template).foregroundColor(.black).aspectRatio(contentMode: .fill)
+                                    .frame(width: 14, height: 14, alignment: .center)
+                            }.padding(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0))
+                        }.buttonStyle(PlainButtonStyle()).foregroundColor(.black)
+                        Spacer()
+                    }
+                    
+                }
+                }.frame(maxWidth:.infinity)
+         }
+        
     }
     
     func requestSecondaryCommentList(commentId:Int,state:RefreshState){

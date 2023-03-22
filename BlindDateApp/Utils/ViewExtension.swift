@@ -8,6 +8,18 @@
 import SwiftUI
 import Combine
 
+class MyComputedProperty:ObservableObject{
+    @Published var showLoading:Bool = false
+    @Published var loadingBgColor:Color = .clear
+    @Published var showRefreshView : Bool = false
+    @Published var errorMsg : String = ""
+    @Published var pullDown : Bool = false
+    @Published var footerRefreshing: Bool = false
+    @Published var loadMore : Bool = false
+    @Published var noData : Bool = false
+    
+}
+
 struct ViewControllerHolder {
     weak var value: UIViewController?
 }
