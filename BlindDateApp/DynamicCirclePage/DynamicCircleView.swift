@@ -240,24 +240,24 @@ struct CommentListView:View{
                 
             }.padding(EdgeInsets(top: 0, leading: 25, bottom: 0, trailing: 0)).frame(height:50)
         
-            RefreshableScrollView(refreshing: $computedModel.pullDown, pullDown: {
-                requestCommentList(state: .pullDown)
-            }, footerRefreshing: $computedModel.footerRefreshing, loadMore: $computedModel.loadMore) {
+            ScrollViewReader { reader in
+            RefreshableScrollView(refreshing: $computedModel.pullDown, pullDown: nil, footerRefreshing: $computedModel.footerRefreshing, loadMore: $computedModel.loadMore) {
                 requestCommentList(state: .pullUp)
             } content: {
                
                 ForEach(titles,id:\.id){ model in
                     Section(header: CommentSection(model:model).environmentObject(observerTapModel)) {
                         SecondaryRowList(model: model) { show in
-//                            show ? reader.scrollTo(model.list.last?.id) : reader.scrollTo(model.id)
+                            show ? reader.scrollTo(model.list.last?.id) : reader.scrollTo(model.id)
                         }.environmentObject(observerTapModel)
                         
                     }.onChange(of: titles) { _ in
-//                      reader.scrollTo(titles[0].id, anchor: .center)
+                      reader.scrollTo(titles[0].id, anchor: .center)
                     }
                 }
               
-            }.padding(.bottom,65 + kSafeBottom)
+             }.padding(.bottom,65 + kSafeBottom)
+            }
 
             
 //        ScrollView(.vertical,showsIndicators: false){
@@ -540,7 +540,7 @@ struct CommentSection:View{
                     Text("回复").font(.system(size: 12, weight: .medium, design: .default)).foregroundColor(.colorWithHexString(hex: "#999999"))
                     Spacer()
                 }
-            }.contentShape(Rectangle()).id(model.id)
+            }.contentShape(Rectangle()).id(model.id).padding(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 5))
         }.buttonStyle(HighlightButtonStyle()).foregroundColor(.black)
 
           
@@ -579,7 +579,7 @@ struct SecondaryCommentRow:View{
                     Text("回复").font(.system(size: 12, weight: .medium, design: .default)).foregroundColor(.colorWithHexString(hex: "#999999"))
                     Spacer()
                 }
-            }.contentShape(Rectangle())
+            }.contentShape(Rectangle()).padding(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 5))
         }.buttonStyle(HighlightButtonStyle()).foregroundColor(.black)
 
           

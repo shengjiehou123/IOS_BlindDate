@@ -109,7 +109,9 @@ struct _RefreshableScrollView<Content: View>: View {
                             }
                         }.background(ContentFixedView()).alignmentGuide(.top, computeValue: { d in (self.refreshing && self.frozen) ? -self.threshold : 0.0 })
                         
-                        SymbolView(height: self.threshold, loading: self.refreshing, frozen: self.frozen, rotation: self.rotation)
+                        if pullDown != nil {
+                            SymbolView(height: self.threshold, loading: self.refreshing, frozen: self.frozen, rotation: self.rotation)
+                        }
                     }
                     
                 }.background(FixedView())
@@ -144,7 +146,7 @@ struct _RefreshableScrollView<Content: View>: View {
             self.rotation = self.symbolRotation(self.scrollOffset)
             
             // Crossing the threshold on the way down, we start the refresh process
-            if !self.refreshing &&  (self.scrollOffset >= self.threshold){
+            if !self.refreshing &&  (self.scrollOffset >= self.threshold) && pullDown != nil{
                 //&& self.previousScrollOffset <= self.threshold
                 self.refreshing = true
                 self.started = false
