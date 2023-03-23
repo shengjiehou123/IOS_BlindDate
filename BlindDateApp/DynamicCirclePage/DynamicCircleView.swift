@@ -201,6 +201,7 @@ class ObserverTapModel:ObservableObject,Identifiable{
     @Published var commentId : Int = 0
     @Published var nickName : String = ""
     @Published var atUid : Int = 0
+    @Published var atSecondaryCommentId : Int = 0
     @Published var sendCommentMsgSuc : Bool = false
     @Published var sendSecondaryCommentMsgSuc : Bool = false
 }
@@ -364,7 +365,7 @@ struct CommentSendMsgView:View{
                 tapModel.sectionTap = false
                 tapModel.nickName = ""
                 if !comment.isEmpty {
-                    if tapModel.commentId > 0 && tapModel.atUid > 0 {
+                    if tapModel.commentId > 0 {
                         requestCreateSecondaryComment()
                     }else{
                         requestCreateComment()
@@ -402,10 +403,12 @@ struct CommentSendMsgView:View{
     }
     
     func requestCreateSecondaryComment(){
-        let params = ["commentId":tapModel.commentId,"atUid":tapModel.atUid,"comment":comment] as [String : Any]
+        let params = ["commentId":tapModel.commentId,"atUid":tapModel.atUid,"atSecondaryCommentId":tapModel.atSecondaryCommentId,"comment":comment] as [String : Any]
         NW.request(urlStr: "create/secondary/comment", method: .post, parameters: params) { response in
             tapModel.sendSecondaryCommentMsgSuc = true
             tapModel.atUid = 0
+            tapModel.atSecondaryCommentId = 0
+            tapModel.commentId = 0
             tapModel.nickName = ""
             comment = ""
             sendCommentSucHandle()
@@ -527,7 +530,8 @@ struct CommentSection:View{
         Button {
             tapModel.sectionTap = true
             tapModel.commentId = model.id
-            tapModel.atUid = model.uid
+            tapModel.atUid = 0
+            tapModel.atSecondaryCommentId = 0
             tapModel.nickName = model.userInfo.nickName
         } label: {
             VStack(alignment: .leading, spacing: 5) {
@@ -562,6 +566,7 @@ struct SecondaryCommentRow:View{
         Button {
             tapObserModel.commentId = model.commentId
             tapObserModel.atUid = model.uid
+            tapObserModel.atSecondaryCommentId = model.id
             tapObserModel.nickName = model.atUidInfo.nickName
             tapObserModel.sectionTap = true
         } label: {
