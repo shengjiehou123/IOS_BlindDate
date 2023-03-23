@@ -182,7 +182,8 @@ struct CircleRow:View{
         }.onAppear {
             images = model.images.components(separatedBy: ",")
         }.alertB(isPresented: $showComment) {
-            CommentListView(show:$showComment,circleId: $model.id)
+            CommentListView(show:$showComment).environmentObject(model)
+
         }
     }
     
@@ -208,10 +209,9 @@ class ObserverTapModel:ObservableObject,Identifiable{
 
 struct CommentListView:View{
     @Binding var show : Bool
-    @Binding var circleId : Int
+    @EnvironmentObject var circleModel : CircleModel
 //    @StateObject var obModel : ObserVedCommentModel = ObserVedCommentModel()
     @State var titles : [CommentModel] = []
-    @State var totalCommentListCount = 0
     @StateObject var observerTapModel : ObserverTapModel = ObserverTapModel()
     @State var showSecondaryList : Bool = false
     @State var showAnimation : Bool = false
@@ -225,7 +225,7 @@ struct CommentListView:View{
             Rectangle().fill(Color.black.opacity(0.3))
         VStack(alignment: .leading, spacing: 0){
             HStack(alignment: .center, spacing: 0){
-                Text(totalCommentListCount > 0 ? "评论\(totalCommentListCount)" : "评论").font(.system(size: 18, weight: .medium, design: .default))
+                Text(circleModel.commentCount > 0 ? "评论\(circleModel.commentCount)" : "评论").font(.system(size: 18, weight: .medium, design: .default))
                 Spacer()
                 Button {
                     showAnimation = false
@@ -291,7 +291,7 @@ struct CommentListView:View{
             }.edgesIgnoringSafeArea(.top)
         }
        
-        CommentSendMsgView(circleId: $circleId,sendCommentSucHandle: {
+        CommentSendMsgView(circleId: $circleModel.id,totalCommentListCount:$circleModel.commentCount,sendCommentSucHandle: {
             
             requestCommentList(state: .normal)
         }).environmentObject(observerTapModel)
@@ -311,7 +311,7 @@ struct CommentListView:View{
             computedModel.showLoading  = true
             computedModel.loadingBgColor = .white
         }
-        let params = ["circleId":circleId,"page":page,"pageLimit":10]
+        let params = ["circleId":circleModel.id,"page":page,"pageLimit":10]
         NW.request(urlStr: "comment/list",method: .post,parameters: params) { response in
             computedModel.showLoading = false
             computedModel.pullDown = false
@@ -334,10 +334,10 @@ struct CommentListView:View{
                 titles.append(model)
             }
             guard let total = response.data["total"] as? Int else{
-                totalCommentListCount = 0
+                circleModel.commentCount = 0
                 return
             }
-            totalCommentListCount = total
+            circleModel.commentCount = total
         } failedHandler: { response in
             computedModel.showLoading = false
             computedModel.pullDown = false
@@ -354,6 +354,7 @@ struct CommentListView:View{
 //MARK: 发送评论
 struct CommentSendMsgView:View{
     @Binding var circleId : Int
+    @Binding var totalCommentListCount : Int
     @State var comment : String = ""
     var sendCommentSucHandle : () ->Void
     @State var keyBoardShow : Bool = false
@@ -408,10 +409,11 @@ struct CommentSendMsgView:View{
             tapModel.sendSecondaryCommentMsgSuc = true
             tapModel.atUid = 0
             tapModel.atSecondaryCommentId = 0
-            tapModel.commentId = 0
+//            tapModel.commentId = 0
             tapModel.nickName = ""
             comment = ""
-            sendCommentSucHandle()
+            totalCommentListCount += 1
+//            sendCommentSucHandle()
         } failedHandler: { response in
             
         }
@@ -420,9 +422,10 @@ struct CommentSendMsgView:View{
 }
 
 struct SecondaryRowList:View{
+   
     @State var show:Bool = true
     @State var page : Int = 1
-    @StateObject var model : CommentModel
+    @ObservedObject var model : CommentModel
     var listChangeHandle : (_ show:Bool) ->Void
     @EnvironmentObject var tapModel : ObserverTapModel
     private let pageLimit = 5
@@ -506,13 +509,38 @@ struct SecondaryRowList:View{
                 return
             }
             model.secondaryCount = totalCount
+            var mapIds  : [Int:Int] = [:]
+            for (index,item) in model.list.enumerated(){
+                mapIds[item.id] = index + 1
+            }
             for item in list {
                 guard let secondaryCommentModel = SecondaryCommentModel.deserialize(from: item, designatedPath: nil) else{
                     continue
                 }
-                if !model.list.contains(where: { $0.id == secondaryCommentModel.id}) {
-                    model.list.append(secondaryCommentModel)
+                
+                let existItem = mapIds[secondaryCommentModel.id] ?? 0
+                if existItem == 0{
+                    if let index = mapIds[secondaryCommentModel.atSecondaryCommentId]{
+                        model.list.insert(secondaryCommentModel, at: index)
+                    }else{
+                        if tapModel.commentId > 0 {
+                            model.list.insert(secondaryCommentModel, at: 0)
+                            tapModel.commentId = 0
+                        }else{
+                            model.list.append(secondaryCommentModel)
+                        }
+                      
+                    }
+                   
                 }
+               
+                
+//                if !model.list.contains(where: { $0.id == secondaryCommentModel.id}) &&  secondaryCommentModel.atSecondaryCommentId == 0 {
+//                    model.list.append(secondaryCommentModel)
+//                }else if !model.list.contains(where: { $0.id == secondaryCommentModel.id}) && model.list.contains(where: {$0.id == secondaryCommentModel.atSecondaryCommentId}){
+//
+//
+//                }
                
             }
         } failedHandler: { response in
@@ -628,6 +656,7 @@ class SecondaryCommentModel:HandyJSON,Identifiable,Equatable{
     var comment : String = ""
     var createAt : String = ""
     var updateAt : String = ""
+    var atSecondaryCommentId : Int = 0
     var uidInfo:CircleUserInfo = CircleUserInfo()
     var atUidInfo:CircleUserInfo = CircleUserInfo()
     required init() {
