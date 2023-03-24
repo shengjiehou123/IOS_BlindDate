@@ -18,6 +18,7 @@ class CircleModel:HandyJSON,Identifiable,ObservableObject{
     var images : String = ""
     var userInfo : CircleUserInfo = CircleUserInfo()
     var likeCount : Int = 0
+    var likeInfoList : [CircleLikeUserInfo] = []
     var commentCount : Int = 0
     required init() {
         
@@ -30,6 +31,16 @@ class CircleUserInfo:HandyJSON{
     var birthday : Double = 0
     var workCityName : String = ""
     var job : String = ""
+    required init() {
+        
+    }
+}
+
+class CircleLikeUserInfo:HandyJSON{
+    var id : Int = 0
+    var circleId : Int = 0
+    var likeCircleUid : Int = 0
+    var likeCircle : Bool = false
     required init() {
         
     }
@@ -110,6 +121,7 @@ struct DynamicCircleView: View {
                 guard let model = CircleModel.deserialize(from: item, designatedPath: nil) else{
                     continue
                 }
+                model.likeCount = model.likeInfoList.count
                 tempArr.append(model)
             }
             listData.append(contentsOf: tempArr)
@@ -130,6 +142,7 @@ struct CircleRow:View{
     @State var images: [String] = []
     @State var imageSize : CGSize = CGSize(width: 100, height: 100)
     @State var rowsCount : Int = 0
+    @State var likeCircleMap : [Int:CircleLikeUserInfo] = [:]
     var body: some View{
         VStack(alignment: .leading, spacing: 15) {
             HStack(alignment: .center, spacing: 10) {
@@ -152,9 +165,9 @@ struct CircleRow:View{
             }.frame(maxWidth:.infinity).padding(.leading,15)
             if images.count > 0 {
                 VStack(alignment: .leading, spacing: 5){
-                    ForEach(0..<rowsCount){ i in
+                    ForEach(0..<rowsCount,id:\.self){ i in
                         HStack(alignment: .center,spacing: 5){
-                            ForEach(0..<3){ j in
+                            ForEach(0..<3,id:\.self){ j in
                                 let index = getIndex(i: i, j: j)
                                 if index < images.count {
                                     let urlStr = "\(images[index])".urlEncoded()
@@ -177,20 +190,21 @@ struct CircleRow:View{
                         }
                     }
                     Spacer()
-                }.padding(EdgeInsets(top: 0, leading: 65, bottom: 0, trailing: 10)).id(UUID())
+                }.padding(EdgeInsets(top: 0, leading: 65, bottom: 0, trailing: 10))
             
             }
             
             HStack(alignment:.center,spacing:35){
                 Spacer()
                 HStack(alignment: .center, spacing: 8) {
-                    Image("like").resizable().aspectRatio(contentMode: .fill).frame(width: 24, height: 24, alignment: .center)
+                    Image("like").renderingMode(.template).resizable().aspectRatio(contentMode: .fill).frame(width: 24, height: 24, alignment: .center).foregroundColor( likeCircleMap[UserCenter.shared.userInfoModel?.id ?? 0] != nil ? Color.red : Color.gray)
                     Text("\(model.likeCount)").foregroundColor(.colorWithHexString(hex: "#999999"))
                 }.onTapGesture {
-//                    showComment = true
+                    let item = likeCircleMap[UserCenter.shared.userInfoModel?.id ?? 0]
+                    requestCreateLikeCircle(likeCircle: (item != nil) ? false : true)
                 }
                 HStack(alignment: .center, spacing: 8) {
-                    Image("comment").resizable().aspectRatio(contentMode: .fill).frame(width: 24, height: 24, alignment: .center)
+                    Image("comment").resizable().renderingMode(.template).aspectRatio(contentMode: .fill).frame(width: 24, height: 24, alignment: .center).foregroundColor(Color.gray)
                     Text("\(model.commentCount)").foregroundColor(.colorWithHexString(hex: "#999999"))
                 }.onTapGesture {
                     showComment = true
@@ -207,12 +221,35 @@ struct CircleRow:View{
                 }
                 rowsCount = getRow(total: images.count)
             }else{
+                images = []
                 rowsCount = 0
+            }
+            for item in model.likeInfoList {
+                likeCircleMap[item.likeCircleUid] = item
             }
           
         }.alertB(isPresented: $showComment) {
             CommentListView(show:$showComment).environmentObject(model)
 
+        }
+    }
+    
+    func requestCreateLikeCircle(likeCircle:Bool){
+        let params = ["circleId":model.id,"uid":model.uid,"likeCircleUid":UserCenter.shared.userInfoModel?.id ?? 0,"likeCircle":likeCircle] as [String : Any]
+        
+        NW.request(urlStr: "like/circle", method: .post, parameters: params) { response in
+            if likeCircle {
+                let userInfo = CircleLikeUserInfo()
+                userInfo.circleId = model.id
+                userInfo.likeCircleUid = UserCenter.shared.userInfoModel?.id ?? 0
+                likeCircleMap[UserCenter.shared.userInfoModel?.id ?? 0] = userInfo
+                model.likeCount += 1
+            }else{
+                likeCircleMap.removeValue(forKey:  UserCenter.shared.userInfoModel?.id ?? 0)
+                model.likeCount -= 1
+            }
+        } failedHandler: { response in
+            
         }
     }
     
