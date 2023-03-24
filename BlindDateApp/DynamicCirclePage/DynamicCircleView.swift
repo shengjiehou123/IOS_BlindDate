@@ -11,7 +11,7 @@ import HandyJSON
 import JFHeroBrowser
 import Combine
 
-class CircleModel:HandyJSON,ObservableObject{
+class CircleModel:HandyJSON,Identifiable,ObservableObject{
     var id : Int = 0
     var uid : Int = 0
     var content : String = ""
@@ -39,16 +39,20 @@ struct DynamicCircleView: View {
     @State var listData : [CircleModel] = []
     @State var page : Int = 1
     @State var pageLimit : Int = 10
+    @State var isPresentCreateCircleView : Bool = false
     @StateObject var computedModel : MyComputedProperty = MyComputedProperty()
     var body: some View {
+     
         NavigationView{
          RefreshableScrollView(refreshing: $computedModel.pullDown, pullDown: {
              requestCircleList(state: .pullDown)
          }, footerRefreshing: $computedModel.footerRefreshing, loadMore: $computedModel.loadMore) {
              requestCircleList(state: .pullUp)
          } content: {
-             ForEach(listData,id:\.uid){ model in
+             ForEach(0..<listData.count,id:\.self){ index in
+                 let model = listData[index]
                  CircleRow(model:model)
+//
              }
          }.modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "")).navigationBarTitleDisplayMode(.inline).toolbar(content:{
              ToolbarItem(placement:.navigationBarLeading){
@@ -56,7 +60,7 @@ struct DynamicCircleView: View {
              }
              ToolbarItem(placement: .navigationBarTrailing) {
                  Button {
-                     
+                     isPresentCreateCircleView = true
                  } label: {
                      HStack{
                          Text("发动态").font(.system(size: 15, weight: .medium, design: .default)).foregroundColor(.white)
@@ -66,19 +70,13 @@ struct DynamicCircleView: View {
              }
          }).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).onAppear {
              requestCircleList(state: .normal)
+         }.alertB(isPresented: $isPresentCreateCircleView) {
+             CreateDynamicCircleView(show: $isPresentCreateCircleView)
          }
-        
+
     }
   }
     
-    func requestCreateCircle(){
-        let params = ["":"","":""]
-        NW.request(urlStr: "", method: .post, parameters: params) { response in
-            
-        } failedHandler: { response in
-            
-        }
-    }
     
     func requestCircleList(state:RefreshState){
         if state == .normal {
@@ -100,12 +98,16 @@ struct DynamicCircleView: View {
             }else{
                 computedModel.loadMore = true
             }
+            var tempArr : [CircleModel] = []
             for item in list {
                 guard let model = CircleModel.deserialize(from: item, designatedPath: nil) else{
                     continue
                 }
-                listData.append(model)
+                tempArr.append(model)
             }
+            listData.append(contentsOf: tempArr)
+            log.info("listData#####:\(listData.count)")
+//            listData.append(model)
             
         } failedHandler: { response in
             computedModel.pullDown = false
@@ -116,7 +118,7 @@ struct DynamicCircleView: View {
 }
 
 struct CircleRow:View{
-    @StateObject var model : CircleModel
+    var model : CircleModel
     @State var showComment : Bool = false
     @State var images: [String] = []
     var body: some View{
@@ -139,29 +141,34 @@ struct CircleRow:View{
                 Text(model.content).lineSpacing(10)
                 Spacer()
             }.frame(maxWidth:.infinity).padding(.leading,15)
-            VStack(alignment: .leading, spacing: 10){
-                ForEach(0..<getRow(total: images.count)){ i in
-                    HStack(alignment: .center,spacing: 5){
-                        ForEach(0..<3){ j in
-                            let index = getIndex(i: i, j: j)
-                            if index < images.count {
-                                WebImage(url:URL(string:"\(images[index])")).resizable().renderingMode(.original).aspectRatio(contentMode: .fill)
-                                    .frame(width:100,height:100,alignment: .center).background(Color.red).clipShape(RoundedRectangle(cornerRadius: 10)).contentShape(Rectangle()).onTapGesture {
-                                        var list: [HeroBrowserViewModule] = []
-                                        for imageUrlStr in images {
-                                            list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: imageUrlStr, originImgUrl: imageUrlStr))
+            if images.count > 0 {
+                VStack(alignment: .leading, spacing: 10){
+                    ForEach(0..<getRow(total: images.count)){ i in
+                        HStack(alignment: .center,spacing: 5){
+                            ForEach(0..<3){ j in
+                                let index = getIndex(i: i, j: j)
+                                if index < images.count {
+                                    let urlStr = "\(images[index])".urlEncoded()
+                                    let url = URL(string: urlStr)
+                                    WebImage(url:url).resizable().aspectRatio(contentMode: .fill)
+                                        .frame(width:100,height:100,alignment: .center).background(Color.gray).clipShape(RoundedRectangle(cornerRadius: 10)).contentShape(Rectangle()).onTapGesture {
+                                            var list: [HeroBrowserViewModule] = []
+                                            for imageUrlStr in images {
+                                                list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: imageUrlStr, originImgUrl: imageUrlStr))
+                                            }
+                                            myAppRootVC?.hero.browserPhoto(viewModules: list, initIndex: index)
                                         }
-                                        myAppRootVC?.hero.browserPhoto(viewModules: list, initIndex: index)
-                                    }
-                            }else{
-                                EmptyView().frame(width: 0, height: 0, alignment: .leading)
+                                }else{
+                                    EmptyView().frame(width: 0, height: 0, alignment: .leading)
+                                }
                             }
+                            Spacer()
                         }
-                        Spacer()
                     }
-                }
-                Spacer()
-            }.padding(EdgeInsets(top: 0, leading: 65, bottom: 0, trailing: 10))
+                    Spacer()
+                }.padding(EdgeInsets(top: 0, leading: 65, bottom: 0, trailing: 10))
+            }
+            
             HStack(alignment:.center,spacing:35){
                 Spacer()
                 HStack(alignment: .center, spacing: 8) {
@@ -180,12 +187,21 @@ struct CircleRow:View{
             }.padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 20))
             
         }.onAppear {
-            images = model.images.components(separatedBy: ",")
+            if !model.images.isEmpty{
+                if model.images.contains(",") {
+                    images =  model.images.components(separatedBy: ",")
+                }else{
+                    images = [model.images]
+                }
+            }
+          
         }.alertB(isPresented: $showComment) {
             CommentListView(show:$showComment).environmentObject(model)
 
         }
     }
+    
+
     
     func getRow(total:Int) ->Int{
         return (total-1) / 3 + 1

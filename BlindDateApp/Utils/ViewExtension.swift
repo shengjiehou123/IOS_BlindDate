@@ -17,6 +17,8 @@ class MyComputedProperty:ObservableObject{
     @Published var footerRefreshing: Bool = false
     @Published var loadMore : Bool = false
     @Published var noData : Bool = false
+    @Published var showToast : Bool = false
+    @Published var toastMsg : String = ""
     
 }
 
