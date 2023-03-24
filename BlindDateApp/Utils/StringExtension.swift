@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Foundation
+import CommonCrypto
 
 extension String:Identifiable{
     public typealias ID = UUID
@@ -27,4 +29,9 @@ extension String{
        func urlDecoded() -> String {
            return self.removingPercentEncoding ?? ""
        }
+    
+    
+    
+    
+
 }

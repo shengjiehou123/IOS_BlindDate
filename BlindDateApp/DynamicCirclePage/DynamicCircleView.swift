@@ -49,10 +49,8 @@ struct DynamicCircleView: View {
          }, footerRefreshing: $computedModel.footerRefreshing, loadMore: $computedModel.loadMore) {
              requestCircleList(state: .pullUp)
          } content: {
-             ForEach(0..<listData.count,id:\.self){ index in
-                 let model = listData[index]
-                 CircleRow(model:model)
-//
+             ForEach(listData,id:\.id){ model in
+                 CircleRow(model:model).id(model.id)
              }
          }.modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "")).navigationBarTitleDisplayMode(.inline).toolbar(content:{
              ToolbarItem(placement:.navigationBarLeading){
@@ -71,7 +69,10 @@ struct DynamicCircleView: View {
          }).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).onAppear {
              requestCircleList(state: .normal)
          }.alertB(isPresented: $isPresentCreateCircleView) {
-             CreateDynamicCircleView(show: $isPresentCreateCircleView)
+             CreateDynamicCircleView(show: $isPresentCreateCircleView) {
+                 computedModel.pullDown = true
+                 requestCircleList(state: .pullDown)
+             }
          }
 
     }
@@ -82,11 +83,17 @@ struct DynamicCircleView: View {
         if state == .normal {
             computedModel.loadingBgColor = .white
             computedModel.showLoading = true
+            page = 1
+        }else if state == .pullDown{
+            page = 1
+        }else if state == .pullUp{
+            page += 1
         }
         let params = ["page":page,"pageLimit":pageLimit]
         NW.request(urlStr: "circle/list", method: .post, parameters: params) { response in
             computedModel.showLoading = false
             computedModel.pullDown = false
+            computedModel.footerRefreshing = false
             guard let list = response.data["list"] as? [[String:Any]] else{
                 return
             }
@@ -106,12 +113,12 @@ struct DynamicCircleView: View {
                 tempArr.append(model)
             }
             listData.append(contentsOf: tempArr)
-            log.info("listData#####:\(listData.count)")
-//            listData.append(model)
             
         } failedHandler: { response in
             computedModel.pullDown = false
+            computedModel.footerRefreshing = false
             computedModel.loadMore = true
+            
         }
 
     }
@@ -121,6 +128,8 @@ struct CircleRow:View{
     var model : CircleModel
     @State var showComment : Bool = false
     @State var images: [String] = []
+    @State var imageSize : CGSize = CGSize(width: 100, height: 100)
+    @State var rowsCount : Int = 0
     var body: some View{
         VStack(alignment: .leading, spacing: 15) {
             HStack(alignment: .center, spacing: 10) {
@@ -142,16 +151,18 @@ struct CircleRow:View{
                 Spacer()
             }.frame(maxWidth:.infinity).padding(.leading,15)
             if images.count > 0 {
-                VStack(alignment: .leading, spacing: 10){
-                    ForEach(0..<getRow(total: images.count)){ i in
+                VStack(alignment: .leading, spacing: 5){
+                    ForEach(0..<rowsCount){ i in
                         HStack(alignment: .center,spacing: 5){
                             ForEach(0..<3){ j in
                                 let index = getIndex(i: i, j: j)
                                 if index < images.count {
                                     let urlStr = "\(images[index])".urlEncoded()
                                     let url = URL(string: urlStr)
-                                    WebImage(url:url).resizable().aspectRatio(contentMode: .fill)
-                                        .frame(width:100,height:100,alignment: .center).background(Color.gray).clipShape(RoundedRectangle(cornerRadius: 10)).contentShape(Rectangle()).onTapGesture {
+                                    WebImage(url:url).onSuccess(perform: { image, data, cacheType in
+                                        imageSize = image.size
+                                    }).resizable().aspectRatio(contentMode: .fill)
+                                        .frame(width:images.count == 1 ? getImageWidth() : 100,height: images.count == 1 ? getImageHeight() : 100,alignment: .center).background(Color.gray).clipShape(RoundedRectangle(cornerRadius: 10)).contentShape(Rectangle()).onTapGesture {
                                             var list: [HeroBrowserViewModule] = []
                                             for imageUrlStr in images {
                                                 list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: imageUrlStr, originImgUrl: imageUrlStr))
@@ -166,7 +177,8 @@ struct CircleRow:View{
                         }
                     }
                     Spacer()
-                }.padding(EdgeInsets(top: 0, leading: 65, bottom: 0, trailing: 10))
+                }.padding(EdgeInsets(top: 0, leading: 65, bottom: 0, trailing: 10)).id(UUID())
+            
             }
             
             HStack(alignment:.center,spacing:35){
@@ -193,6 +205,9 @@ struct CircleRow:View{
                 }else{
                     images = [model.images]
                 }
+                rowsCount = getRow(total: images.count)
+            }else{
+                rowsCount = 0
             }
           
         }.alertB(isPresented: $showComment) {
@@ -201,6 +216,23 @@ struct CircleRow:View{
         }
     }
     
+    func getImageWidth() ->CGFloat{
+        if imageSize.width > imageSize.height {
+            return 230
+        }
+        return 150
+    }
+    
+    func getImageHeight() -> CGFloat{
+        if imageSize.width > imageSize.height {
+            return 230 * imageSize.height / imageSize.width
+        }
+        let height = 150 * imageSize.height / imageSize.width
+        if height > 400 {
+            return 400
+        }
+        return height
+    }
 
     
     func getRow(total:Int) ->Int{

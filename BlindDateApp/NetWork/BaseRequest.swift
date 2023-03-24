@@ -8,6 +8,9 @@
 import UIKit
 import Alamofire
 import SwiftUI
+import CommonCrypto
+import CryptoKit
+
 
 struct ResponseData{
     var code : Int
@@ -88,7 +91,7 @@ open class BaseRequest: NSObject {
   
     
     //MARK: 上传图片 -
-    func uploadingImage(urlStr:String,params:[String:String],image:UIImage,completionHandler:@escaping (_ response: ResponseData) -> Void,failedHandler: @escaping (_ response: ResponseData) -> Void){
+    func uploadingImage(urlStr:String,params:[String:String],images:[UIImage],completionHandler:@escaping (_ response: ResponseData) -> Void,failedHandler: @escaping (_ response: ResponseData) -> Void){
         let requestUrlStr = Consts.shared.domain + "/" + urlStr
         print("requestUrlStr:\(requestUrlStr), method: Post")
         let headers :HTTPHeaders = [
@@ -99,8 +102,15 @@ open class BaseRequest: NSObject {
             for (key,value) in params {
                 multipartFormData.append(value.data(using: .utf8)!, withName: key)
             }
-            let data = image.jpegData(compressionQuality: 0.5)!
-            multipartFormData.append(data, withName: "userPhoto",fileName:"\(data.base64EncodedString())" + ".jpeg" ,mimeType: "image/jpeg")
+           for image in images {
+//               let compressImage = image.resizedMB(maxLenth: 1)!
+               let data = image.jpegData(compressionQuality: 0.1)!
+               let fileName = data.sha256
+//                   log.info("str--------\(str)")
+               multipartFormData.append(data, withName: "userPhoto",fileName:fileName + ".jpeg" ,mimeType: "image/jpeg")
+               
+           }
+           
             
         }, to: requestUrlStr,headers:headers).uploadProgress{ progress in
             log.info("fractionCompleted:\(progress.fractionCompleted)")
@@ -136,3 +146,6 @@ open class BaseRequest: NSObject {
     
 
 }
+
+
+

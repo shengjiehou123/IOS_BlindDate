@@ -21,6 +21,73 @@ extension UIImage {
            return img!
        }
     
+    //二分压缩法
+    func compressImageMid(maxLength: Int) -> Data? {
+       var compression: CGFloat = 1
+        guard var data = self.jpegData(compressionQuality: 1) else { return nil }
+        log.info("message: 压缩前kb: \( Double((data.count)/1024))")
+        
+       if data.count < maxLength {
+           return data
+       }
+        log.info("压缩前kb, \(data.count / 1024)KB")
+       var max: CGFloat = 1
+       var min: CGFloat = 0
+//       for _ in 0..<10 {
+//           compression = (max + min) / 2
+//           data = self.jpegData(compressionQuality:compression)!
+//           if CGFloat(data.count) < CGFloat(maxLength) * 0.9 {
+//               min = compression
+//           } else if data.count > maxLength {
+//               max = compression
+//           } else {
+//               break
+//           }
+//       }
+        
+        while data.count > maxLength{
+            compression = (max + min) / 2
+            data = self.jpegData(compressionQuality:compression)!
+            if CGFloat(data.count) < CGFloat(maxLength) * 0.9 {
+                min = compression
+            } else if data.count > maxLength {
+                max = compression
+            } else {
+                break
+            }
+       }
+//       var resultImage: UIImage = UIImage(data: data)!
+        log.info("压缩后kb, \(data.count / 1024)KB")
+       if data.count < maxLength {
+           return data
+       }
+        
+        return data
+    }
+    
+    func resize(withPercentage percentage: CGFloat) -> UIImage? {
+        let newRect = CGRect(origin: .zero, size: CGSize(width: size.width*percentage, height: size.height*percentage))
+        UIGraphicsBeginImageContextWithOptions(newRect.size, true, 1)
+        self.draw(in: newRect)
+        defer {UIGraphicsEndImageContext()}
+        return UIGraphicsGetImageFromCurrentImageContext()
+    }
+
+    func resizedMB(maxLenth:Int) -> UIImage? {
+        guard let imageData = self.jpegData(compressionQuality: 1) else { return nil }
+        var resizingImage = self
+        var imageSizeMB = imageData.count / 1024 / 1024 // ! Or devide for 1024 if you need KB but not kB
+        while imageSizeMB > maxLenth { // ! Or use 1024 if you need KB but not kB
+            guard let resizedImage = resizingImage.resize(withPercentage: 0.9),
+                let imageData = resizedImage.jpegData(compressionQuality: 1)
+                else { return nil }
+
+            resizingImage = resizedImage
+            imageSizeMB = imageData.count / 1024 / 1024
+        }
+
+        return resizingImage
+    }
 }
 
 extension HeroNetworkImageProvider:NetworkImageProvider{

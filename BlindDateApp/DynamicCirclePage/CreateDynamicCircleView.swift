@@ -11,6 +11,7 @@ import JFHeroBrowser
 
 struct CreateDynamicCircleView: View {
     @Binding var show : Bool
+    var createCircleSucHandle : () ->Void
     @State var showAnimation : Bool = false
     @State var comment : String = ""
     @State var showPlacHolder : Bool = true
@@ -20,8 +21,8 @@ struct CreateDynamicCircleView: View {
     @State var pickerResult : [UIImage] = []
     @State var config: PHPickerConfiguration =  PHPickerConfiguration(photoLibrary: PHPhotoLibrary.shared())
     @State var deletePhoto : Bool = false
-   
     @StateObject var computedModel : MyComputedProperty = MyComputedProperty()
+    @State  var circleId : Int = 0
     var body: some View {
      if show {
         
@@ -58,7 +59,7 @@ struct CreateDynamicCircleView: View {
                             .font(.system(size: 15,weight: .medium))
                             .foregroundColor( .white).padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)).background(Capsule().fill(comment.isEmpty ? Color.colorWithHexString(hex: "#999999") : Color.green))
                     }.padding(.trailing,20)
-                }.buttonStyle(PlainButtonStyle()).foregroundColor(.red)
+                }.buttonStyle(PlainButtonStyle()).foregroundColor(.red).disabled(comment.isEmpty)
 
             }
             ZStack(alignment: .topLeading) {
@@ -104,7 +105,12 @@ struct CreateDynamicCircleView: View {
                 if pickerResult.count < 9{
                     Button {
                         config.filter = .images //videos, livePhotos...
-                        config.selectionLimit = 9 -  pickerResult.count
+                        if pickerResult.count > 0 {
+                            config.selectionLimit = 18 -  pickerResult.count
+                        }else{
+                            config.selectionLimit = 18
+                        }
+                        
                         isPresentPhotoAlbum = true
                     } label: {
                         Image("add_photo")
@@ -134,6 +140,7 @@ struct CreateDynamicCircleView: View {
                
         }.offset(y:showAnimation ? 0 : screenHeight).animation(.linear(duration: 0.25), value: showAnimation).onAppear {
             showAnimation = true
+            config.selectionLimit = 9
         }.background(Color.white)
              .modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor))
              .toast(isShow: $computedModel.showToast, msg: computedModel.toastMsg)
@@ -145,38 +152,38 @@ struct CreateDynamicCircleView: View {
         var params   = ["content":comment]
         if pickerResult.count > 0 {
             params["scenes"] = "circle"
-            var reqSucCount : Int = 0
             computedModel.showLoading = true
-            var circleId : Int = 0
-            for image in pickerResult{
-                if circleId > 0{
-                    params["circleId"] = "\(circleId)"
-                }
-                NW.uploadingImage(urlStr: "create/circle", params: params, image: image) { response in
-                    reqSucCount += 1
-                    circleId = response.data["circleId"] as? Int ?? 0
-                    if reqSucCount == pickerResult.count {
-                        computedModel.showLoading = false
-                        showAnimation = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-                            show = false
-                            self.topViewController()?.dismiss(animated: false, completion: nil)
-                        }
-                    }
-                } failedHandler: { response in
-                    computedModel.showLoading = false
-                    computedModel.showToast = true
-                    computedModel.toastMsg = response.message
-                }
-
+            if(circleId > 0){
+                params["circleId"] = "\(circleId)"
             }
-        }else{
-            NW.request(urlStr: "create/circle", method: .post, parameters: params) { response in
+            NW.uploadingImage(urlStr: "create/circle", params: params, images: pickerResult) { response in
                 computedModel.showLoading = false
                 showAnimation = false
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                     show = false
                     self.topViewController()?.dismiss(animated: false, completion: nil)
+                    createCircleSucHandle()
+                }
+
+            } failedHandler: { response in
+                computedModel.showLoading = false
+                computedModel.showToast = true
+                computedModel.toastMsg = response.message
+            }
+            
+            
+        
+            
+            
+        }else{
+            NW.request(urlStr: "create/circle", method: .post, parameters: params) { response in
+                computedModel.showLoading = false
+                showAnimation = false
+               
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                    show = false
+                    self.topViewController()?.dismiss(animated: false, completion: nil)
+                    createCircleSucHandle()
                 }
             } failedHandler: { response in
                 computedModel.showLoading = false

@@ -457,7 +457,7 @@ struct MyLifeView:View{
     }
     
     func requestUpLoadPhotos(scenes:String,image:UIImage){
-        NW.uploadingImage(urlStr: "upload/photos", params: ["scenes":scenes], image:image) { response in
+        NW.uploadingImage(urlStr: "upload/photos", params: ["scenes":scenes], images:[image]) { response in
             
         } failedHandler: { response in
             
@@ -573,7 +573,7 @@ struct MyAvatarView:View{
     }
     
     func upLoadAvatar(){
-        NW.uploadingImage(urlStr: "upload/photos", params: ["scenes":"avatar"], image:pickerResult.last!) { response in
+        NW.uploadingImage(urlStr: "upload/photos", params: ["scenes":"avatar"], images:[pickerResult.last!]) { response in
             
         } failedHandler: { response in
             
