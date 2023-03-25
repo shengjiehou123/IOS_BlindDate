@@ -62,6 +62,8 @@ extension View{
         ModifiedContent(content: self, modifier: KeyboardAdaptive())
     }
     
+
+    
     func alertB<Content:View>(isPresented: Binding<Bool>, @ViewBuilder builder: () -> Content) -> some View {
         let toPresent = UIHostingController(rootView: AnyView(EmptyView()))
         toPresent.modalPresentationStyle = .overFullScreen

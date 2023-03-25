@@ -51,17 +51,25 @@ struct DynamicCircleView: View {
     @State var page : Int = 1
     @State var pageLimit : Int = 10
     @State var isPresentCreateCircleView : Bool = false
+    @State var showComment : Bool = false
+    @State var selectCircleModel : CircleModel = CircleModel()
+    @State var uiTabarVc : UITabBarController? = nil
     @StateObject var computedModel : MyComputedProperty = MyComputedProperty()
     var body: some View {
      
         NavigationView{
+        ZStack(alignment: .bottom){
          RefreshableScrollView(refreshing: $computedModel.pullDown, pullDown: {
              requestCircleList(state: .pullDown)
          }, footerRefreshing: $computedModel.footerRefreshing, loadMore: $computedModel.loadMore) {
              requestCircleList(state: .pullUp)
          } content: {
              ForEach(listData,id:\.id){ model in
-                 CircleRow(model:model).id(model.id)
+                 CircleRow(model:model,tapCircleHandle:{show in
+                     showComment = true
+                     selectCircleModel = model
+                     uiTabarVc?.tabBar.isHidden = true
+                 }).id(model.id)
              }
          }.modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "")).navigationBarTitleDisplayMode(.inline).toolbar(content:{
              ToolbarItem(placement:.navigationBarLeading){
@@ -77,7 +85,10 @@ struct DynamicCircleView: View {
                  }.buttonStyle(PlainButtonStyle())
 
              }
-         }).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).onAppear {
+         }).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).introspectTabBarController(customize: { tabvc in
+             tabvc.tabBar.isHidden = false
+             uiTabarVc = tabvc
+         }).onAppear {
              requestCircleList(state: .normal)
          }.alertB(isPresented: $isPresentCreateCircleView) {
              CreateDynamicCircleView(show: $isPresentCreateCircleView) {
@@ -86,7 +97,10 @@ struct DynamicCircleView: View {
              }
          }
 
+        CommentListView(show:$showComment).environmentObject(selectCircleModel)
     }
+            
+ }
   }
     
     
@@ -138,18 +152,23 @@ struct DynamicCircleView: View {
 
 struct CircleRow:View{
     var model : CircleModel
+    var tapCircleHandle : (_ show:Bool) ->Void
     @State var showComment : Bool = false
     @State var images: [String] = []
     @State var imageSize : CGSize = CGSize(width: 100, height: 100)
     @State var rowsCount : Int = 0
     @State var likeCircleMap : [Int:CircleLikeUserInfo] = [:]
     @State var push : Bool = false
+    @State var pushUid : Int = 0
     var body: some View{
         VStack(alignment: .leading, spacing: 15) {
             HStack(alignment: .center, spacing: 10) {
-                WebImage(url: URL(string:model.userInfo.avatar)).resizable().aspectRatio( contentMode: .fill).frame(width: 40, height: 40, alignment: .center).background(Color.red).clipShape(Circle()).onTapGesture {
-                    push = true
+                NavigationLink{
+                    UserIntroduceView(uid: model.uid)
+                } label: {
+                    WebImage(url: URL(string:model.userInfo.avatar)).resizable().aspectRatio( contentMode: .fill).frame(width: 40, height: 40, alignment: .center).background(Color.red).clipShape(Circle())
                 }
+               
                 VStack(alignment: .leading, spacing: 5){
                     Text(model.userInfo.nickName).font(.system(size: 13,weight:.medium))
                     HStack(alignment: .center, spacing: 3){
@@ -210,18 +229,21 @@ struct CircleRow:View{
                     Image("comment").resizable().renderingMode(.template).aspectRatio(contentMode: .fill).frame(width: 24, height: 24, alignment: .center).foregroundColor(Color.gray)
                     Text("\(model.commentCount)").foregroundColor(.colorWithHexString(hex: "#999999"))
                 }.onTapGesture {
-                    showComment = true
+//                    showComment = true
+                    tapCircleHandle(true)
                 }
                 
             }.padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 20))
             
-            NavigationLink(isActive: $push) {
-                UserIntroduceView(uid: model.uid)
-            } label: {
-                EmptyView()
-            }
+           
 
-        }.onAppear {
+        }
+        
+//        .alertB(isPresented: $showComment) {
+//            CommentListView(show:$showComment).environmentObject(model)
+//        }
+        
+        .onAppear {
             if !model.images.isEmpty{
                 if model.images.contains(",") {
                     images =  model.images.components(separatedBy: ",")
@@ -236,10 +258,8 @@ struct CircleRow:View{
             for item in model.likeInfoList {
                 likeCircleMap[item.likeCircleUid] = item
             }
+            
           
-        }.alertB(isPresented: $showComment) {
-            CommentListView(show:$showComment).environmentObject(model)
-
         }
     }
     
@@ -311,6 +331,7 @@ struct CommentListView:View{
     @State var showAnimation : Bool = false
     @State var comment : String = ""
     @StateObject var computedModel : MyComputedProperty = MyComputedProperty()
+    @State var tabBarVc : UITabBarController? = nil
     @State var page : Int = 1
     var body: some View{
         if show{
@@ -323,8 +344,10 @@ struct CommentListView:View{
                 Spacer()
                 Button {
                     showAnimation = false
+                    
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                         self.topViewController()?.dismiss(animated: false, completion: nil)
+                        tabBarVc?.tabBar.isHidden = false
                         show = false
                     }
                 } label: {
@@ -342,7 +365,7 @@ struct CommentListView:View{
             } content: {
                
                 ForEach(titles,id:\.id){ model in
-                    Section(header: CommentSection(model:model).environmentObject(observerTapModel)) {
+                    Section(header: CommentSection(model:model).environmentObject(observerTapModel).id(model.id)) {
                         SecondaryRowList(model: model) { show in
                             show ? reader.scrollTo(model.list.first?.id) : reader.scrollTo(model.id)
                         }.environmentObject(observerTapModel)
@@ -375,7 +398,9 @@ struct CommentListView:View{
             showAnimation = true
          }
             
-        }.edgesIgnoringSafeArea(.all).onAppear {
+        }.edgesIgnoringSafeArea(.all).introspectTabBarController(customize: { tabBarVc in
+            self.tabBarVc = tabBarVc
+        }).onAppear {
             requestCommentList(state: .normal)
        }
         if observerTapModel.sectionTap {
@@ -647,7 +672,7 @@ struct SecondaryRowList:View{
 struct CommentSection:View{
     var model : CommentModel
     @EnvironmentObject var tapModel : ObserverTapModel
-    @State var hight : Bool = false
+    @State var push : Bool = false
     var body: some View{
         Button {
             tapModel.sectionTap = true
@@ -659,7 +684,12 @@ struct CommentSection:View{
             VStack(alignment: .leading, spacing: 5) {
                 HStack(alignment: .top, spacing: 5){
                     Spacer().frame(width:20)
-                    WebImage(url: URL(string: model.userInfo.avatar)).resizable().aspectRatio(contentMode: .fill).background(Color.gray).clipShape(Circle()).frame(width: 30, height: 30, alignment: .center)
+                    NavigationLink{
+                        UserIntroduceView(uid: model.uid)
+                    } label: {
+                        WebImage(url: URL(string: model.userInfo.avatar)).resizable().aspectRatio(contentMode: .fill).background(Color.gray).clipShape(Circle()).frame(width: 30, height: 30, alignment: .center)
+                    }
+                   
                     VStack(alignment: .leading, spacing: 3){
                         Text(model.userInfo.nickName).font(.system(size: 13)).foregroundColor(.colorWithHexString(hex: "#999999"))
                         Text(model.comment).font(.system(size: 15)).lineSpacing(5)
@@ -672,6 +702,8 @@ struct CommentSection:View{
                     Text("回复").font(.system(size: 12, weight: .medium, design: .default)).foregroundColor(.colorWithHexString(hex: "#999999"))
                     Spacer()
                 }
+                
+
             }.contentShape(Rectangle()).id(model.id).padding(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 5))
         }.buttonStyle(HighlightButtonStyle()).foregroundColor(.black)
 
@@ -689,13 +721,18 @@ struct SecondaryCommentRow:View{
             tapObserModel.commentId = model.commentId
             tapObserModel.atUid = model.uid
             tapObserModel.atSecondaryCommentId = model.id
-            tapObserModel.nickName = model.atUidInfo.nickName
+            tapObserModel.nickName = model.uidInfo.nickName
             tapObserModel.sectionTap = true
         } label: {
             VStack(alignment: .leading, spacing: 0) {
                 HStack(alignment: .center, spacing: 5){
                     Spacer().frame(width:55)
-                    WebImage(url: URL(string: model.uidInfo.avatar)).resizable().aspectRatio(contentMode: .fill).background(Color.gray).clipShape(Circle()).frame(width: 20, height: 20, alignment: .center)
+                    NavigationLink {
+                        UserIntroduceView(uid:model.uid)
+                    } label: {
+                        WebImage(url: URL(string: model.uidInfo.avatar)).resizable().aspectRatio(contentMode: .fill).background(Color.gray).clipShape(Circle()).frame(width: 20, height: 20, alignment: .center)
+                    }
+
                     Text(model.atUid > 0 ? "\(model.uidInfo.nickName)►\(model.atUidInfo.nickName)" : "\(model.uidInfo.nickName)").font(.system(size: 13)).foregroundColor(.colorWithHexString(hex: "#999999"))
                     Spacer()
                 }
