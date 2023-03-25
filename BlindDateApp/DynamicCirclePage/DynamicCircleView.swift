@@ -143,10 +143,13 @@ struct CircleRow:View{
     @State var imageSize : CGSize = CGSize(width: 100, height: 100)
     @State var rowsCount : Int = 0
     @State var likeCircleMap : [Int:CircleLikeUserInfo] = [:]
+    @State var push : Bool = false
     var body: some View{
         VStack(alignment: .leading, spacing: 15) {
             HStack(alignment: .center, spacing: 10) {
-                WebImage(url: URL(string:model.userInfo.avatar)).resizable().aspectRatio( contentMode: .fill).frame(width: 40, height: 40, alignment: .center).background(Color.red).clipShape(Circle())
+                WebImage(url: URL(string:model.userInfo.avatar)).resizable().aspectRatio( contentMode: .fill).frame(width: 40, height: 40, alignment: .center).background(Color.red).clipShape(Circle()).onTapGesture {
+                    push = true
+                }
                 VStack(alignment: .leading, spacing: 5){
                     Text(model.userInfo.nickName).font(.system(size: 13,weight:.medium))
                     HStack(alignment: .center, spacing: 3){
@@ -212,6 +215,12 @@ struct CircleRow:View{
                 
             }.padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 20))
             
+            NavigationLink(isActive: $push) {
+                UserIntroduceView(uid: model.uid)
+            } label: {
+                EmptyView()
+            }
+
         }.onAppear {
             if !model.images.isEmpty{
                 if model.images.contains(",") {
@@ -265,8 +274,8 @@ struct CircleRow:View{
             return 230 * imageSize.height / imageSize.width
         }
         let height = 150 * imageSize.height / imageSize.width
-        if height > 400 {
-            return 400
+        if height > 250 {
+            return 250
         }
         return height
     }

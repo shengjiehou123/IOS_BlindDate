@@ -41,3 +41,5 @@ public let myAppRootVC : UIViewController? = keyWindow?.rootViewController
 //MARK: Notification
 
 public let kNotiChatToUserId = "kChatToUserId"
+
+public let kNotiPushUserIntroduction = "kNotiPushUserIntroduction"

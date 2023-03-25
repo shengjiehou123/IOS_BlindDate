@@ -78,7 +78,7 @@ extension View{
         }
         if isPresented.wrappedValue {
             toPresent.rootView = AnyView(builder())
-            let topVc = topViewController()
+            let topVc = self.topViewController()
             topVc?.present(toPresent, animated: false, completion: nil)
         } else {
             toPresent.dismiss(animated: true, completion: nil)

@@ -51,7 +51,11 @@ class ReCommandModel: HandyJSON,Identifiable,ObservableObject {
     }
 }
 
-class UserPhotoModel:HandyJSON,Identifiable{
+class UserPhotoModel:HandyJSON,Identifiable,Equatable{
+    static func == (lhs: UserPhotoModel, rhs: UserPhotoModel) -> Bool{
+        return lhs.id == rhs.id
+    }
+    var id : Int = 0
     var uid :Int = 0
     var scenes:String = "life"
     var photo:String = ""

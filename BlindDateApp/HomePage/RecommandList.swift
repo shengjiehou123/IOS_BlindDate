@@ -26,7 +26,7 @@ struct RecommandList: View {
         ZStack(alignment: .top){
             ForEach(0..<recommnadData.listData.count,id:\.self){ index in
                 let model = recommnadData.listData[index]
-                ScrollCardView(bgColor: .orange,index: index).environmentObject(model)
+                ScrollCardView(index: index).environmentObject(model)
             }
         }.navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(leading: Text("推荐").font(.system(size: 30, weight: .medium, design: .default))).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).toast(isShow: $computedModel.showToast, msg: computedModel.toastMsg)
@@ -72,7 +72,6 @@ struct RecommandList: View {
 }
 
 struct ScrollCardView:View{
-    var bgColor : Color
     @EnvironmentObject var recommandModel : ReCommandModel
     var index:Int
     @State var offset : CGFloat = 0;
@@ -84,7 +83,7 @@ struct ScrollCardView:View{
         let topOffset = index <= 2 ? index * 15 : 0
         ScrollView(.vertical, showsIndicators: false) {
             VStack{
-                CardView(bgColor: bgColor).environmentObject(recommandModel)
+                CardView().environmentObject(recommandModel)
                 HomePageAboutUsView(title: "关于我",content: recommandModel.myTag.count > 0 ? (recommandModel.aboutMeDesc + "\n" + recommandModel.myTag) : recommandModel.aboutMeDesc,userPhotos: recommandModel.userPhotos)
                 HomePageAboutUsView(title: "希望对方",content: recommandModel.likePersonTag,userPhotos: [])
                 if !recommandModel.loveGoalsDesc.isEmpty {
@@ -168,17 +167,21 @@ struct HomePageAboutUsView:View{
     var content: String
     var userPhotos:[UserPhotoModel]
     var body: some View{
-        VStack(alignment: .leading, spacing: 15) {
             HStack(alignment: .top, spacing: 0) {
                 Text(title)
                     .foregroundColor(.gray)
                     .font(.system(size: 15, weight: .medium, design: .default))
                 Spacer()
-            }.padding(EdgeInsets(top: 20, leading: 10, bottom: 0, trailing: 10))
-            Text(content).lineSpacing(10).font(.system(size: 17)).padding(EdgeInsets(top: 0, leading: 10, bottom: 20, trailing: 10))
+            }.padding(EdgeInsets(top: 20, leading: 10, bottom: 15, trailing: 10))
+           
+           HStack{
+               Text(content).lineSpacing(10).font(.system(size: 17))
+               Spacer()
+            }.padding(EdgeInsets(top: 0, leading: 10, bottom: 20, trailing: 10))
             
-            ForEach(0..<userPhotos.count) { index in
-                let model = userPhotos[index]
+            ForEach(userPhotos,id:\.id) { model in
+                let index = userPhotos.firstIndex(of: model) ?? 0
+//                let model = userPhotos[index]
                 let url = URL.init(string:model.photo)
                 Spacer().frame(height:10)
                 WebImage(url: url).resizable().interpolation(.high).aspectRatio(contentMode:.fill).frame(width:  screenWidth - 20, height: 500, alignment: .center)
@@ -191,19 +194,16 @@ struct HomePageAboutUsView:View{
                    myAppRootVC?.hero.browserPhoto(viewModules: list, initIndex: index)
                 }
             }
-            
-        }.clipped(antialiased: true)
         
     }
 }
 
 struct CardView:View{
     @EnvironmentObject var recommandModel : ReCommandModel
-    var bgColor : Color
     var body: some View{
         VStack(alignment: .leading, spacing: 0) {
 //            Spacer().frame(height:10)
-            CardHeaderView(bgColor: bgColor).environmentObject(recommandModel)
+            CardHeaderView().environmentObject(recommandModel)
 //            Spacer()
         }
     }
@@ -215,7 +215,6 @@ struct CardHeaderView:View{
     @State var sumWidth : CGFloat = 0
     @State var overParentWidthDic :[Int:[String]] = [:]
     @State var rows :[Int] = []
-    var bgColor : Color
     var body: some View{
         ZStack(alignment: .top) {
             GeometryReader { reader in
