@@ -10,17 +10,20 @@ import SDWebImageSwiftUI
 
 struct Me: View {
     @State var userInfoModel : ReCommandModel = ReCommandModel()
+    @State var isFirst : Bool = true
+    @State var push : Bool = false
     var body: some View {
 //        Text("Hello, World!").onAppear {
 //            requestUserInfo()
 //        }
+        NavigationView{
         VStack(alignment: .leading, spacing: 0) {
             Spacer().frame(height:20)
             HStack(alignment: .center, spacing: 10) {
                 WebImage(url: URL.init(string: userInfoModel.avatar))
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .frame(width: 80, height: 80, alignment: .leading)
+                    .frame(width: 80, height: 80, alignment: .center)
                     .background(Color.red)
                     .clipShape(Circle()).contentShape(Rectangle()).onTapGesture {
                         UserCenter.shared.LogOut()
@@ -41,10 +44,27 @@ struct Me: View {
                 Spacer()
             }.padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
             MeVipEntranceView()
+            MyDynamicView().frame(height:80).padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)).background(RoundedRectangle(cornerRadius: 5).fill(Color.white)).padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)).onTapGesture {
+                 push = true
+            }
+            NavigationLink(isActive: $push) {
+                MyDynamicPage()
+            } label: {
+                EmptyView()
+            }
+            
+          
             Spacer()
-        }.background(Color.black.opacity(0.1)).onAppear {
+        }.navigationBarHidden(true).navigationBarTitleDisplayMode(.inline).background(Color.black.opacity(0.1)).introspectTabBarController { UITabBarController in
+            UITabBarController.tabBar.isHidden = false
+        }.onAppear {
+            if !isFirst {
+                return
+            }
+            isFirst = false
             requestUserInfo()
         }
+     }
     }
     func requestUserInfo(){
         NW.request(urlStr: "get/user/info", method: .post, parameters: nil) { response in
@@ -58,6 +78,19 @@ struct Me: View {
             
         }
 
+    }
+}
+
+//MARK: 我的动态
+struct MyDynamicView:View{
+    var body: some View{
+        HStack(alignment: .center, spacing: 10) {
+            Text("我的动态")
+                .font(.system(size: 16))
+            Spacer()
+            Image("7x14right").resizable().aspectRatio( contentMode: .fill).frame(width: 7, height: 14, alignment: .leading)
+            
+        }
     }
 }
 
@@ -85,7 +118,7 @@ struct MeVipEntranceView:View{
                 }.padding(EdgeInsets(top: 15, leading: 10, bottom: 10, trailing: 0)).frame(width:(width - 30) / 2.0,alignment: .leading).background(RoundedRectangle(cornerRadius: 5).fill(Color.red))
                 
             }.padding(EdgeInsets(top: 20, leading: 10, bottom: 10, trailing: 10))
-        }
+        }.frame(height:100)
     }
 }
 

@@ -11,6 +11,7 @@
 		A209452429CC429E00963A1B /* CreateDynamicCircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A209452329CC429E00963A1B /* CreateDynamicCircleView.swift */; };
 		A209452629CDAF7400963A1B /* DataExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A209452529CDAF7400963A1B /* DataExtension.swift */; };
 		A209452829CEA79F00963A1B /* UserIntroduceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A209452729CEA79F00963A1B /* UserIntroduceView.swift */; };
+		A209452C29CF3E8900963A1B /* MyDynamicPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A209452B29CF3E8900963A1B /* MyDynamicPage.swift */; };
 		A238F28B29C74F7C00F1B4F7 /* ButtonExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A238F28A29C74F7B00F1B4F7 /* ButtonExtension.swift */; };
 		A24B376729C1D5D500D1D003 /* DynamicCircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A24B376629C1D5D500D1D003 /* DynamicCircleView.swift */; };
 		A2519B9229A9E59D0098DF3E /* ViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2519B9129A9E59D0098DF3E /* ViewExtension.swift */; };
@@ -55,6 +56,7 @@
 		A209452329CC429E00963A1B /* CreateDynamicCircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateDynamicCircleView.swift; sourceTree = "<group>"; };
 		A209452529CDAF7400963A1B /* DataExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExtension.swift; sourceTree = "<group>"; };
 		A209452729CEA79F00963A1B /* UserIntroduceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserIntroduceView.swift; sourceTree = "<group>"; };
+		A209452B29CF3E8900963A1B /* MyDynamicPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyDynamicPage.swift; sourceTree = "<group>"; };
 		A238F28A29C74F7B00F1B4F7 /* ButtonExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonExtension.swift; sourceTree = "<group>"; };
 		A24B376629C1D5D500D1D003 /* DynamicCircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicCircleView.swift; sourceTree = "<group>"; };
 		A2519B9129A9E59D0098DF3E /* ViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtension.swift; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 			isa = PBXGroup;
 			children = (
 				A281043B29B20DD900C0B8E8 /* Me.swift */,
+				A209452B29CF3E8900963A1B /* MyDynamicPage.swift */,
 			);
 			path = MePage;
 			sourceTree = "<group>";
@@ -433,6 +436,7 @@
 				A2519B9F29AA01E30098DF3E /* RecommandList.swift in Sources */,
 				A281043C29B20DD900C0B8E8 /* Me.swift in Sources */,
 				A2519B9C29A9F1FA0098DF3E /* Header.swift in Sources */,
+				A209452C29CF3E8900963A1B /* MyDynamicPage.swift in Sources */,
 				A2519BA229AC8CD60098DF3E /* ReCommandModel.swift in Sources */,
 				A209452629CDAF7400963A1B /* DataExtension.swift in Sources */,
 				A2D8270D29B851420017445D /* LocalData.swift in Sources */,

@@ -10,7 +10,7 @@ import HandyJSON
 
 class LikeMeModel: HandyJSON,Identifiable {
     var id : Int = 0
-    var uid : UUID = UUID()
+//    var uid : Int = 0
     var nickName:String = ""
     var avatar: String = ""
     var gender :Int = 0

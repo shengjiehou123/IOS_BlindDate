@@ -36,6 +36,7 @@ struct UserIntroduceView: View {
     var uid : Int
     @StateObject var introductionModel : IntroductionModel = IntroductionModel()
     @State var uiTabarController: UITabBarController?
+    @State var isFirst : Bool = true
     var body: some View {
         ZStack(alignment: .bottom){
         RefreshableScrollView(refreshing: .constant(false), pullDown: nil, footerRefreshing: .constant(false), loadMore: .constant(false), onFooterRefreshing: nil){
@@ -49,6 +50,10 @@ struct UserIntroduceView: View {
             
               Spacer().frame(height:kSafeBottom+55)
         }.padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)).modifier(LoadingView(isShowing: $introductionModel.computedModel.showLoading, bgColor: $introductionModel.computedModel.loadingBgColor)).modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: introductionModel.recommandModel.nickName)).onAppear {
+            if !isFirst {
+                return
+            }
+            isFirst = false
             introductionModel.requestUserIntroduction(uid: uid)
             
         }.toast(isShow: $introductionModel.computedModel.showToast, msg: introductionModel.computedModel.toastMsg).introspectTabBarController { UITabBarController in

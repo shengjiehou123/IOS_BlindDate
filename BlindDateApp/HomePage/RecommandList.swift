@@ -18,6 +18,7 @@ class RecommandData:ObservableObject{
 struct RecommandList: View {
     @State var computedModel = ComputedProperty()
     @StateObject var recommnadData : RecommandData = RecommandData()
+    @State var isFirst : Bool = true
     var body: some View {
 //        Text("Hello, World!").onAppear {
 ////            requestRecommandList(state: .normal)
@@ -31,6 +32,10 @@ struct RecommandList: View {
         }.navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(leading: Text("推荐").font(.system(size: 30, weight: .medium, design: .default))).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).toast(isShow: $computedModel.showToast, msg: computedModel.toastMsg)
     }.onAppear {
+        if !isFirst {
+            return
+        }
+        isFirst = false
         requestRecommandList(state: .normal)
     }.onDisappear {
         

@@ -54,6 +54,7 @@ struct DynamicCircleView: View {
     @State var showComment : Bool = false
     @State var selectCircleModel : CircleModel = CircleModel()
     @State var uiTabarVc : UITabBarController? = nil
+    @State var isFirst : Bool = true
     @StateObject var computedModel : MyComputedProperty = MyComputedProperty()
     var body: some View {
      
@@ -86,9 +87,12 @@ struct DynamicCircleView: View {
 
              }
          }).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).introspectTabBarController(customize: { tabvc in
-             tabvc.tabBar.isHidden = false
              uiTabarVc = tabvc
          }).onAppear {
+             if !isFirst {
+                 return
+             }
+             isFirst = false
              requestCircleList(state: .normal)
          }.alertB(isPresented: $isPresentCreateCircleView) {
              CreateDynamicCircleView(show: $isPresentCreateCircleView) {
@@ -333,6 +337,7 @@ struct CommentListView:View{
     @StateObject var computedModel : MyComputedProperty = MyComputedProperty()
     @State var tabBarVc : UITabBarController? = nil
     @State var page : Int = 1
+    @State var isFirst : Bool = true
     var body: some View{
         if show{
     ZStack(alignment: .bottomLeading){
@@ -401,6 +406,10 @@ struct CommentListView:View{
         }.edgesIgnoringSafeArea(.all).introspectTabBarController(customize: { tabBarVc in
             self.tabBarVc = tabBarVc
         }).onAppear {
+            if !isFirst {
+                return
+            }
+            isFirst = false
             requestCommentList(state: .normal)
        }
         if observerTapModel.sectionTap {

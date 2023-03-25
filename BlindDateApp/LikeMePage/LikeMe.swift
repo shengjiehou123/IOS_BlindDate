@@ -47,6 +47,7 @@ class LikeMeViewModel:ObservableObject{
 
 struct LikeMe: View {
     @StateObject var model : LikeMeViewModel = LikeMeViewModel()
+    @State var isFirst : Bool = true
     var body: some View {
         NavigationView{
             ScrollView(.vertical, showsIndicators: false) {
@@ -62,7 +63,13 @@ struct LikeMe: View {
                 let items = [GridItem(.flexible()),GridItem(.flexible())]
                 LazyVGrid(columns: items,spacing: 10) {
                     ForEach(model.listData,id:\.id){ model in
-                        WebImage(url: URL(string: model.avatar)).resizable().aspectRatio( contentMode: .fill).frame(height:250).clipShape(RoundedRectangle(cornerRadius: 10))
+                        NavigationLink {
+                            UserIntroduceView(uid: model.id)
+                        } label: {
+                            WebImage(url: URL(string: model.avatar)).resizable().aspectRatio( contentMode: .fill).frame(height:250).clipShape(RoundedRectangle(cornerRadius: 10))
+                        }
+
+                       
                     }
                 }.frame(maxWidth:.infinity,maxHeight: .infinity).padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
             }.navigationBarTitleDisplayMode(.inline)
@@ -74,6 +81,10 @@ struct LikeMe: View {
                         }
                     }
                 }.onAppear {
+                    if !isFirst {
+                        return
+                    }
+                    isFirst = false
                     model.requestLikeMeList(state: .normal)
                 }
         }
