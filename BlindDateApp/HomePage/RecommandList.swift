@@ -143,7 +143,6 @@ struct ScrollCardView:View{
         let param = ["toUserId":toUserId,"like":like] as [String : Any]
         NW.request(urlStr: "like/person", method: .post, parameters: param) { response in
             let dic = response.data
-//            let likeUserid = dic["likeUserId"]
             guard let likeUserAvatar = dic["likeUseAvatar"] as? String else{
                 likeUseAvatar = ""
                 return

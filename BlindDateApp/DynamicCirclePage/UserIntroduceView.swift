@@ -37,6 +37,7 @@ struct UserIntroduceView: View {
     @StateObject var introductionModel : IntroductionModel = IntroductionModel()
     @State var uiTabarController: UITabBarController?
     var body: some View {
+        ZStack(alignment: .bottom){
         RefreshableScrollView(refreshing: .constant(false), pullDown: nil, footerRefreshing: .constant(false), loadMore: .constant(false), onFooterRefreshing: nil){
                
             CardView().environmentObject(introductionModel.recommandModel).id(UUID())
@@ -46,7 +47,7 @@ struct UserIntroduceView: View {
                     HomePageAboutUsView(title: "恋爱目标",content: introductionModel.recommandModel.loveGoalsDesc,userPhotos: [])
                 }
             
-           
+              Spacer().frame(height:kSafeBottom+55)
         }.padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)).modifier(LoadingView(isShowing: $introductionModel.computedModel.showLoading, bgColor: $introductionModel.computedModel.loadingBgColor)).modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: introductionModel.recommandModel.nickName)).onAppear {
             introductionModel.requestUserIntroduction(uid: uid)
             
@@ -57,7 +58,41 @@ struct UserIntroduceView: View {
         }.onDisappear {
             uiTabarController?.tabBar.isHidden = false
         }
+            VStack(alignment: .center, spacing: 0){
+                Image("like_solid")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 30, height: 30, alignment: .center).background(Circle().fill(Color.red).frame(width: 50, height: 50, alignment: .leading)).contentShape(Rectangle()).onTapGesture {
+                        requestLikePerson(toUserId: uid, like: true)
+                    }
+                Spacer().frame(height:kSafeBottom)
+            }
+        }.edgesIgnoringSafeArea(.bottom)
     }
+    
+    func requestLikePerson(toUserId:Int,like:Bool){
+        let param = ["toUserId":toUserId,"like":like] as [String : Any]
+        NW.request(urlStr: "like/person", method: .post, parameters: param) { response in
+//            let dic = response.data
+            let compu = MyComputedProperty()
+            compu.showToast = true
+            compu.toastMsg = "喜欢成功"
+            self.introductionModel.computedModel = compu
+//            self.introductionModel.computedModel.toastMsg = "喜欢成功"
+//            guard let likeUserAvatar = dic["likeUseAvatar"] as? String else{
+//                return
+//            }
+//            if !likeUserAvatar.isEmpty {
+//
+//            }else{
+//
+//            }
+        } failedHandler: { _ in
+        
+        }
+    }
+
+    
     
 }
 
