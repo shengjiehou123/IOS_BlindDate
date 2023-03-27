@@ -19,7 +19,7 @@ class BaseModel: MyComputedProperty {
 }
 
 class MyComputedProperty:ObservableObject{
-    @Published var showLoading:Bool = true
+    @Published var showLoading:Bool = false
     @Published var loadingBgColor:Color = .clear
     @Published var showRefreshView : Bool = false
     @Published var errorMsg : String = ""

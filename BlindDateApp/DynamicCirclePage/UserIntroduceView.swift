@@ -65,7 +65,7 @@ struct UserIntroduceView: View {
                 Image("like_solid")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .frame(width: 30, height: 30, alignment: .center).background(Circle().fill(Color.red).frame(width: 50, height: 50, alignment: .leading)).contentShape(Rectangle()).onTapGesture {
+                    .frame(width: 30, height: 30, alignment: .center).background(Circle().fill(btnLRLineGradient).frame(width: 50, height: 50, alignment: .leading)).contentShape(Rectangle()).onTapGesture {
                         requestLikePerson(toUserId: uid, like: true)
                     }
                 Spacer().frame(height:kSafeBottom)
