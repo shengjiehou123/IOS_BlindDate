@@ -57,7 +57,7 @@ struct CreateDynamicCircleView: View {
                     HStack{
                         Text("发表")
                             .font(.system(size: 15,weight: .medium))
-                            .foregroundColor( .white).padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)).background(Capsule().fill(comment.isEmpty ? Color.colorWithHexString(hex: "#999999") : Color.green))
+                            .foregroundColor( .white).padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)).background(Capsule().fill(!comment.isEmpty || pickerResult.count > 0 ? btnLRLineGradient : .linearGradient(Gradient(colors: [Color.colorWithHexString(hex: "#999999")]), startPoint: .leading, endPoint: .trailing)))
                     }.padding(.trailing,20)
                 }.buttonStyle(PlainButtonStyle()).foregroundColor(.red).disabled(comment.isEmpty)
 
@@ -69,7 +69,7 @@ struct CreateDynamicCircleView: View {
                 if showPlacHolder {
                     Text("这一刻的想法...")
                         .font(.system(size: 15))
-                        .foregroundColor(.colorWithHexString(hex: "#999999")).padding(EdgeInsets(top: 10, leading: 5, bottom: 0, trailing: 10))
+                        .foregroundColor(.colorWithHexString(hex: "#999999")).padding(EdgeInsets(top: 10, leading: 5, bottom: 0, trailing: 10)).accentColor(textFieldAccentColor)
                 }
                
             }.padding(EdgeInsets(top: 20, leading: 20, bottom: 0, trailing: 20))

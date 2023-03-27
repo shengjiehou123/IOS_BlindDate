@@ -56,7 +56,7 @@ struct Me: View {
             
           
             Spacer()
-        }.navigationBarHidden(true).navigationBarTitleDisplayMode(.inline).background(Color.black.opacity(0.1)).introspectTabBarController { tab in
+        }.navigationBarHidden(true).navigationBarTitleDisplayMode(.inline).background(Color.colorWithHexString(hex: "#F3F3F3")).introspectTabBarController { tab in
             tabbarVc = tab
         }.onAppear {
             tabbarVc?.tabBar.isHidden = false

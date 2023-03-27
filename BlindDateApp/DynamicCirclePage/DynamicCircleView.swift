@@ -20,6 +20,7 @@ class CircleModel:HandyJSON,Identifiable,ObservableObject{
     var likeCount : Int = 0
     var likeInfoList : [CircleLikeUserInfo] = []
     var commentCount : Int = 0
+    var createAt : String = ""
     required init() {
         
     }
@@ -82,7 +83,7 @@ struct DynamicCircleView: View {
                  } label: {
                      HStack{
                          Text("发动态").font(.system(size: 15, weight: .medium, design: .default)).foregroundColor(.white)
-                     }.padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)).background(RoundedRectangle(cornerRadius: 5).fill(Color.red))
+                     }.padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)).background(RoundedRectangle(cornerRadius: 5).fill(btnLRLineGradient))
                  }.buttonStyle(PlainButtonStyle())
 
              }
@@ -351,7 +352,7 @@ struct CommentListView:View{
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                         self.topViewController()?.dismiss(animated: false, completion: nil)
-                        tabBarVc?.tabBar.isHidden = false
+//                        tabBarVc?.tabBar.isHidden = false
                         show = false
                     }
                 } label: {

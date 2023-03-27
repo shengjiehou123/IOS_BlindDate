@@ -36,10 +36,18 @@ public let kSafeBottom = keyWindow?.safeAreaInsets.bottom ?? 0
 public let myAppRootVC : UIViewController? = keyWindow?.rootViewController
 
 
+public let btnLRLineGradient : LinearGradient = .linearGradient(Gradient(colors: [Color.colorWithHexString(hex: "#F97676"),Color.colorWithHexString(hex: "#F6286F")]),startPoint: .leading,endPoint: .trailing)
+
+public let textFieldAccentColor = Color.colorWithHexString(hex: "#F6286F")
+                                                        
+                                                    
+                                                
 
 
 //MARK: Notification
 
 public let kNotiChatToUserId = "kChatToUserId"
+                                                        
+                                                
 
 public let kNotiPushUserIntroduction = "kNotiPushUserIntroduction"

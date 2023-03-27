@@ -9,20 +9,21 @@ import SwiftUI
 import SDWebImageSwiftUI
 import JFHeroBrowser
 
-class MyDynamicModel:ObservableObject{
+class MyDynamicModel:BaseModel{
     @Published var page : Int = 1
     let pageLimit : Int = 10
     @Published var listData:[CircleModel] = []
-    @Published var computedModel : MyComputedProperty = MyComputedProperty()
+    @Published var showCommentList : Bool = false
+    @Published var showCommentCircleModel : CircleModel = CircleModel()
     
-    init(){
+    override init(){
+        super.init()
         requestCircleList(state: .normal)
     }
     
     func requestCircleList(state:RefreshState){
         if state == .normal {
-            computedModel.loadingBgColor = .white
-            computedModel.showLoading = true
+            self.loadingBgColor = .white
             page = 1
         }else if state == .pullDown{
             page = 1
@@ -31,9 +32,9 @@ class MyDynamicModel:ObservableObject{
         }
         let params = ["page":page,"pageLimit":pageLimit]
         NW.request(urlStr: "get/my/circle", method: .post, parameters: params) { response in
-            self.computedModel.showLoading = false
-            self.computedModel.pullDown = false
-            self.computedModel.footerRefreshing = false
+            self.showLoading = false
+            self.pullDown = false
+            self.footerRefreshing = false
             guard let list = response.data["list"] as? [[String:Any]] else{
                 return
             }
@@ -41,9 +42,9 @@ class MyDynamicModel:ObservableObject{
                 self.listData.removeAll()
             }
             if list.count < self.pageLimit {
-                self.computedModel.loadMore = false
+                self.loadMore = false
             }else{
-                self.computedModel.loadMore = true
+                self.loadMore = true
             }
             var tempArr : [CircleModel] = []
             for item in list {
@@ -56,9 +57,13 @@ class MyDynamicModel:ObservableObject{
             self.listData.append(contentsOf: tempArr)
             
         } failedHandler: { response in
-            self.computedModel.pullDown = false
-            self.computedModel.footerRefreshing = false
-            self.computedModel.loadMore = true
+            self.showLoading = false
+            self.pullDown = false
+            self.footerRefreshing = false
+            self.loadMore = true
+            self.showToast = true
+            self.toastMsg = response.message
+            self.notifyUpdate()
         }
 
     }
@@ -77,16 +82,21 @@ class MyDynamicModel:ObservableObject{
 struct MyDynamicPage: View {
     @StateObject var myDynamicModel : MyDynamicModel = MyDynamicModel()
     var body: some View {
-        RefreshableScrollView(refreshing: $myDynamicModel.computedModel.pullDown, pullDown: {
-            myDynamicModel.requestCircleList(state: .pullDown)
-        }, footerRefreshing: $myDynamicModel.computedModel.footerRefreshing, loadMore: $myDynamicModel.computedModel.loadMore) {
-            myDynamicModel.requestCircleList(state: .pullUp)
-        } content: {
-            ForEach(myDynamicModel.listData,id:\.id){ model in
-                MyDynamicRow(model: model).environmentObject(myDynamicModel)
+        ZStack(alignment: .bottom){
+            RefreshableScrollView(refreshing: $myDynamicModel.pullDown, pullDown: {
+                myDynamicModel.requestCircleList(state: .pullDown)
+            }, footerRefreshing: $myDynamicModel.footerRefreshing, loadMore: $myDynamicModel.loadMore) {
+                myDynamicModel.requestCircleList(state: .pullUp)
+            } content: {
+                ForEach(myDynamicModel.listData,id:\.id){ model in
+                    MyDynamicRow(model: model).environmentObject(myDynamicModel).id(model.id)
+                }
+            }.modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "我的动态圈")).modifier(LoadingView(isShowing: $myDynamicModel.showLoading, bgColor: $myDynamicModel.loadingBgColor)).introspectTabBarController { UITabBarController in
+                UITabBarController.tabBar.isHidden = true
+            }.toast(isShow: $myDynamicModel.showToast, msg: myDynamicModel.toastMsg)
+            if myDynamicModel.showCommentList {
+                CommentListView(show: $myDynamicModel.showCommentList).environmentObject(myDynamicModel.showCommentCircleModel)
             }
-        }.modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "我的动态圈")).introspectTabBarController { UITabBarController in
-            UITabBarController.tabBar.isHidden = true
         }
 
     }
@@ -101,8 +111,13 @@ struct MyDynamicRow:View{
     @State var likeCircleMap : [Int:CircleLikeUserInfo] = [:]
     var body: some View{
         VStack{
-            HStack(alignment: .center, spacing: 0){
-                Spacer().frame(width:50)
+            HStack(alignment: .center, spacing: 10){
+                let strs = getCreateAtStr()
+                VStack(alignment: .leading, spacing: 0){
+                    Text(strs[0]).font(.system(size: 14,weight:.medium)).foregroundColor(.black)
+                    Text(strs[1]).font(.system(size: 13)).foregroundColor(.colorWithHexString(hex: "#999999"))
+                }.frame(width:40).padding(4).background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
+               
                 Text(model.content).lineSpacing(10)
                 Spacer()
             }.frame(maxWidth:.infinity).padding(.leading,15)
@@ -144,7 +159,7 @@ struct MyDynamicRow:View{
                     Text("\(model.likeCount)").foregroundColor(.colorWithHexString(hex: "#999999"))
                 }.onTapGesture {
                     let item = likeCircleMap[UserCenter.shared.userInfoModel?.id ?? 0]
-                    myDynamicModel.requestCreateLikeCircle(likeCircle: item != nil, model: model) { likeCircle in
+                    myDynamicModel.requestCreateLikeCircle(likeCircle: item != nil ? false : true, model: model) { likeCircle in
                         if likeCircle {
                             let userInfo = CircleLikeUserInfo()
                             userInfo.circleId = model.id
@@ -161,7 +176,8 @@ struct MyDynamicRow:View{
                     Image("comment").resizable().renderingMode(.template).aspectRatio(contentMode: .fill).frame(width: 24, height: 24, alignment: .center).foregroundColor(Color.gray)
                     Text("\(model.commentCount)").foregroundColor(.colorWithHexString(hex: "#999999"))
                 }.onTapGesture {
-                    
+                    myDynamicModel.showCommentCircleModel = model
+                    myDynamicModel.showCommentList = true
                 }
                 
             }.padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 20))
@@ -180,9 +196,20 @@ struct MyDynamicRow:View{
             for item in model.likeInfoList {
                 likeCircleMap[item.likeCircleUid] = item
             }
+            
         }
     }
     
+    func getCreateAtStr() ->[String]{
+        let date = model.createAt.stringToDate(format: "yyyy-MM-dd HH:mm:ss")
+        let Month = date?.stringFormat(format: "M") ?? ""
+        let Day = date?.stringFormat(format: "d") ?? ""
+        let Year = date?.stringFormat(format: "yyyy") ?? ""
+        if Int(Year) ?? 0 < Date().year {
+            return [String(format: "%@.%@",Month,Day),String(format: "%@", Year)]
+        }
+        return [String(format: "%@",Day),String(format: "%@月", Month)]
+    }
     func getImageWidth() ->CGFloat{
         if imageSize.width > imageSize.height {
             return 230

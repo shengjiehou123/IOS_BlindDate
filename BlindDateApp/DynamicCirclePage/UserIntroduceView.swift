@@ -60,8 +60,6 @@ struct UserIntroduceView: View {
             UITabBarController.tabBar.isHidden = true
             uiTabarController = UITabBarController
 //            uiTabarController  = UITabBarController
-        }.onDisappear {
-            uiTabarController?.tabBar.isHidden = false
         }
             VStack(alignment: .center, spacing: 0){
                 Image("like_solid")

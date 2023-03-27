@@ -30,6 +30,12 @@ extension String{
            return self.removingPercentEncoding ?? ""
        }
     
+    func stringToDate(format:String) ->Date?{
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = format
+        let date = dateFormatter.date(from: self) ?? nil
+        return date
+    }
     
     
     

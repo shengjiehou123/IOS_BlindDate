@@ -784,7 +784,7 @@ struct MyJobView:View{
                     if !focuse {
                         hidenKeyBoard()
                     }
-                }).font(.system(size: 15, weight: .medium, design: .default)).frame(height:45).padding(.leading,10).background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
+                }).font(.system(size: 15, weight: .medium, design: .default)).frame(height:45).padding(.leading,10).background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3"))).accentColor(textFieldAccentColor)
                 if showJobList {
                     ScrollView(.vertical, showsIndicators: false) {
                         let jobs = LocalData.shared.searchProfessionName(name: job)
@@ -877,7 +877,7 @@ struct EducationInfoView:View{
                     if !focuse {
                         hidenKeyBoard()
                     }
-                }).font(.system(size: 15, weight: .medium, design: .default)).frame(height:45).padding(.leading,10).background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
+                }).font(.system(size: 15, weight: .medium, design: .default)).frame(height:45).padding(.leading,10).background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3"))).accentColor(textFieldAccentColor)
                 if showSchoolNameList {
                     ScrollView(.vertical, showsIndicators: false) {
                         let schoolNames = LocalData.shared.searchSchooName(name: schoolName)
@@ -952,7 +952,7 @@ struct NickNameView:View{
             VStack(alignment: .leading, spacing: 20) {
                 Text("首先，给自己起个好听的名字吧")
                     .font(.system(size: 22, weight: .medium, design: .default))
-                TextField.init("输入昵称", text: $nickName).padding().background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3"))).onChange(of: nickName) { newValue in
+                TextField.init("输入昵称", text: $nickName).padding().background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3"))).accentColor(textFieldAccentColor).onChange(of: nickName) { newValue in
                     nickName = newValue.trimmingCharacters(in: .whitespaces)
                 }
                 Spacer()
@@ -1125,7 +1125,7 @@ struct GenderView:View{
                 ForEach(0..<2){ index in
                     let genderStr = genders[index]
                     ZStack(alignment: .leading) {
-                        Image("").resizable().frame(width:(width - 10) / 2.0,height:70).background(RoundedRectangle(cornerRadius: 5).fill(selectedIndex == index + 1 ? Color.red : Color.colorWithHexString(hex: "#F3F3F3")))
+                        Image("").resizable().frame(width:(width - 10) / 2.0,height:70).background(RoundedRectangle(cornerRadius: 5).fill(selectedIndex == index + 1 ? btnLRLineGradient : LinearGradient(colors: [Color.colorWithHexString(hex: "#F3F3F3")], startPoint: .leading, endPoint: .trailing)))
                         HStack{
                             Text(genderStr)
                                 .font(.system(size: 15, weight: .medium, design: .default))
@@ -1152,7 +1152,7 @@ struct NextStepButton:View{
         } label: {
             Text(title)
                 .foregroundColor(.white)
-                .font(.system(size: 16, weight: .medium, design: .default)).frame(maxWidth:.infinity,minHeight: 45).background(Capsule().fill(Color.red))
+                .font(.system(size: 16, weight: .medium, design: .default)).frame(maxWidth:.infinity,minHeight: 45).background(Capsule().fill(btnLRLineGradient))
         }.buttonStyle(PlainButtonStyle())
 
     }

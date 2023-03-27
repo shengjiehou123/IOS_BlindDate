@@ -73,7 +73,7 @@ open class BaseRequest: NSObject {
             }else{
                 let code = response.response?.statusCode ?? 0
                 let data : [String:Any] = [:]
-                let message = response.error?.errorDescription ?? ""
+                let message = response.error?.localizedDescription ?? ""
                 let res = ResponseData(code: code, data: data, message: message)
                 failedHandler(res)
                 log.info("requestFailed:\(requestUrlStr) response:\(res)")
