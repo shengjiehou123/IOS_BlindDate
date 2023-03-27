@@ -337,7 +337,6 @@ struct CommentListView:View{
     @StateObject var computedModel : MyComputedProperty = MyComputedProperty()
     @State var tabBarVc : UITabBarController? = nil
     @State var page : Int = 1
-    @State var isFirst : Bool = true
     var body: some View{
         if show{
     ZStack(alignment: .bottomLeading){
@@ -406,10 +405,6 @@ struct CommentListView:View{
         }.edgesIgnoringSafeArea(.all).introspectTabBarController(customize: { tabBarVc in
             self.tabBarVc = tabBarVc
         }).onAppear {
-            if !isFirst {
-                return
-            }
-            isFirst = false
             requestCommentList(state: .normal)
        }
         if observerTapModel.sectionTap {

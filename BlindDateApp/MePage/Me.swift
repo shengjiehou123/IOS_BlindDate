@@ -12,6 +12,7 @@ struct Me: View {
     @State var userInfoModel : ReCommandModel = ReCommandModel()
     @State var isFirst : Bool = true
     @State var push : Bool = false
+    @State var tabbarVc : UITabBarController? = nil
     var body: some View {
 //        Text("Hello, World!").onAppear {
 //            requestUserInfo()
@@ -55,9 +56,10 @@ struct Me: View {
             
           
             Spacer()
-        }.navigationBarHidden(true).navigationBarTitleDisplayMode(.inline).background(Color.black.opacity(0.1)).introspectTabBarController { UITabBarController in
-            UITabBarController.tabBar.isHidden = false
+        }.navigationBarHidden(true).navigationBarTitleDisplayMode(.inline).background(Color.black.opacity(0.1)).introspectTabBarController { tab in
+            tabbarVc = tab
         }.onAppear {
+            tabbarVc?.tabBar.isHidden = false
             if !isFirst {
                 return
             }
