@@ -9,17 +9,32 @@ import SwiftUI
 
 class IntroductionModel : BaseModel{
     @Published  var recommandModel : ReCommandModel = ReCommandModel()
+    @Published var meLikeThis : Bool = true
+    @Published var showLikeEachOther : Bool = false
+    @Published var likeUseAvatar : String = ""
+    @Published var likeEachOther : Bool = false
     func requestUserIntroduction(uid:Int){
         let param = ["uid":uid]
         self.showLoading = true
         self.loadingBgColor = .white
         NW.request(urlStr: "get/user/introduction", method: .post, parameters: param) { response in
             self.showLoading = false
+            guard let meLike = response.data["meLike"] as? Bool else{
+                return
+            }
+            self.meLikeThis = meLike
+            guard let likeEachOther = response.data["likeEachOther"] as? Bool else{
+                return
+            }
+            self.showLikeEachOther = likeEachOther
             guard let dic = response.data["userInfo"] as? [String :Any] else{
                 return
             }
             guard let model = ReCommandModel.deserialize(from: dic, designatedPath: nil) else{
                 return
+            }
+            if self.showLikeEachOther {
+                self.likeUseAvatar = model.avatar
             }
             self.recommandModel = model
         } failedHandler: { response in
@@ -27,7 +42,32 @@ class IntroductionModel : BaseModel{
             self.showToast = true
             self.toastMsg = response.message
         }
-
+    }
+    
+    func requestLikePerson(toUserId:Int,like:Bool){
+        let param = ["toUserId":toUserId,"like":like] as [String : Any]
+        self.showLoading = true
+        self.loadingBgColor = .clear
+        NW.request(urlStr: "like/person", method: .post, parameters: param) { response in
+            self.showLoading = false
+            let dic = response.data
+            self.meLikeThis = true
+            guard let likeUserAvatar = dic["likeUseAvatar"] as? String else{
+                self.likeUseAvatar = ""
+                return
+            }
+            self.likeUseAvatar = likeUserAvatar
+            if !likeUserAvatar.isEmpty {
+                self.showLikeEachOther = true
+            }else{
+                self.showToast = true
+                self.toastMsg = "喜欢成功"
+            }
+        } failedHandler: { response in
+            self.showLoading = false
+            self.showToast = true
+            self.toastMsg = response.message
+        }
     }
 }
 
@@ -36,6 +76,7 @@ struct UserIntroduceView: View {
     @StateObject var introductionModel : IntroductionModel = IntroductionModel()
     @State var uiTabarController: UITabBarController?
     @State var isFirst : Bool = true
+    @State var likeOther : Bool = true
     var body: some View {
         ZStack(alignment: .bottom){
         RefreshableScrollView(refreshing: .constant(false), pullDown: nil, footerRefreshing: .constant(false), loadMore: .constant(false), onFooterRefreshing: nil){
@@ -55,37 +96,26 @@ struct UserIntroduceView: View {
             isFirst = false
             introductionModel.requestUserIntroduction(uid: uid)
             
-        }.toast(isShow: $introductionModel.showToast, msg: introductionModel.toastMsg)
-            VStack(alignment: .center, spacing: 0){
-                Image("like_solid")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 30, height: 30, alignment: .center).background(Circle().fill(btnLRLineGradient).frame(width: 50, height: 50, alignment: .leading)).contentShape(Rectangle()).onTapGesture {
-                        requestLikePerson(toUserId: uid, like: true)
-                    }
-                Spacer().frame(height:kSafeBottom)
+        }.alertB(isPresented: $introductionModel.showLikeEachOther, builder: {
+            LikeEachOtherView(isShow: $introductionModel.showLikeEachOther,avatar: UserCenter.shared.userInfoModel?.avatar ?? "",likeUserAvatar: introductionModel.likeUseAvatar,toUserId: uid)
+        }).toast(isShow: $introductionModel.showToast, msg: introductionModel.toastMsg)
+            if !introductionModel.meLikeThis {
+                VStack(alignment: .center, spacing: 0){
+                    Image("like_solid")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 30, height: 30, alignment: .center).background(Circle().fill(btnLRLineGradient).frame(width: 50, height: 50, alignment: .leading)).contentShape(Rectangle()).onTapGesture {
+                            introductionModel.requestLikePerson(toUserId: uid, like: true)
+                        }
+                    Spacer().frame(height:kSafeBottom)
+                }
             }
-        }.edgesIgnoringSafeArea(.bottom)
+        }.ignoresSafeArea(.container, edges: .bottom)
     }
     
-    func requestLikePerson(toUserId:Int,like:Bool){
-        let param = ["toUserId":toUserId,"like":like] as [String : Any]
-        NW.request(urlStr: "like/person", method: .post, parameters: param) { response in
-            introductionModel.showToast = true
-            introductionModel.toastMsg = "喜欢成功"
-//            self.introductionModel.toastMsg = "喜欢成功"
-//            guard let likeUserAvatar = dic["likeUseAvatar"] as? String else{
-//                return
-//            }
-//            if !likeUserAvatar.isEmpty {
-//
-//            }else{
-//
-//            }
-        } failedHandler: { _ in
-        
-        }
-    }
+   
+    
+    
 
     
     

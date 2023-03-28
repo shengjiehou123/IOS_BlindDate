@@ -364,10 +364,19 @@ struct LikeEachOtherView:View{
             }.frame(width: 200, height: 50, alignment: .center).contentShape(Rectangle()).buttonStyle(PlainButtonStyle())
             Spacer()
 
-        }.frame(maxWidth:.infinity).background( Rectangle().fill(Color.gray.opacity(0.3)).blur(radius: 20)).onAppear {
+        }.frame(maxWidth:.infinity).background(Color.white).ignoresSafeArea(.container, edges: .all).onAppear {
             isShowAnimation = true
         }
-     }
+     
+    }
+  }
+}
+
+struct VisualEffectView: UIViewRepresentable {
+    var effect: UIVisualEffect?
+    func makeUIView(context: UIViewRepresentableContext<Self>) -> UIVisualEffectView { UIVisualEffectView() }
+    func updateUIView(_ uiView: UIVisualEffectView, context: UIViewRepresentableContext<Self>) { uiView.effect = effect
+        uiView.alpha = 0.6
     }
 }
 
