@@ -17,6 +17,8 @@ class LikeMeModel: HandyJSON,Identifiable {
     var height :Int = 0
     var birthday:Double = 0
     var educationType: Int = 0
+    var educationTypeDesc: String = ""
+    var job :String = ""
     var school :String = ""
     required init() {
         

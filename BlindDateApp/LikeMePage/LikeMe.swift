@@ -60,13 +60,27 @@ struct LikeMe: View {
                 let items = [GridItem(.flexible()),GridItem(.flexible())]
                 LazyVGrid(columns: items,spacing: 10) {
                     ForEach(model.listData,id:\.id){ model in
-                        NavigationLink {
-                            UserIntroduceView(uid: model.id)
-                        } label: {
-                            WebImage(url: URL(string: model.avatar)).resizable().aspectRatio( contentMode: .fill).frame(height:250).clipShape(RoundedRectangle(cornerRadius: 10))
+                        ZStack(alignment: .bottomLeading){
+                            NavigationLink {
+                                UserIntroduceView(uid: model.id)
+                            } label: {
+                                WebImage(url: URL(string: model.avatar)).resizable().aspectRatio( contentMode: .fill).frame(height:250).blur(radius: UserCenter.shared.userInfoModel?.idVerifyed == 0 ? 20 : 0).clipShape(RoundedRectangle(cornerRadius: 10))
+                            }
+                           if UserCenter.shared.userInfoModel?.idVerifyed == 0 {
+                               VisualEffectView(effect: UIBlurEffect(style: .dark)).frame(height:250) .clipShape(RoundedRectangle(cornerRadius: 10))
+                               let birthDayDate =  Date.init(timeIntervalSince1970: model.birthday)
+                               if  model.educationType >= 2  {
+                                   Text("\(birthDayDate.getAge())岁  \(model.educationTypeDesc)")
+                                       .foregroundColor(.white)
+                                       .font(.system(size: 13)).padding(EdgeInsets(top: 0, leading: 10, bottom: 20, trailing: 0))
+                               }else{
+                                   Text("\(model.job)")
+                                       .foregroundColor(.white)
+                                       .font(.system(size: 13)).padding(EdgeInsets(top: 0, leading: 10, bottom: 20, trailing: 0))
+                               }
+                               
+                            }
                         }
-
-                       
                     }
                 }.frame(maxWidth:.infinity,maxHeight: .infinity).padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
             }.navigationBarTitleDisplayMode(.inline).onAppear {

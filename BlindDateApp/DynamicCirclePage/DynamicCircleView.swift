@@ -54,12 +54,11 @@ struct DynamicCircleView: View {
     @State var isPresentCreateCircleView : Bool = false
     @State var showComment : Bool = false
     @State var selectCircleModel : CircleModel = CircleModel()
-    @State var uiTabarVc : UITabBarController? = nil
     @State var isFirst : Bool = true
     @StateObject var computedModel : MyComputedProperty = MyComputedProperty()
     var body: some View {
      
-        ZStack(alignment: .bottom){
+        
          RefreshableScrollView(refreshing: $computedModel.pullDown, pullDown: {
              requestCircleList(state: .pullDown)
          }, footerRefreshing: $computedModel.footerRefreshing, loadMore: $computedModel.loadMore) {
@@ -69,12 +68,9 @@ struct DynamicCircleView: View {
                  CircleRow(model:model,tapCircleHandle:{show in
                      showComment = true
                      selectCircleModel = model
-                     uiTabarVc?.tabBar.isHidden = true
                  }).id(model.id)
              }
-         }.modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "")).navigationBarTitleDisplayMode(.inline).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).introspectTabBarController(customize: { tabvc in
-             uiTabarVc = tabvc
-         }).onAppear {
+         }.modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "")).navigationBarTitleDisplayMode(.inline).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).onAppear {
              NotificationCenter.default.addObserver(forName: .init(rawValue: kNotiCreateCircle), object: nil, queue: .main) { _ in
                  isPresentCreateCircleView = true
              }
@@ -89,9 +85,12 @@ struct DynamicCircleView: View {
                  requestCircleList(state: .pullDown)
              }
          }.toast(isShow: $computedModel.showToast, msg: computedModel.toastMsg)
+            .alertB(isPresented: $showComment) {
+                CommentListView(show:$showComment).environmentObject(selectCircleModel)
+            }
 
-        CommentListView(show:$showComment).environmentObject(selectCircleModel)
-    }
+        
+    
             
  
   }
@@ -327,7 +326,6 @@ struct CommentListView:View{
     @State var showAnimation : Bool = false
     @State var comment : String = ""
     @StateObject var computedModel : MyComputedProperty = MyComputedProperty()
-    @State var tabBarVc : UITabBarController? = nil
     @State var page : Int = 1
     var body: some View{
         if show{
@@ -394,9 +392,7 @@ struct CommentListView:View{
             showAnimation = true
          }
             
-        }.edgesIgnoringSafeArea(.all).introspectTabBarController(customize: { tabBarVc in
-            self.tabBarVc = tabBarVc
-        }).onAppear {
+        }.edgesIgnoringSafeArea(.all).onAppear {
             requestCommentList(state: .normal)
        }
         if observerTapModel.sectionTap {
