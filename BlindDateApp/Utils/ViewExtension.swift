@@ -92,6 +92,7 @@ extension View{
         }
         return baseVC
     }
+    
 }
 
 fileprivate struct DelaysTouches: ViewModifier {

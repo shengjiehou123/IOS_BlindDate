@@ -24,7 +24,6 @@ struct MessageView: View {
 //            initTIMSDK()
 //
 //        }
-        NavigationView{
            
             VStack(alignment: .leading, spacing: 0){
                 NavigationLink(isActive: $isActive) {
@@ -41,12 +40,7 @@ struct MessageView: View {
                 ConversationVc(clickCellHandle: { toUserID in
                     toUserId = toUserID
                     isActive = true
-                }).navigationBarTitleDisplayMode(.inline).toolbar(content: {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Text("消息").font(.system(size: 30, weight: .medium, design: .default))
-                    }
                 }).onAppear {
-                    
                         NotificationCenter.default.addObserver(forName: .init(rawValue: kNotiChatToUserId), object: nil, queue: OperationQueue.main) { noti in
                             
                             toUserId = String(noti.object as? Int ?? 0)
@@ -59,7 +53,7 @@ struct MessageView: View {
            
             
          
-        }
+        
         
     }
     func initTIMSDK(){

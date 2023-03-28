@@ -19,7 +19,7 @@ struct Me: View {
 //        }
         NavigationView{
         VStack(alignment: .leading, spacing: 0) {
-            Spacer().frame(height:20)
+            Spacer().frame(height:20 + kSafeTop)
             HStack(alignment: .center, spacing: 10) {
                 WebImage(url: URL.init(string: userInfoModel.avatar))
                     .resizable()
@@ -56,7 +56,7 @@ struct Me: View {
             
           
             Spacer()
-        }.navigationBarHidden(true).navigationBarTitleDisplayMode(.inline).background(Color.colorWithHexString(hex: "#F3F3F3")).introspectTabBarController { tab in
+        }.navigationBarHidden(true).navigationBarTitleDisplayMode(.inline).background(Color.colorWithHexString(hex: "#F3F3F3")).edgesIgnoringSafeArea(.top).introspectTabBarController { tab in
             tabbarVc = tab
         }.onAppear {
             tabbarVc?.tabBar.isHidden = false
@@ -108,7 +108,7 @@ struct MeVipEntranceView:View{
                     Text("无限滑卡")
                         .font(.system(size: 13, weight: .regular, design: .default))
                         .foregroundColor(.white)
-                }.padding(EdgeInsets(top: 15, leading: 10, bottom: 10, trailing: 0)).frame(width:(width - 30) / 2.0,alignment: .leading).background(RoundedRectangle(cornerRadius: 5).fill(Color.red))
+                }.padding(EdgeInsets(top: 15, leading: 10, bottom: 10, trailing: 0)).frame(width:(width - 30) / 2.0,alignment: .leading).background(RoundedRectangle(cornerRadius: 5).fill(btnLRLineGradient))
                 
                 VStack(alignment: .leading, spacing: 10) {
                     Text("查看谁喜欢我")
@@ -117,7 +117,7 @@ struct MeVipEntranceView:View{
                     Text("60人待配对")
                         .font(.system(size: 13, weight: .regular, design: .default))
                         .foregroundColor(.white)
-                }.padding(EdgeInsets(top: 15, leading: 10, bottom: 10, trailing: 0)).frame(width:(width - 30) / 2.0,alignment: .leading).background(RoundedRectangle(cornerRadius: 5).fill(Color.red))
+                }.padding(EdgeInsets(top: 15, leading: 10, bottom: 10, trailing: 0)).frame(width:(width - 30) / 2.0,alignment: .leading).background(RoundedRectangle(cornerRadius: 5).fill(btnLRLineGradient))
                 
             }.padding(EdgeInsets(top: 20, leading: 10, bottom: 10, trailing: 10))
         }.frame(height:100)

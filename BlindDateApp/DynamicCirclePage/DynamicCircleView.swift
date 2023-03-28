@@ -59,7 +59,6 @@ struct DynamicCircleView: View {
     @StateObject var computedModel : MyComputedProperty = MyComputedProperty()
     var body: some View {
      
-        NavigationView{
         ZStack(alignment: .bottom){
          RefreshableScrollView(refreshing: $computedModel.pullDown, pullDown: {
              requestCircleList(state: .pullDown)
@@ -73,23 +72,12 @@ struct DynamicCircleView: View {
                      uiTabarVc?.tabBar.isHidden = true
                  }).id(model.id)
              }
-         }.modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "")).navigationBarTitleDisplayMode(.inline).toolbar(content:{
-             ToolbarItem(placement:.navigationBarLeading){
-                 Text("广场").font(.system(size:25,weight:.medium))
-             }
-             ToolbarItem(placement: .navigationBarTrailing) {
-                 Button {
-                     isPresentCreateCircleView = true
-                 } label: {
-                     HStack{
-                         Text("发动态").font(.system(size: 15, weight: .medium, design: .default)).foregroundColor(.white)
-                     }.padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)).background(RoundedRectangle(cornerRadius: 5).fill(btnLRLineGradient))
-                 }.buttonStyle(PlainButtonStyle())
-
-             }
-         }).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).introspectTabBarController(customize: { tabvc in
+         }.modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "")).navigationBarTitleDisplayMode(.inline).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).introspectTabBarController(customize: { tabvc in
              uiTabarVc = tabvc
          }).onAppear {
+             NotificationCenter.default.addObserver(forName: .init(rawValue: kNotiCreateCircle), object: nil, queue: .main) { _ in
+                 isPresentCreateCircleView = true
+             }
              if !isFirst {
                  return
              }
@@ -100,12 +88,12 @@ struct DynamicCircleView: View {
                  computedModel.pullDown = true
                  requestCircleList(state: .pullDown)
              }
-         }
+         }.toast(isShow: $computedModel.showToast, msg: computedModel.toastMsg)
 
         CommentListView(show:$showComment).environmentObject(selectCircleModel)
     }
             
- }
+ 
   }
     
     
@@ -146,9 +134,12 @@ struct DynamicCircleView: View {
             listData.append(contentsOf: tempArr)
             
         } failedHandler: { response in
+            computedModel.showLoading = false
             computedModel.pullDown = false
             computedModel.footerRefreshing = false
             computedModel.loadMore = true
+            computedModel.showToast = true
+            computedModel.toastMsg = response.message
             
         }
 

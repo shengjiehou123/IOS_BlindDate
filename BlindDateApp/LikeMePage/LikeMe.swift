@@ -19,10 +19,14 @@ class LikeMeViewModel:ObservableObject{
             }
             let total = response.data["total"] as? Int ?? 0
             self.total = total
+            if self.total > 0 {
+                NavigationCenter.shared.likeTitle = "\(total)人喜欢我"
+            }else{
+                NavigationCenter.shared.likeTitle = "喜欢我的人"
+            }
             guard let list = response.data["likeMeList"] as? [[String:Any]] else{
                 return
             }
-//            var temArr : [LikeMeModel] = []
             for dic in list {
                 guard let model = LikeMeModel.deserialize(from: dic, designatedPath: nil) else{
                     continue
@@ -30,12 +34,6 @@ class LikeMeViewModel:ObservableObject{
                 self.listData.append(model)
             }
             
-//            for index in 0..<20{
-//                let model = LikeMeModel()
-//                model.id = 200 + index
-//                model.avatar = "http://rq1wxldn4.hb-bkt.clouddn.com/c4e1985611383dcd742a35a0a0530e8b/avatar/IMG_3419.jpg"
-//                self.listData.append(model)
-//            }
            
             
         } failedHandler: { response in
@@ -49,7 +47,6 @@ struct LikeMe: View {
     @StateObject var model : LikeMeViewModel = LikeMeViewModel()
     @State var isFirst : Bool = true
     var body: some View {
-        NavigationView{
             ScrollView(.vertical, showsIndicators: false) {
                 if model.total > 0 {
                     VStack(alignment: .center, spacing: 10){
@@ -72,23 +69,14 @@ struct LikeMe: View {
                        
                     }
                 }.frame(maxWidth:.infinity,maxHeight: .infinity).padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
-            }.navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        if model.total > 0 {
-                            Text("\(model.total)人喜欢我")
-                                .font(.system(size: 25, weight: .medium, design: .default))
-                        }
-                    }
-                }.onAppear {
+            }.navigationBarTitleDisplayMode(.inline).onAppear {
                     if !isFirst {
                         return
                     }
                     isFirst = false
                     model.requestLikeMeList(state: .normal)
                 }
-        }
-          
+        
         
     }
 }

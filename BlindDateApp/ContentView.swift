@@ -19,6 +19,7 @@ enum TableSelectionTagType:Hashable{
 open class NavigationCenter : ObservableObject{
     static let shared = NavigationCenter()
     @Published var tableSelectionType : TableSelectionTagType = .recommandTagType
+    @Published var likeTitle : String = "喜欢我的人"
 }
 
 struct ContentView: View {
@@ -67,13 +68,13 @@ struct ContentView: View {
             if (userCenter.userInfoModel?.nickName ?? "").isEmpty {
                 EnterInfoView()
             }else{
-                
+                NavigationView{
                 TabView(selection: $naviCenter.tableSelectionType){
                     RecommandList().tabItem {
                         Label {
                             Text("推荐")
                         } icon: {
-                            Image(systemName: "arkit").foregroundColor(.red)
+                            Image(uiImage: UIImage(named: "tabbar_recommend")!)
                         }
                     }.tag(TableSelectionTagType.recommandTagType)
                     
@@ -81,7 +82,9 @@ struct ContentView: View {
                         Label {
                             Text("喜欢")
                         } icon: {
-                            Image(systemName: "arkit").foregroundColor(.red)
+//                            Image(systemName: "arkit").foregroundColor(.red)
+//                            Image("like").resizable().aspectRatio(contentMode: .fit).frame(width: 30, height: 30, alignment: .center).foregroundColor(.black)
+                            Image(uiImage: UIImage(named: "like")!)
                         }
                     }.tag(TableSelectionTagType.likeTagType)
                     
@@ -108,13 +111,84 @@ struct ContentView: View {
                             Image(systemName: "arkit").foregroundColor(.red)
                         }
                     }.tag(TableSelectionTagType.meTagType)
-                }
+                }.navigationBarTitleDisplayMode(.inline).navigationBarHidden(naviCenter.tableSelectionType == .meTagType ? true : false).toolbar(content: {
+                    ToolbarItem(placement:.navigationBarLeading){
+                        Text(returnNavigationLeftItemText(tabTagType: naviCenter.tableSelectionType)).font(.system(size: naviCenter.tableSelectionType == .likeTagType ? 25 : 30, weight: .medium, design: .default))
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        returnNavigationRightItem(tabTagType: naviCenter.tableSelectionType)
+                    }
+                })
+                       
+              }
             }
         }
        
         
     }
+    
+    func returnNavigationRightItem(tabTagType:TableSelectionTagType) ->AnyView{
+        if tabTagType == .circleTagType {
+            return   AnyView(Button {
+                NotificationCenter.default.post(name: .init(rawValue: kNotiCreateCircle), object: nil)
+            } label: {
+                HStack{
+                    Text("发动态").font(.system(size: 15, weight: .medium, design: .default)).foregroundColor(.white)
+                }.padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)).background(RoundedRectangle(cornerRadius: 5).fill(btnLRLineGradient))
+            }.buttonStyle(PlainButtonStyle()))
+        }
+        return AnyView(EmptyView())
+    }
+    
+    func returnNavigationLeftItemText(tabTagType:TableSelectionTagType) ->String{
+        switch tabTagType {
+        case .recommandTagType:
+            return "推荐"
+        case .likeTagType:
+            return naviCenter.likeTitle
+        case .circleTagType:
+            return "广场"
+        case .messageTagType:
+            return "消息"
+        case .meTagType:
+            return ""
+        }
+    }
+    
 }
+
+struct CaptionLabelStyle : LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        VStack {
+            configuration.icon.fixedSize().frame(width: 50, height: 50, alignment: .center)
+            configuration.title
+        }
+    }
+}
+
+struct ScaledImage: View {
+    let name: String
+    let size: CGSize
+    
+    var body: Image {
+        let uiImage = resizedImage(named: self.name, for: self.size) ?? UIImage()
+        
+        return Image(uiImage: uiImage.withRenderingMode(.alwaysOriginal))
+    }
+    
+    func resizedImage(named: String, for size: CGSize) -> UIImage? {
+        guard let image = UIImage(named: named) else {
+            return nil
+        }
+        let renderer = UIGraphicsImageRenderer(size: size)
+        return renderer.image { (context) in
+            image.draw(in: CGRect(origin: .zero, size: size))
+        }
+    }
+}
+
+
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

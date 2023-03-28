@@ -46,7 +46,7 @@ open class BaseRequest: NSObject {
         let requestUrlStr = Consts.shared.domain + "/" + urlStr
         print("requestUrlStr:\(requestUrlStr), method:\(method), params:\(String(describing: parameters))")
         updateHeaders()
-       dataRequest = AF.request(requestUrlStr, method: method, parameters: parameters, encoding: encoding, headers: httpHeaders).response{ response in
+       dataRequest = AF.request(requestUrlStr, method: method, parameters: parameters, encoding: encoding, headers: httpHeaders).validate(statusCode: 200..<600).response{ response in
             print("\(response)")
             if response.response?.statusCode == 200 {
                 if let dic = try? JSONSerialization.jsonObject(with: response.data ?? Data(), options: JSONSerialization.ReadingOptions.mutableContainers) as? [String:Any]{

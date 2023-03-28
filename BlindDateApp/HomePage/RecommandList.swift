@@ -23,22 +23,19 @@ struct RecommandList: View {
 //        Text("Hello, World!").onAppear {
 ////            requestRecommandList(state: .normal)
 //        }
-    NavigationView{
+   
         ZStack(alignment: .top){
             ForEach(0..<recommnadData.listData.count,id:\.self){ index in
                 let model = recommnadData.listData[index]
                 ScrollCardView(index: index).environmentObject(model)
             }
         }.navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(leading: Text("推荐").font(.system(size: 30, weight: .medium, design: .default))).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).toast(isShow: $computedModel.showToast, msg: computedModel.toastMsg)
-    }.onAppear {
+            .modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).toast(isShow: $computedModel.showToast, msg: computedModel.toastMsg).onAppear {
         if !isFirst {
             return
         }
         isFirst = false
         requestRecommandList(state: .normal)
-    }.onDisappear {
-        
     }
             
         

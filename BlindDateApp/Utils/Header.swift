@@ -31,6 +31,8 @@ public let keyWindow = UIApplication.shared.connectedScenes
                         .compactMap({ $0 })
                         .first?.windows.first
 
+public let kSafeTop = keyWindow?.safeAreaInsets.top ?? 0
+
 public let kSafeBottom = keyWindow?.safeAreaInsets.bottom ?? 0
 
 public let myAppRootVC : UIViewController? = keyWindow?.rootViewController
@@ -48,6 +50,6 @@ public let textFieldAccentColor = Color.colorWithHexString(hex: "#F6286F")
 
 public let kNotiChatToUserId = "kChatToUserId"
                                                         
-                                                
-
 public let kNotiPushUserIntroduction = "kNotiPushUserIntroduction"
+
+public let kNotiCreateCircle = "kNotiCreateCircle"

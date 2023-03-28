@@ -7,15 +7,14 @@
 
 import SwiftUI
 
-class IntroductionModel : ObservableObject{
+class IntroductionModel : BaseModel{
     @Published  var recommandModel : ReCommandModel = ReCommandModel()
-    @Published  var  computedModel : MyComputedProperty = MyComputedProperty()
     func requestUserIntroduction(uid:Int){
         let param = ["uid":uid]
-        computedModel.showLoading = true
-        computedModel.loadingBgColor = .white
+        self.showLoading = true
+        self.loadingBgColor = .white
         NW.request(urlStr: "get/user/introduction", method: .post, parameters: param) { response in
-            self.computedModel.showLoading = false
+            self.showLoading = false
             guard let dic = response.data["userInfo"] as? [String :Any] else{
                 return
             }
@@ -24,9 +23,9 @@ class IntroductionModel : ObservableObject{
             }
             self.recommandModel = model
         } failedHandler: { response in
-            self.computedModel.showLoading = false
-            self.computedModel.showToast = true
-            self.computedModel.toastMsg = response.message
+            self.showLoading = false
+            self.showToast = true
+            self.toastMsg = response.message
         }
 
     }
@@ -49,18 +48,14 @@ struct UserIntroduceView: View {
                 }
             
               Spacer().frame(height:kSafeBottom+55)
-        }.padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)).modifier(LoadingView(isShowing: $introductionModel.computedModel.showLoading, bgColor: $introductionModel.computedModel.loadingBgColor)).modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: introductionModel.recommandModel.nickName)).onAppear {
+        }.padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)).modifier(LoadingView(isShowing: $introductionModel.showLoading, bgColor: $introductionModel.loadingBgColor)).modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: introductionModel.recommandModel.nickName)).onAppear {
             if !isFirst {
                 return
             }
             isFirst = false
             introductionModel.requestUserIntroduction(uid: uid)
             
-        }.toast(isShow: $introductionModel.computedModel.showToast, msg: introductionModel.computedModel.toastMsg).introspectTabBarController { UITabBarController in
-            UITabBarController.tabBar.isHidden = true
-            uiTabarController = UITabBarController
-//            uiTabarController  = UITabBarController
-        }
+        }.toast(isShow: $introductionModel.showToast, msg: introductionModel.toastMsg)
             VStack(alignment: .center, spacing: 0){
                 Image("like_solid")
                     .resizable()
@@ -76,12 +71,9 @@ struct UserIntroduceView: View {
     func requestLikePerson(toUserId:Int,like:Bool){
         let param = ["toUserId":toUserId,"like":like] as [String : Any]
         NW.request(urlStr: "like/person", method: .post, parameters: param) { response in
-//            let dic = response.data
-            let compu = MyComputedProperty()
-            compu.showToast = true
-            compu.toastMsg = "喜欢成功"
-            self.introductionModel.computedModel = compu
-//            self.introductionModel.computedModel.toastMsg = "喜欢成功"
+            introductionModel.showToast = true
+            introductionModel.toastMsg = "喜欢成功"
+//            self.introductionModel.toastMsg = "喜欢成功"
 //            guard let likeUserAvatar = dic["likeUseAvatar"] as? String else{
 //                return
 //            }
