@@ -24,6 +24,7 @@ class MyDynamicModel:BaseModel{
     func requestCircleList(state:RefreshState){
         if state == .normal {
             self.loadingBgColor = .white
+            self.showLoading = true
             page = 1
         }else if state == .pullDown{
             page = 1
@@ -31,7 +32,6 @@ class MyDynamicModel:BaseModel{
             page += 1
         }
         let params = ["page":page,"pageLimit":pageLimit]
-        self.showLoading = true
         self.loadingBgColor = .white
         NW.request(urlStr: "get/my/circle", method: .post, parameters: params) { response in
             self.showLoading = false
@@ -72,11 +72,15 @@ class MyDynamicModel:BaseModel{
     
     func requestCreateLikeCircle(likeCircle:Bool,model:CircleModel, requestHandleCompletion:@escaping (_ likeCircle:Bool) -> Void){
         let params = ["circleId":model.id,"uid":model.uid,"likeCircleUid":UserCenter.shared.userInfoModel?.id ?? 0,"likeCircle":likeCircle] as [String : Any]
-        
+        self.showLoading = true
+        self.loadingBgColor = .clear
         NW.request(urlStr: "like/circle", method: .post, parameters: params) { response in
            requestHandleCompletion(likeCircle)
+            self.showLoading = false
         } failedHandler: { response in
-            
+            self.showLoading = false
+            self.showToast = true
+            self.toastMsg = response.message
         }
     }
     
