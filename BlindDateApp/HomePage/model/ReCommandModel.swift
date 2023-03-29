@@ -7,8 +7,9 @@
 
 import UIKit
 import HandyJSON
+import XCGLogger
 
-class ReCommandModel: HandyJSON,Identifiable,ObservableObject {
+class ReCommandModel: HandyJSON,Identifiable,ObservableObject,Equatable {
     var id :Int = 0
     var idVerifyed : Int = 0
     var avatar : String = ""
@@ -46,6 +47,9 @@ class ReCommandModel: HandyJSON,Identifiable,ObservableObject {
     var userPhotos: [UserPhotoModel] = []
     var bgImageId : Int = 0
     var bgImageUrl : String = ""
+    static func == (lhs: ReCommandModel, rhs: ReCommandModel) -> Bool{
+        return lhs.id == rhs.id
+    }
     required  init() {
         
     }

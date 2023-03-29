@@ -25,9 +25,10 @@ struct RecommandList: View {
 //        }
    
         ZStack(alignment: .top){
-            ForEach(0..<recommnadData.listData.count,id:\.self){ index in
-                let model = recommnadData.listData[index]
-                ScrollCardView(index: index).environmentObject(model)
+            ForEach(recommnadData.listData,id:\.id){ model in
+//                let model = recommnadData.listData[index]
+                let index = recommnadData.listData.firstIndex(of: model) ?? 0
+                ScrollCardView(index: index).environmentObject(model).id(model.id)
             }
         }.navigationBarTitleDisplayMode(.inline)
             .modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).toast(isShow: $computedModel.showToast, msg: computedModel.toastMsg).onAppear {
@@ -81,10 +82,13 @@ struct ScrollCardView:View{
     @State var endSwipe : Bool = false
     @State var likeUseAvatar : String = ""
     @State var showLikeEachOther : Bool = false
+    @State var showLeftText : Bool = false
+    @State var showRightText : Bool = false
     var body: some View{
         let topOffset = index <= 2 ? index * 15 : 0
+    ZStack(alignment: .top) {
         ScrollView(.vertical, showsIndicators: false) {
-            VStack{
+            LazyVStack{
                 CardView().environmentObject(recommandModel)
                 HomePageAboutUsView(title: "关于我",content: recommandModel.myTag.count > 0 ? (recommandModel.aboutMeDesc + "\n" + recommandModel.myTag) : recommandModel.aboutMeDesc,userPhotos: recommandModel.userPhotos)
                 HomePageAboutUsView(title: "希望对方",content: recommandModel.likePersonTag,userPhotos: [])
@@ -95,11 +99,24 @@ struct ScrollCardView:View{
             }.introspectScrollView(customize: { scrollView in
                 scrollView.bounces = false
             })
-//            .cornerRadius(10).clipped()
+            
         }.navigationViewStyle(.stack).clipShape(RoundedRectangle(cornerRadius: 10)).background(RoundedRectangle(cornerRadius: 10).fill(Color.white).shadow(color: Color.black.opacity(0.2), radius: 3, x: 0, y: 2)).padding(EdgeInsets(top: 0, leading: 10, bottom: CGFloat(topOffset) + 10, trailing: 10))
-            .offset(x:offset,y:CGFloat(topOffset))
+        if showLeftText {
+            HStack(alignment: .center, spacing: 0) {
+                Text("还不错").foregroundColor(Color.red).font(.system(size: 40, weight: .bold, design: .default)).padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)).background(RoundedRectangle(cornerRadius: 5).strokeBorder(Color.red,style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round, miterLimit: 0)))
+                Spacer()
+            }.offset(x: 30, y: 10).rotationEffect(.init(degrees: -15),anchor:.bottom)
+        }
+        
+        if showRightText {
+            HStack(alignment: .center, spacing: 0) {
+                Spacer()
+                Text("不合适").foregroundColor(Color.blue).font(.system(size: 40, weight: .bold, design: .default)).padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)).background(RoundedRectangle(cornerRadius: 5).strokeBorder(Color.blue,style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round, miterLimit: 0)))
+            }.offset(x: -30, y: 10).rotationEffect(.init(degrees: 15),anchor:.bottom)
+        }
+     }.offset(x:offset,y:CGFloat(topOffset))
             .rotationEffect(.init(degrees: getRotation(angle: 8)),anchor: .bottom)
-            .delaysTouches(for: 0.1, onTap: {
+            .delaysTouches(for: 0.05, onTap: {
                 
             }).alertB(isPresented: $showLikeEachOther, builder: {
                 LikeEachOtherView(isShow: $showLikeEachOther,avatar: UserCenter.shared.userInfoModel?.avatar ?? "",likeUserAvatar: recommandModel.avatar,toUserId: recommandModel.id)
@@ -109,11 +126,27 @@ struct ScrollCardView:View{
                 let translation = value.translation.width
                 log.info("translationWidth\(translation)")
                 offset = isDragging ? translation : .zero
+                let checkingStatus = translation > 0 ? translation : -translation
+                if checkingStatus > 15 {
+                    if translation > 0 {
+                        //rightswipe
+                        //like
+                        showLeftText = true
+                        showRightText = false
+                    }else{
+                        //leftswipe
+                        showLeftText = false
+                        showRightText = true
+                    }
+                }else{
+                    showLeftText = false
+                    showRightText = false
+                }
             }).onEnded({ value in
                 let translation = value.translation.width
                 let checkingStatus = translation > 0 ? translation : -translation
                 withAnimation {
-                    if checkingStatus > 50{
+                    if checkingStatus > 15{
                         //delete card
                         offset = (translation > 0 ? screenWidth: -screenWidth) * 2
                         if translation > 0 {
@@ -128,11 +161,14 @@ struct ScrollCardView:View{
                         }
                     }else{
                         offset = .zero
+                        showLeftText = false
+                        showRightText = false
                     }
                 }
     
             })
-            )
+        )
+        
     }
     
     // 旋转
