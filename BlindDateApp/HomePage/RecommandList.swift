@@ -116,11 +116,11 @@ struct ScrollCardView:View{
         }
      }.offset(x:offset,y:CGFloat(topOffset))
             .rotationEffect(.init(degrees: getRotation(angle: 8)),anchor: .bottom)
-            .delaysTouches(for: 0.05, onTap: {
-                
-            }).alertB(isPresented: $showLikeEachOther, builder: {
+            .alertB(isPresented: $showLikeEachOther, builder: {
                 LikeEachOtherView(isShow: $showLikeEachOther,avatar: UserCenter.shared.userInfoModel?.avatar ?? "",likeUserAvatar: recommandModel.avatar,toUserId: recommandModel.id)
-            }).gesture(DragGesture().updating($isDragging, body: { value, out, _ in
+            }).onTapGesture {
+                
+            }.gesture(DragGesture().updating($isDragging, body: { value, out, _ in
                 out = true
             }).onChanged({ value in
                 let translation = value.translation.width

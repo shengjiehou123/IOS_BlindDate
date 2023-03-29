@@ -31,6 +31,8 @@ class MyDynamicModel:BaseModel{
             page += 1
         }
         let params = ["page":page,"pageLimit":pageLimit]
+        self.showLoading = true
+        self.loadingBgColor = .white
         NW.request(urlStr: "get/my/circle", method: .post, parameters: params) { response in
             self.showLoading = false
             self.pullDown = false
