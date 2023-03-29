@@ -77,6 +77,20 @@ class MyDynamicModel:BaseModel{
             
         }
     }
+    
+    func requestDeleteCircle(circleId:Int){
+        let params = ["circleId":circleId]
+        self.showLoading = true
+        self.loadingBgColor = .clear
+        NW.request(urlStr: "delete/circle", method: .post, parameters: params) { response in
+            self.showLoading = false
+            self.requestCircleList(state: .pullDown)
+        } failedHandler: { response in
+            self.showLoading = false
+            self.showToast = true
+            self.toastMsg = response.message
+        }
+    }
 }
 
 struct MyDynamicPage: View {
@@ -91,9 +105,9 @@ struct MyDynamicPage: View {
                 ForEach(myDynamicModel.listData,id:\.id){ model in
                     MyDynamicRow(model: model).environmentObject(myDynamicModel).id(model.id)
                 }
-            }.modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "我的动态圈")).modifier(LoadingView(isShowing: $myDynamicModel.showLoading, bgColor: $myDynamicModel.loadingBgColor)).introspectTabBarController { UITabBarController in
+            }.introspectTabBarController(customize: { UITabBarController in
                 UITabBarController.tabBar.isHidden = true
-            }.toast(isShow: $myDynamicModel.showToast, msg: myDynamicModel.toastMsg)
+            }).modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "我的动态圈")).modifier(LoadingView(isShowing: $myDynamicModel.showLoading, bgColor: $myDynamicModel.loadingBgColor)).toast(isShow: $myDynamicModel.showToast, msg: myDynamicModel.toastMsg)
             if myDynamicModel.showCommentList {
                 CommentListView(show: $myDynamicModel.showCommentList).environmentObject(myDynamicModel.showCommentCircleModel)
             }
@@ -109,6 +123,7 @@ struct MyDynamicRow:View{
     @State var imageSize : CGSize = CGSize(width: 100, height: 100)
     @State var rowsCount : Int = 0
     @State var likeCircleMap : [Int:CircleLikeUserInfo] = [:]
+    @State var isDeleteCircle : Bool = false
     var body: some View{
         VStack{
             HStack(alignment: .center, spacing: 10){
@@ -116,7 +131,7 @@ struct MyDynamicRow:View{
                 VStack(alignment: .leading, spacing: 0){
                     Text(strs[0]).font(.system(size: 14,weight:.medium)).foregroundColor(.black)
                     Text(strs[1]).font(.system(size: 13)).foregroundColor(.colorWithHexString(hex: "#999999"))
-                }.frame(width:40).padding(4).background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
+                }.frame(width:40).padding(EdgeInsets(top: 3, leading: 0, bottom: 3, trailing: 0)).background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
                
                 Text(model.content).lineSpacing(10)
                 Spacer()
@@ -152,7 +167,30 @@ struct MyDynamicRow:View{
             
             }
             
-            HStack(alignment:.center,spacing:35){
+            HStack(alignment:.center,spacing:0){
+                Spacer().frame(width:65)
+                HStack(alignment: .center, spacing: 5) {
+                    let date = model.createAt.stringToDate(format: "yyyy-MM-dd HH:mm:ss")
+                    let dateStr = date?.stringFormat(format: "yyyy年M月dd日 HH:mm") ?? ""
+                    Text(dateStr).font(.system(size: 13)).foregroundColor(.colorWithHexString(hex: "#999999"))
+                    Text("删除").font(.system(size: 13)).foregroundColor(.blue).onTapGesture {
+                       isDeleteCircle = true
+                    }.alert(isPresented: $isDeleteCircle) {
+                        Alert(title: Text("删除该动态？"), message: nil,
+                            primaryButton: .default(
+                                Text("取消"),
+                                action: {
+                                    
+                                }
+                            ),
+                            secondaryButton: .destructive(
+                                Text("删除"),
+                                action: {
+                                    myDynamicModel.requestDeleteCircle(circleId: model.id)
+                                }
+                            ))
+                    }
+                }
                 Spacer()
                 HStack(alignment: .center, spacing: 8) {
                     Image("like").renderingMode(.template).resizable().aspectRatio(contentMode: .fill).frame(width: 24, height: 24, alignment: .center).foregroundColor( likeCircleMap[UserCenter.shared.userInfoModel?.id ?? 0] != nil ? Color.red : Color.gray)
@@ -172,6 +210,7 @@ struct MyDynamicRow:View{
                         }
                     }
                 }
+                Spacer().frame(width:35)
                 HStack(alignment: .center, spacing: 8) {
                     Image("comment").resizable().renderingMode(.template).aspectRatio(contentMode: .fill).frame(width: 24, height: 24, alignment: .center).foregroundColor(Color.gray)
                     Text("\(model.commentCount)").foregroundColor(.colorWithHexString(hex: "#999999"))
