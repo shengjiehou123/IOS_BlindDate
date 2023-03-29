@@ -47,7 +47,7 @@ class BatchRequest: NSObject {
             return
         }
         for baseReq in self._requestArray {
-            baseReq.uploadingImage(urlStr: baseReq.url, params: baseReq.uploadImageParams ?? ["":""], images: [baseReq.uploadImage ?? UIImage()]) { _ in
+            baseReq.uploadingImage(urlStr: baseReq.url, params: baseReq.uploadImageParams ?? ["":""], images: baseReq.uploadImages) { _ in
                 self.finishedCount += 1
                 if self.finishedCount == self._requestArray.count {
                     completionHandler(self)

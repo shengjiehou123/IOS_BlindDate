@@ -28,7 +28,7 @@ open class BaseRequest: NSObject {
    var params : Parameters? = nil
    var encoding : ParameterEncoding = JSONEncoding.default
    var uploadImageParams : [String:String]? = nil
-   var uploadImage:UIImage? = nil
+   var uploadImages:[UIImage] = []
     public override init() {
         httpHeaders.add(name: "Content-type", value: "application/json")
     }
@@ -103,12 +103,9 @@ open class BaseRequest: NSObject {
                 multipartFormData.append(value.data(using: .utf8)!, withName: key)
             }
            for image in images {
-//               let compressImage = image.resizedMB(maxLenth: 1)!
                let data = image.jpegData(compressionQuality: 0.1)!
                let fileName = data.sha256
-//                   log.info("str--------\(str)")
                multipartFormData.append(data, withName: "userPhoto",fileName:fileName + ".jpeg" ,mimeType: "image/jpeg")
-               
            }
            
             

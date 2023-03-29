@@ -34,7 +34,7 @@ struct EnterInfoView: View {
     
     @State var selectTagArr : [String] = []
     @State var selectTagOtherArr : [String] = []
-    
+    @StateObject var computedModel : MyComputedProperty = MyComputedProperty()
     @State var name : String = ""
     @State var id : String = ""
     
@@ -49,8 +49,8 @@ struct EnterInfoView: View {
                     MyJobView(scrollIndex: $scrollIndex, job: $job, yearIncome: $yearIncome).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(3)
                     MyCityAndHomeTownView(scrollIndex: $scrollIndex,workAddress:$workAddress,homeTownAddress: $homeTownAddress).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(4)
                     LoveGoalView(scrollIndex: $scrollIndex, loveGoal: $loveGoal, minAge: $minAge, maxAge: $maxAge).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(5)
-                    MyAvatarView(scrollIndex: $scrollIndex).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(6)
-                    MyLifeView(scrollIndex: $scrollIndex).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(7)
+                    MyAvatarView(scrollIndex: $scrollIndex).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(6).environmentObject(computedModel)
+                    MyLifeView(scrollIndex: $scrollIndex).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(7).environmentObject(computedModel)
                     AboutUsDescView(scrollIndex: $scrollIndex, aboutUsDesc: $aboutUsDesc).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(8).ignoresSafeArea(.keyboard, edges: .bottom)
                     Group{
 //                        ForEach(0..<tagTitleArr.count){ index in
@@ -89,7 +89,7 @@ struct EnterInfoView: View {
             .animation(.linear(duration:0.25), value: scrollIndex).modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "")).onAppear {
                 requestMyTagArr()
                 requestLikePersonTagArr()
-            }
+            }.modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor))
                     
               
         }
@@ -147,10 +147,16 @@ struct EnterInfoView: View {
                      "myTag":mytag,
                      "likePersonTag":oterTag
         ] as [String : Any]
+        computedModel.showLoading = true
+        computedModel.loadingBgColor = .clear
         NW.request(urlStr: "set/user/info", method: .post, parameters: param) { response in
+            computedModel.showLoading = false
+            
             UserCenter.shared.requestUserInfo(needUserSig: true)
         } failedHandler: { response in
-            
+            computedModel.showLoading = false
+            computedModel.showToast = true
+            computedModel.toastMsg = response.message
         }
     }
        
@@ -329,6 +335,7 @@ class LifeModel:Identifiable{
 //MARK: 我的生活
 struct MyLifeView:View{
     @Binding var scrollIndex : Int
+    @EnvironmentObject var computedModel : MyComputedProperty
     @State var isPresentLife : Bool = false
     @State var pickerLifeResult : [UIImage] = []
     
@@ -420,7 +427,7 @@ struct MyLifeView:View{
                 }
                 
                 uploadPhotos()
-                scrollIndex = 8
+               
             }, backSepHandle: {
                 scrollIndex = 6
             })
@@ -441,29 +448,53 @@ struct MyLifeView:View{
     }
     
     func uploadPhotos(){
-        for item in pickerLifeResult {
-            requestUpLoadPhotos(scenes: "life", image: item)
+        var requestArr : [BaseRequest] = []
+        if pickerLifeResult.count > 0 {
+            let baseLife = BaseRequest()
+            baseLife.url = "upload/photos"
+            baseLife.uploadImageParams = ["scenes":"life"]
+            baseLife.uploadImages = pickerLifeResult
+            requestArr.append(baseLife)
         }
-        for item in pickerInterestResult {
-            requestUpLoadPhotos(scenes: "interest", image: item)
-        }
-        for item in pickerTravelResult {
-            requestUpLoadPhotos(scenes: "travel", image: item)
+      
+        if pickerInterestResult.count > 0 {
+            let baseInterest = BaseRequest()
+            baseInterest.url = "upload/photos"
+            baseInterest.uploadImageParams = ["scenes":"interest"]
+            baseInterest.uploadImages = pickerInterestResult
+            requestArr.append(baseInterest)
         }
         
-        for item in pickerOtherResult {
-            requestUpLoadPhotos(scenes: "other", image: item)
+        if pickerTravelResult.count > 0 {
+            let baseTravel = BaseRequest()
+            baseTravel.url = "upload/photos"
+            baseTravel.uploadImageParams = ["scenes":"travel"]
+            baseTravel.uploadImages = pickerTravelResult
+            requestArr.append(baseTravel)
         }
-    }
-    
-    func requestUpLoadPhotos(scenes:String,image:UIImage){
-        NW.uploadingImage(urlStr: "upload/photos", params: ["scenes":scenes], images:[image]) { response in
-            
+      
+        if pickerOtherResult.count > 0 {
+            let baseOther = BaseRequest()
+            baseOther.url = "upload/photos"
+            baseOther.uploadImageParams = ["scenes":"other"]
+            baseOther.uploadImages = pickerOtherResult
+            requestArr.append(baseOther)
+        }
+      
+        let batchRequest = BatchRequest(requestArray: requestArr)
+        computedModel.showLoading = true
+        computedModel.loadingBgColor = .clear
+        batchRequest.uploadingImage { response in
+            computedModel.showLoading = false
+            scrollIndex = 8
         } failedHandler: { response in
-            
+            computedModel.showLoading = false
+            computedModel.showToast = true
+            computedModel.toastMsg = response.message
         }
 
     }
+    
     
     func changeTitles(){
         titles.removeAll()
@@ -511,6 +542,7 @@ struct MyLifeView:View{
 
 struct MyAvatarView:View{
     @Binding var scrollIndex : Int
+    @EnvironmentObject var computedModel : MyComputedProperty
     @State var isPresentPhotoAlbum : Bool = false
     @State var pickerResult: [UIImage] = []
     @State var showToast : Bool = false
@@ -560,7 +592,7 @@ struct MyAvatarView:View{
                     return
                 }
                 upLoadAvatar()
-                scrollIndex = 7
+              
             }, backSepHandle: {
                 scrollIndex = 5
             })
@@ -573,10 +605,15 @@ struct MyAvatarView:View{
     }
     
     func upLoadAvatar(){
+        computedModel.showLoading = true
+        computedModel.loadingBgColor = .clear
         NW.uploadingImage(urlStr: "upload/photos", params: ["scenes":"avatar"], images:[pickerResult.last!]) { response in
-            
+            computedModel.showLoading = false
+            scrollIndex = 7
         } failedHandler: { response in
-            
+            computedModel.showLoading = false
+            computedModel.showToast = true
+            computedModel.toastMsg = response.message
         }
 
     }

@@ -43,7 +43,7 @@ struct RecommandList: View {
     }
     
     func requestRecommandList(state:RefreshState){
-        let param = ["page":1,"pageLimit":2]
+        let param = ["page":1,"pageLimit":10]
         if state == .normal{
             computedModel.showLoading = true
             computedModel.loadingBgColor = .white

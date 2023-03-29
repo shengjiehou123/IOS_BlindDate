@@ -42,16 +42,21 @@ struct LoginView: View {
                     
                 }
                 Spacer().frame(height:30)
-                NavigationLink(isActive: $isActive) {
-                    EnterInfoView()
-                } label: {
-                   EmptyView()
-                }
+//                NavigationLink(isActive: $isActive) {
+//                    EnterInfoView()
+//                } label: {
+//                   EmptyView()
+//                }
                 Text("登录").foregroundColor(.white).frame(maxWidth:.infinity,maxHeight: 50).background(RoundedRectangle(cornerRadius: 5).fill(btnLRLineGradient)).padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)).onTapGesture {
+                    if code.isEmpty{
+                        computedModel.showToast = true
+                        computedModel.toastMsg = "请先获取验证码"
+                        return
+                    }
                     requestLogin()
                 }
                 Spacer()
-            }).navigationBarHidden(true).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor))
+            }).navigationBarHidden(true).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).toast(isShow: $computedModel.showToast, msg: computedModel.toastMsg)
         }
     }
     
@@ -75,7 +80,6 @@ struct LoginView: View {
         computedModel.showLoading = true
         NW.request(urlStr: "login", method: .post, parameters: param) { response in
             computedModel.showLoading = true
-            computedModel.showToast = false
            let token = response.data["token"] as? String ?? ""
            UserCenter.shared.saveToken(token: token)
           isActive = true

@@ -8,7 +8,7 @@
 import SwiftUI
 import TUICore
 
-class UserCenter : NSObject,ObservableObject{
+class UserCenter :ObservableObject{
     static let  shared = UserCenter()
     @Published var token : String = ""
     @Published var isLogin : Bool = false
