@@ -15,12 +15,6 @@ target 'BlindDateApp' do
   pod 'HandyJSON', '~> 5.0.2'
   pod 'JFHeroBrowser', '1.2.0'
   pod 'Introspect'
-#  pod 'TXIMSDK_Plus_Swift_iOS'
- 
- 
- # 集成聊天功能
- pod 'TUIChat/UI_Classic'
- # 集成会话功能
- pod 'TUIConversation/UI_Classic'
+  pod 'TXIMSDK_Plus_Swift_iOS_Bitcode'
 
 end

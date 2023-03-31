@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import TUICore
+import ImSDK_Plus_Swift
 
 class UserCenter :ObservableObject{
     static let  shared = UserCenter()
@@ -32,36 +32,16 @@ class UserCenter :ObservableObject{
     
     func loginTIM(){
         if let model =  UserCenter.shared.userInfoModel{
+            let config = V2TIMSDKConfig()
+            config.logLevel = .V2TIM_LOG_INFO
+            V2TIMManager.shared.addIMSDKListener(listener: MessageModel.shared)
+           _ = V2TIMManager.shared.initSDK(sdkAppID: 1400794630, config: config)
             let userId = "\(model.id)"
-            
-            let config = TUIConfig.default()
-            config?.avatarType = .TAvatarTypeRounded
-
-            let chatConfig = TUIChatConfig.default()
-            chatConfig.backgroudColor = .white
-            chatConfig.enableLink  = false
-            chatConfig.enablePopMenuEmojiReactAction = false
-
-            
-            TUILogin.login(1400794630, userID: userId, userSig: userSig) {
-//                requestSendMsg()
+            V2TIMManager.shared.login(userID: userId, userSig: userSig) {
                 log.info("TIM Chat login suc")
             } fail: { code, desc in
                 log.info("ailure, code:\(code), desc:\(String(describing: desc))")
             }
-            
-          
-// V2TIMManager.shared.login(userID: userId, userSig: userSig) {
-////                requestSendMsg()
-//            } fail: { code, desc in
-//                // 如果返回以下错误码，表示使用 UserSig 已过期，请您使用新签发的 UserSig 进行再次登录。
-//                   // 1. ERR_USER_SIG_EXPIRED（6206）
-//                   // 2. ERR_SVR_ACCOUNT_USERSIG_EXPIRED（70001）
-//                   // 注意：其他的错误码，请不要在这里调用登录接口，避免 IM SDK 登录进入死循环
-////                log.info("failure, code:%d, desc:%@", code, desc)
-//                log.info("ailure, code:\(code), desc:\(desc)")
-//            }
-            
 
         }else{
             requestUserInfo(needUserSig: true)

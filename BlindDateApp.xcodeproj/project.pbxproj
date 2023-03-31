@@ -31,6 +31,8 @@
 		A2A3A56929BAE1B80069C574 /* CustomPhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A3A56829BAE1B80069C574 /* CustomPhotoPicker.swift */; };
 		A2A3A56C29BB8B8C0069C574 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A3A56B29BB8B8C0069C574 /* MessageView.swift */; };
 		A2CBDB7E29D18413009A8BF1 /* BaseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2CBDB7D29D18413009A8BF1 /* BaseModel.swift */; };
+		A2CBDB8529D5CAD5009A8BF1 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2CBDB8429D5CAD5009A8BF1 /* ChatView.swift */; };
+		A2CBDB8729D5CC85009A8BF1 /* ChatRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2CBDB8629D5CC85009A8BF1 /* ChatRow.swift */; };
 		A2D8270429B6F0070017445D /* NavigationViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D8270329B6F0070017445D /* NavigationViewExtension.swift */; };
 		A2D8270729B748C40017445D /* CustomDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D8270629B748C40017445D /* CustomDatePicker.swift */; };
 		A2D8270929B784350017445D /* CustomPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D8270829B784350017445D /* CustomPicker.swift */; };
@@ -78,6 +80,8 @@
 		A2A3A56B29BB8B8C0069C574 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		A2A3A56D29BC6F570069C574 /* BlindDateApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BlindDateApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		A2CBDB7D29D18413009A8BF1 /* BaseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseModel.swift; sourceTree = "<group>"; };
+		A2CBDB8429D5CAD5009A8BF1 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		A2CBDB8629D5CC85009A8BF1 /* ChatRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRow.swift; sourceTree = "<group>"; };
 		A2D8270329B6F0070017445D /* NavigationViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewExtension.swift; sourceTree = "<group>"; };
 		A2D8270629B748C40017445D /* CustomDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDatePicker.swift; sourceTree = "<group>"; };
 		A2D8270829B784350017445D /* CustomPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPicker.swift; sourceTree = "<group>"; };
@@ -216,6 +220,8 @@
 			isa = PBXGroup;
 			children = (
 				A2A3A56B29BB8B8C0069C574 /* MessageView.swift */,
+				A2CBDB8429D5CAD5009A8BF1 /* ChatView.swift */,
+				A2CBDB8629D5CC85009A8BF1 /* ChatRow.swift */,
 			);
 			path = MessagePage;
 			sourceTree = "<group>";
@@ -447,6 +453,7 @@
 				A2519B9F29AA01E30098DF3E /* RecommandList.swift in Sources */,
 				A281043C29B20DD900C0B8E8 /* Me.swift in Sources */,
 				A2519B9C29A9F1FA0098DF3E /* Header.swift in Sources */,
+				A2CBDB8529D5CAD5009A8BF1 /* ChatView.swift in Sources */,
 				A209452C29CF3E8900963A1B /* MyDynamicPage.swift in Sources */,
 				A2519BA229AC8CD60098DF3E /* ReCommandModel.swift in Sources */,
 				A209452629CDAF7400963A1B /* DataExtension.swift in Sources */,
@@ -472,6 +479,7 @@
 				A238F28B29C74F7C00F1B4F7 /* ButtonExtension.swift in Sources */,
 				A281043F29B2FCAC00C0B8E8 /* EnterInfoView.swift in Sources */,
 				A2E4E929299B517D000A46FE /* LoginView.swift in Sources */,
+				A2CBDB8729D5CC85009A8BF1 /* ChatRow.swift in Sources */,
 				A2A3A56729B9C0710069C574 /* StringExtension.swift in Sources */,
 				A2E4E91D299B5104000A46FE /* ContentView.swift in Sources */,
 				A209452829CEA79F00963A1B /* UserIntroduceView.swift in Sources */,
