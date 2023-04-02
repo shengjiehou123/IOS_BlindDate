@@ -31,6 +31,7 @@ class ChatModel :BaseModel,V2TIMAdvancedMsgListener{
     @Published var content: String = ""
     @Published var toUserId: String = ""
     @Published var page : Int = 1
+    @Published var scrollToLast : Bool = false
     
     //MARK: 获取历史信息
     func requestHistoryMessageList(userID:String,state:RefreshState){
@@ -41,24 +42,6 @@ class ChatModel :BaseModel,V2TIMAdvancedMsgListener{
         }else{
             self.page += 1
         }
-//        let option = V2TIMMessageListGetOption()
-//        option.getType = .V2TIM_GET_CLOUD_OLDER_MSG
-//        option.getTimeBegin = //UInt(Date().timeIntervalSince1970)
-//        option.getTimePeriod = 30 * 24 * 60 * 60
-//        option.count = 100
-//        option.userID = userID
-//        V2TIMManager.shared.getHistoryMessageList(option: option) { msgs in
-//            self.showLoading = false
-//            if state == .normal {
-//                self.listData.removeAll()
-//            }
-//            self.listData = msgs.reversed()
-////            self.listData.append(contentsOf: msgs)
-//        } fail: { code, desc in
-//            self.showLoading = false
-//            self.showToast = true
-//            self.toastMsg = desc
-//        }
         let params = ["page":self.page,"pageLimit":10,"toAccount":userID] as [String : Any]
         NW.request(urlStr: "get/history/message", method: .post, parameters: params) { response in
             self.showLoading = false
@@ -76,12 +59,9 @@ class ChatModel :BaseModel,V2TIMAdvancedMsgListener{
             }
             
             if state == .normal {
+                self.scrollToLast = true
                 self.listData.append(contentsOf: tempArr)
             }else{
-//                var arr : [ChatMessageModel] = []
-//                arr.append(contentsOf: tempArr)
-//                arr.append(contentsOf: self.listData)
-//                self.listData = arr
                 for item in tempArr.reversed() {
                     self.listData.insert(item, at: 0)
                 }
@@ -128,6 +108,7 @@ class ChatModel :BaseModel,V2TIMAdvancedMsgListener{
             model.id = (self.listData.last?.id ?? 0) + 1
             model.content = msg.textElem?.text ?? ""
             self.listData.append(model)
+            self.scrollToLast = true
             log.info("lastMsgId:\(msg.msgID)")
         }else if msg.elemType == .V2TIM_ELEM_TYPE_IMAGE{
             log.info(msg.imageElem?.imageList)
@@ -251,10 +232,14 @@ struct ChatList: View {
                 ChatRow(message: model, isMe: model.uid == UserCenter.shared.userInfoModel?.id ?? 0)
                 .id(model.id)
             } .background(Color("light_gray"))
-        }.onChange(of: chatModel.listData.count) { messages in
-            if let lastId = chatModel.listData.last?.id {
-                proxy.scrollTo(lastId) // 消息变化时跳到最后一条消息
+        }.onChange(of: chatModel.scrollToLast) { _ in
+            if chatModel.scrollToLast {
+                if let lastId = chatModel.listData.last?.id {
+                    proxy.scrollTo(lastId) // 消息变化时跳到最后一条消息
+                }
+                chatModel.scrollToLast = false
             }
+          
         }
     }.onAppear {
         chatModel.requestHistoryMessageList(userID: userID, state: .normal)
