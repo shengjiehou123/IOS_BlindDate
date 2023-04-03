@@ -10,6 +10,7 @@ import SwiftUI
 import Combine
 import ImSDK_Plus_Swift
 import HandyJSON
+import SDWebImageSwiftUI
 
 
 class ChatMessageModel : HandyJSON{
@@ -28,6 +29,7 @@ class ChatMessageModel : HandyJSON{
 
 class ChatModel :BaseModel,V2TIMAdvancedMsgListener{
     @Published var listData : [ChatMessageModel] = []
+    @Published var toUserInfo : ReCommandModel = ReCommandModel()
     @Published var content: String = ""
     @Published var toUserId: String = ""
     @Published var page : Int = 1
@@ -76,11 +78,28 @@ class ChatModel :BaseModel,V2TIMAdvancedMsgListener{
 
     }
     
+    //MARK: send message
     func requestSendMsg(userID:String){
         let param = ["fromAccount":UserCenter.shared.userInfoModel?.id ?? 0,"toAccount":userID,"msgType":"text","msgContent":self.content] as [String : Any]
         NW.request(urlStr: "send/single/message", method: .post, parameters:param) {  response in
 //            requestHistoryMessageList(userID: userID, state: .normal)
         } failedHandler: { response in
+            
+        }
+
+    }
+    
+    func requestGetToUserInfo(){
+        let params = ["uid":toUserId]
+        NW.request(urlStr: "get/user/info",method:.post,parameters:params) { response in
+            let dic = response.data
+            guard let userModel = ReCommandModel.deserialize(from: dic) else{
+                return
+            }
+            self.toUserInfo = userModel
+            
+        } failedHandler: { response in
+
             
         }
 
@@ -156,17 +175,18 @@ struct ChatView: View {
     var body: some View {
         GeometryReader { proxy in
             VStack(spacing: 0) {
+                ChatHeaderView().padding(EdgeInsets(top: 10, leading: 20, bottom: 0, trailing: 0)).environmentObject(chatModel)
                 ChatList(userID: userId).environmentObject(chatModel)
-                
                 Send(proxy: proxy,userID: userId).environmentObject(chatModel)
             }
             .edgesIgnoringSafeArea(.bottom)
         }
         .background(Color("light_gray"))
-        .navigationBarTitle(nickName, displayMode: .inline).onAppear {
+        .modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: nickName)).onAppear {
             chatModel.toUserId = userId
             V2TIMManager.shared.addAdvancedMsgListener(listener: chatModel)
             chatModel.requestHistoryMessageList(userID: userId, state: .normal)
+            chatModel.requestGetToUserInfo()
         }
     }
     
@@ -217,6 +237,63 @@ struct ChatView: View {
     }
 }
 
+struct ChatHeaderView:View{
+    @EnvironmentObject  var chatModel : ChatModel
+    var body: some View{
+        VStack(alignment: .leading,spacing: 20){
+            HStack(alignment: .center,spacing: 15) {
+                NavigationLink(destination: UserIntroduceView(uid:chatModel.toUserInfo.id)) {
+                    WebImage(url: URL(string: chatModel.toUserInfo.avatar)).resizable().aspectRatio(contentMode: .fill).frame(width: 60,height: 60,alignment: .center).background(Color.gray).clipShape(Circle())
+                }
+                VStack(alignment: .leading,spacing: 10) {
+                    Text(chatModel.toUserInfo.nickName).font(.system(size: 17,weight:.medium))
+                    HStack(alignment: .center,spacing: 3){
+                        let date = Date.init(timeIntervalSince1970: chatModel.toUserInfo.birthday)
+                        Text("\(date.getAge())").font(.system(size: 14,weight:.medium))
+                        Text(chatModel.toUserInfo.job).font(.system(size: 14,weight:.medium))
+                    }
+                }
+            }
+
+            Text(chatModel.toUserInfo.aboutMeDesc).font(.system(size: 13)).lineLimit(2)
+            ScrollView(.horizontal,showsIndicators: false){
+                LazyHStack(alignment: .top){
+                    ForEach(chatModel.toUserInfo.userPhotos,id:\.id){ model in
+                        ChartHeaderImageItem(photoModel: model)
+                    }
+                }
+            }.frame(height:110)
+        }
+    }
+}
+
+struct ChartHeaderImageItem:View{
+    let photoModel : UserPhotoModel
+    var body: some View{
+        ZStack(alignment: .topLeading) {
+            WebImage(url: URL(string: photoModel.photo)).resizable().aspectRatio(contentMode: .fill).frame(width: 100,height: 100,alignment: .center).background(Color.gray).clipShape(RoundedRectangle(cornerRadius: 5))
+            let scenes = getScenesStr()
+            if !scenes.isEmpty{
+                Text(scenes).font(.system(size: 12)).foregroundColor(.white).padding(5).background(RoundedRectangle(cornerRadius: 5).fill(Color.black.opacity(0.2))).padding(10)
+            }
+        }
+    }
+    
+    func getScenesStr() -> String{
+        if photoModel.scenes == "life" {
+            return "日常生活"
+        }
+        if photoModel.scenes == "interest" {
+            return "兴趣照"
+        }
+        
+        if photoModel.scenes == "travel" {
+            return "旅行照"
+        }
+        return ""
+    }
+}
+
 struct ChatList: View {
     let userID : String
     @EnvironmentObject var chatModel : ChatModel
@@ -226,9 +303,6 @@ struct ChatList: View {
             chatModel.requestHistoryMessageList(userID: userID, state: .pullDown)
         }, footerRefreshing: $chatModel.footerRefreshing, loadMore: $chatModel.loadMore, onFooterRefreshing: nil){
             ForEach(chatModel.listData,id:\.id) { model in
-//                if let createdAt = model.timestamp {
-//                    Time(date: createdAt)
-//                }
                 ChatRow(message: model, isMe: model.uid == UserCenter.shared.userInfoModel?.id ?? 0)
                 .id(model.id)
             } .background(Color("light_gray"))
@@ -273,6 +347,13 @@ struct Separator: View {
     
     init(color: Color = Color("separator")) {
         self.color = color
+    }
+}
+
+
+struct ChatHeaderView_Previews: PreviewProvider {
+    static var previews: some View {
+        ChatHeaderView().padding(EdgeInsets(top: 10, leading: 20, bottom: 0, trailing: 0))
     }
 }
 

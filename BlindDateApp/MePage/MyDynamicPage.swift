@@ -103,13 +103,14 @@ struct MyDynamicPage: View {
     @StateObject var myDynamicModel : MyDynamicModel = MyDynamicModel()
     var body: some View {
         ZStack(alignment: .bottom){
+            
             RefreshableScrollView(refreshing: $myDynamicModel.pullDown, pullDown: {
                 myDynamicModel.requestCircleList(state: .pullDown)
             }, footerRefreshing: $myDynamicModel.footerRefreshing, loadMore: $myDynamicModel.loadMore) {
                 myDynamicModel.requestCircleList(state: .pullUp)
             } content: {
                 ForEach(myDynamicModel.listData,id:\.id){ model in
-                    MyDynamicRow(model: model).environmentObject(myDynamicModel).id(model.id)
+                    MyDynamicRow(model: model).environmentObject(myDynamicModel)
                 }
             }.introspectTabBarController(customize: { UITabBarController in
                 UITabBarController.tabBar.isHidden = true
@@ -121,6 +122,7 @@ struct MyDynamicPage: View {
 
     }
 }
+
 
 struct MyDynamicRow:View{
     @EnvironmentObject var myDynamicModel : MyDynamicModel

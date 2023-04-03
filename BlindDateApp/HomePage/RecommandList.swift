@@ -26,9 +26,8 @@ struct RecommandList: View {
    
         ZStack(alignment: .top){
             ForEach(recommnadData.listData,id:\.id){ model in
-//                let model = recommnadData.listData[index]
                 let index = recommnadData.listData.firstIndex(of: model) ?? 0
-                ScrollCardView(index: index).environmentObject(model).id(model.id)
+                ScrollCardView(index: index).environmentObject(model)
             }
         }.navigationBarTitleDisplayMode(.inline)
             .modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).toast(isShow: $computedModel.showToast, msg: computedModel.toastMsg).onAppear {
@@ -89,12 +88,24 @@ struct ScrollCardView:View{
     ZStack(alignment: .top) {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack{
-                CardView().environmentObject(recommandModel)
-                HomePageAboutUsView(title: "关于我",content: recommandModel.myTag.count > 0 ? (recommandModel.aboutMeDesc + "\n" + recommandModel.myTag) : recommandModel.aboutMeDesc,userPhotos: recommandModel.userPhotos)
-                HomePageAboutUsView(title: "希望对方",content: recommandModel.likePersonTag,userPhotos: [])
-                if !recommandModel.loveGoalsDesc.isEmpty {
-                    HomePageAboutUsView(title: "恋爱目标",content: recommandModel.loveGoalsDesc,userPhotos: [])
+                ForEach(0..<4,id:\.self){ index in
+                    if index == 0{
+                        CardView().environmentObject(recommandModel)
+                    }
+                  
+                    if index == 1{
+                        HomePageAboutUsView(title: "关于我",content: recommandModel.myTag.count > 0 ? (recommandModel.aboutMeDesc + "\n" + recommandModel.myTag) : recommandModel.aboutMeDesc,userPhotos: recommandModel.userPhotos)
+                    }
+                   
+                    if index == 2{
+                        HomePageAboutUsView(title: "希望对方",content: recommandModel.likePersonTag,userPhotos: [])
+                    }
+                  
+                    if !recommandModel.loveGoalsDesc.isEmpty && index == 3 {
+                        HomePageAboutUsView(title: "恋爱目标",content: recommandModel.loveGoalsDesc,userPhotos: [])
+                    }
                 }
+               
                 
             }.introspectScrollView(customize: { scrollView in
                 scrollView.bounces = false
@@ -229,7 +240,7 @@ struct HomePageAboutUsView:View{
                        list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: photoModel.photo, originImgUrl: photoModel.photo))
                    }
                    myAppRootVC?.hero.browserPhoto(viewModules: list, initIndex: index)
-                    }.id(model.id)
+                    }
             }
         
     }
