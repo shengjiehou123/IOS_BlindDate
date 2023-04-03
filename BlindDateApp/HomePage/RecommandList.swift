@@ -229,7 +229,7 @@ struct HomePageAboutUsView:View{
                        list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: photoModel.photo, originImgUrl: photoModel.photo))
                    }
                    myAppRootVC?.hero.browserPhoto(viewModules: list, initIndex: index)
-                }
+                    }.id(model.id)
             }
         
     }

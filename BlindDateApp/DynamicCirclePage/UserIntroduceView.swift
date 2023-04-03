@@ -88,7 +88,7 @@ struct UserIntroduceView: View {
                     HomePageAboutUsView(title: "恋爱目标",content: introductionModel.recommandModel.loveGoalsDesc,userPhotos: [])
                 }
             
-              Spacer().frame(height:kSafeBottom+55)
+              Spacer().frame(height:kSafeBottom+60)
         }.padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)).modifier(LoadingView(isShowing: $introductionModel.showLoading, bgColor: $introductionModel.loadingBgColor)).modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: introductionModel.recommandModel.nickName)).onAppear {
             if !isFirst {
                 return
@@ -107,10 +107,10 @@ struct UserIntroduceView: View {
                         .frame(width: 30, height: 30, alignment: .center).background(Circle().fill(btnLRLineGradient).frame(width: 50, height: 50, alignment: .leading)).contentShape(Rectangle()).onTapGesture {
                             introductionModel.requestLikePerson(toUserId: uid, like: true)
                         }
-                    Spacer().frame(height:kSafeBottom)
+                    Spacer().frame(height:kSafeBottom+15)
                 }
             }
-        }.ignoresSafeArea(.container, edges: .bottom)
+        }.ignoresSafeArea(edges: .bottom)
     }
     
    

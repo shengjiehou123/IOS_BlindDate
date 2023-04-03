@@ -15,10 +15,10 @@ struct ChatRow: View {
     
     var body: some View {
         HStack(alignment: .top, spacing: 8) {
-            if isMe { Spacer() } else { Avatar(icon: message.uidAvatar ) }
+            if isMe { Spacer() } else { Avatar(message: message ) }
             if message.type == "text" { TextMessage(isMe: isMe, text: message.content ) }
-            else if message.type == "image"{ImageMessage(imageStr: message.content)}
-            if isMe { Avatar(icon: message.uidAvatar ) } else { Spacer() }
+            else if message.type == "image"{ImageMessage(message:message)}
+            if isMe { Avatar(message: message ) } else { Spacer() }
         }
         .padding(.init(top: 8, leading: 12, bottom: 8, trailing: 12)).onAppear {
             log.info("userID:\(String(describing: message.uid))")
@@ -26,20 +26,25 @@ struct ChatRow: View {
     }
     
     struct Avatar: View {
-        let icon: String
+        let message: ChatMessageModel
         
         var body: some View {
-            WebImage(url: URL(string: icon))
-                .resizable().aspectRatio(contentMode: .fill)
-                .frame(width: 40, height: 40).clipped()
+            NavigationLink {
+                UserIntroduceView(uid: message.uid)
+            } label: {
+                WebImage(url: URL(string: message.uidAvatar))
+                    .resizable().aspectRatio(contentMode: .fill)
+                    .frame(width: 40, height: 40).clipped()
+            }
+           
         }
     }
     
     struct ImageMessage:View{
-        let imageStr : String
+        let message: ChatMessageModel
         @State var imageSize : CGSize = CGSize(width: 150, height: 200)
         var body: some View{
-            WebImage(url: URL(string: imageStr)).onSuccess(perform: { image, data, cacheType in
+            WebImage(url: URL(string: message.content)).onSuccess(perform: { image, data, cacheType in
                 imageSize = image.size
             }).resizable().aspectRatio(contentMode: .fill).frame(width: getImageWidth(),height: getImageHeight(),alignment: .center).clipped().background(Color.gray)
         }
