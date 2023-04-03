@@ -17,6 +17,7 @@ struct ChatRow: View {
         HStack(alignment: .top, spacing: 8) {
             if isMe { Spacer() } else { Avatar(icon: message.uidAvatar ) }
             if message.type == "text" { TextMessage(isMe: isMe, text: message.content ) }
+            else if message.type == "image"{ImageMessage(imageStr: message.content)}
             if isMe { Avatar(icon: message.uidAvatar ) } else { Spacer() }
         }
         .padding(.init(top: 8, leading: 12, bottom: 8, trailing: 12)).onAppear {
@@ -32,6 +33,36 @@ struct ChatRow: View {
                 .resizable().aspectRatio(contentMode: .fill)
                 .frame(width: 40, height: 40).clipped()
         }
+    }
+    
+    struct ImageMessage:View{
+        let imageStr : String
+        @State var imageSize : CGSize = CGSize(width: 150, height: 200)
+        var body: some View{
+            WebImage(url: URL(string: imageStr)).onSuccess(perform: { image, data, cacheType in
+                imageSize = image.size
+            }).resizable().aspectRatio(contentMode: .fill).frame(width: getImageWidth(),height: getImageHeight(),alignment: .center).clipped().background(Color.gray)
+        }
+        
+        func getImageWidth() ->CGFloat{
+            if imageSize.width > imageSize.height {
+                return 230
+            }
+            return 150
+        }
+        
+        func getImageHeight() -> CGFloat{
+            if imageSize.width > imageSize.height {
+                return 230 * imageSize.height / imageSize.width
+            }
+            let height = 150 * imageSize.height / imageSize.width
+            if height > 250 {
+                return 250
+            }
+            return height
+        }
+        
+        
     }
     
     struct TextMessage: View {

@@ -40,7 +40,7 @@ struct CustomPicker: View {
                     }
                 }.frame(height:45)
                 Picker("", selection: $tempSelection) {
-                    ForEach(0..<contentArr.count){ index in
+                    ForEach(0..<contentArr.count,id:\.self){ index in
                         let content = contentArr[index]
                         Text(content)
                     }
