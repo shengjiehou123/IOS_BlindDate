@@ -13,6 +13,7 @@ import HandyJSON
 import SDWebImageSwiftUI
 
 
+
 class ChatMessageModel : HandyJSON{
     var id : Int = 0
     var uid : Int = 0
@@ -82,6 +83,7 @@ class ChatModel :BaseModel,V2TIMAdvancedMsgListener{
     func requestSendMsg(userID:String){
         let param = ["fromAccount":UserCenter.shared.userInfoModel?.id ?? 0,"toAccount":userID,"msgType":"text","msgContent":self.content] as [String : Any]
         NW.request(urlStr: "send/single/message", method: .post, parameters:param) {  response in
+            self.content = ""
 //            requestHistoryMessageList(userID: userID, state: .normal)
         } failedHandler: { response in
             
@@ -175,13 +177,10 @@ struct ChatView: View {
     var body: some View {
         GeometryReader { proxy in
             VStack(spacing: 0) {
-                ChatHeaderView().padding(EdgeInsets(top: 10, leading: 20, bottom: 0, trailing: 0)).environmentObject(chatModel)
                 ChatList(userID: userId).environmentObject(chatModel)
-                Send(proxy: proxy,userID: userId).environmentObject(chatModel)
-            }
-            .edgesIgnoringSafeArea(.bottom)
+                Send(userID: userId).environmentObject(chatModel)
+            }.edgesIgnoringSafeArea(.bottom)
         }
-        .background(Color("light_gray"))
         .modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: nickName)).onAppear {
             chatModel.toUserId = userId
             V2TIMManager.shared.addAdvancedMsgListener(listener: chatModel)
@@ -191,39 +190,54 @@ struct ChatView: View {
     }
     
     struct Send: View {
-        let proxy: GeometryProxy
         let userID : String
-        
-        @State private var text: String = ""
+        @State private var textInput: String = ""
         @EnvironmentObject var chatModel : ChatModel
+        @State var showMore : Bool = false
+        @State var textFieldEdit : Bool = false
         
         var body: some View {
             VStack(spacing: 0) {
                 Separator(color: Color("chat_send_line"))
-                
                 ZStack {
                     Color("chat_send_background")
-                    
                     VStack {
                         HStack(spacing: 12) {
                             Image("chat_send_voice")
                             
-                            TextField("和喜欢的人聊天吧", text: $text,onCommit: {
-                                if text.isEmpty {
+                            TextField("和喜欢的人聊天吧", text: $textInput,onEditingChanged: { edit in
+                                textFieldEdit = edit
+                                if textFieldEdit{
+                                    showMore = false
+                                }
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+                                    chatModel.scrollToLast = true
+                                })
+                            },onCommit: {
+                                if textInput.isEmpty {
                                     return
                                 }
-                                chatModel.content = text
-                                text = ""
+                                chatModel.content = textInput
                                 chatModel.requestSendMsg(userID: userID)
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
+                                    textInput = ""
+                                    log.info("textInput:\(textInput)")
+                                })
+                               
+                               
                             })
                                 .frame(height: 40)
+                                .padding(.leading,10)
                                 .background(Color("chat_send_text_background"))
                                 .cornerRadius(4).introspectTextField { UITextField in
                                     UITextField.returnKeyType = .send
                                 }
                             
                             Image("chat_send_emoji")
-                            Image("chat_send_more")
+                            Image("chat_send_more").onTapGesture {
+                                self.hidenKeyBoard()
+                                showMore.toggle()
+                            }
                         }
                         .frame(height: 56)
                         .padding(.horizontal, 12)
@@ -231,68 +245,23 @@ struct ChatView: View {
                         Spacer()
                     }
                 }
-                .frame(height: proxy.safeAreaInsets.bottom + 56)
-            }
+                .frame(height:56)
+                if showMore{
+                    HStack{
+                        VStack{
+                            HStack{
+                                Image("album").resizable().aspectRatio(contentMode: .fill).frame(width:30,height:30)
+                            }.frame(width: 60,height: 60,alignment: .center).background(RoundedRectangle(cornerRadius: 5).fill(Color.white))
+                            Text("照片").font(.system(size: 12)).foregroundColor(.gray)
+                        }
+                        Spacer()
+                    }.padding(EdgeInsets(top: 0, leading: 20, bottom: 10, trailing: 0)).background(Color("chat_send_background"))
+                }
+            }.background(Color("chat_send_background")).keyboardAdaptive()
         }
     }
 }
 
-struct ChatHeaderView:View{
-    @EnvironmentObject  var chatModel : ChatModel
-    var body: some View{
-        VStack(alignment: .leading,spacing: 20){
-            HStack(alignment: .center,spacing: 15) {
-                NavigationLink(destination: UserIntroduceView(uid:chatModel.toUserInfo.id)) {
-                    WebImage(url: URL(string: chatModel.toUserInfo.avatar)).resizable().aspectRatio(contentMode: .fill).frame(width: 60,height: 60,alignment: .center).background(Color.gray).clipShape(Circle())
-                }
-                VStack(alignment: .leading,spacing: 10) {
-                    Text(chatModel.toUserInfo.nickName).font(.system(size: 17,weight:.medium))
-                    HStack(alignment: .center,spacing: 3){
-                        let date = Date.init(timeIntervalSince1970: chatModel.toUserInfo.birthday)
-                        Text("\(date.getAge())").font(.system(size: 14,weight:.medium))
-                        Text(chatModel.toUserInfo.job).font(.system(size: 14,weight:.medium))
-                    }
-                }
-            }
-
-            Text(chatModel.toUserInfo.aboutMeDesc).font(.system(size: 13)).lineLimit(2)
-            ScrollView(.horizontal,showsIndicators: false){
-                LazyHStack(alignment: .top){
-                    ForEach(chatModel.toUserInfo.userPhotos,id:\.id){ model in
-                        ChartHeaderImageItem(photoModel: model)
-                    }
-                }
-            }.frame(height:110)
-        }
-    }
-}
-
-struct ChartHeaderImageItem:View{
-    let photoModel : UserPhotoModel
-    var body: some View{
-        ZStack(alignment: .topLeading) {
-            WebImage(url: URL(string: photoModel.photo)).resizable().aspectRatio(contentMode: .fill).frame(width: 100,height: 100,alignment: .center).background(Color.gray).clipShape(RoundedRectangle(cornerRadius: 5))
-            let scenes = getScenesStr()
-            if !scenes.isEmpty{
-                Text(scenes).font(.system(size: 12)).foregroundColor(.white).padding(5).background(RoundedRectangle(cornerRadius: 5).fill(Color.black.opacity(0.2))).padding(10)
-            }
-        }
-    }
-    
-    func getScenesStr() -> String{
-        if photoModel.scenes == "life" {
-            return "日常生活"
-        }
-        if photoModel.scenes == "interest" {
-            return "兴趣照"
-        }
-        
-        if photoModel.scenes == "travel" {
-            return "旅行照"
-        }
-        return ""
-    }
-}
 
 struct ChatList: View {
     let userID : String
@@ -302,18 +271,22 @@ struct ChatList: View {
         RefreshableScrollView(refreshing: $chatModel.pullDown, pullDown: {
             chatModel.requestHistoryMessageList(userID: userID, state: .pullDown)
         }, footerRefreshing: $chatModel.footerRefreshing, loadMore: $chatModel.loadMore, onFooterRefreshing: nil){
+           
+            ChatHeaderView().padding(EdgeInsets(top: 10, leading: 20, bottom: 0, trailing: 0)).environmentObject(chatModel)
+            
             ForEach(chatModel.listData,id:\.id) { model in
-                ChatRow(message: model, isMe: model.uid == UserCenter.shared.userInfoModel?.id ?? 0)
-                .id(model.id)
-            } .background(Color("light_gray"))
+                ChatRow(message: model, isMe: model.uid == UserCenter.shared.userInfoModel?.id ?? 0).id(model.id)
+            }
         }.onChange(of: chatModel.scrollToLast) { _ in
             if chatModel.scrollToLast {
                 if let lastId = chatModel.listData.last?.id {
-                    proxy.scrollTo(lastId) // 消息变化时跳到最后一条消息
+                proxy.scrollTo(lastId) // 消息变化时跳到最后一条消息
                 }
                 chatModel.scrollToLast = false
             }
           
+        }.introspectScrollView { UIScrollView in
+            UIScrollView.keyboardDismissMode = .onDrag
         }
     }.onAppear {
         chatModel.requestHistoryMessageList(userID: userID, state: .normal)
@@ -350,12 +323,6 @@ struct Separator: View {
     }
 }
 
-
-struct ChatHeaderView_Previews: PreviewProvider {
-    static var previews: some View {
-        ChatHeaderView().padding(EdgeInsets(top: 10, leading: 20, bottom: 0, trailing: 0))
-    }
-}
 
 
 

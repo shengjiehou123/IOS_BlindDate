@@ -139,7 +139,7 @@ struct _RefreshableScrollView<Content: View>: View {
             let contentFixedBounds = values.first { $0.vType == .contentFixedView}?.bounds ?? .zero
             
             if self.startScrollOffset == 0 {
-                self.startScrollOffset = 30//movingBounds.minY - fixedBounds.minY
+                self.startScrollOffset = 30
             }
             self.scrollOffset  = movingBounds.minY - fixedBounds.minY
             
@@ -174,7 +174,6 @@ struct _RefreshableScrollView<Content: View>: View {
             
             // Update last scroll offset
             self.previousScrollOffset = self.scrollOffset
-            log.info("fixedBounds:\(fixedBounds), contentFixBounds:\(contentFixedBounds) scrollOffset:\(scrollOffset)")
             
             let contentHeight = max(fixedBounds.size.height,contentFixedBounds.size.height) + 5
             

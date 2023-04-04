@@ -70,7 +70,7 @@ struct DynamicCircleView: View {
                      selectCircleModel = model
                  })
              }
-         }.modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "")).navigationBarTitleDisplayMode(.inline).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).onAppear {
+         }.navigationBarTitleDisplayMode(.inline).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).onAppear {
              NotificationCenter.default.addObserver(forName: .init(rawValue: kNotiCreateCircle), object: nil, queue: .main) { _ in
                  isPresentCreateCircleView = true
              }

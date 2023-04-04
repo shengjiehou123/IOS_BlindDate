@@ -50,6 +50,7 @@
 		A2E4E929299B517D000A46FE /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E4E928299B517D000A46FE /* LoginView.swift */; };
 		A2EA905329C9B92C00A32570 /* RefreshableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2EA905229C9B92C00A32570 /* RefreshableScrollView.swift */; };
 		A2EA905529CAD08100A32570 /* BatchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2EA905429CAD08100A32570 /* BatchRequest.swift */; };
+		A2FF540A29DC0C7F004CD13F /* ChatHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FF540929DC0C7F004CD13F /* ChatHeaderView.swift */; };
 		A2FFE855299B5E03009642D3 /* BaseRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FFE854299B5E03009642D3 /* BaseRequest.swift */; };
 		A2FFE857299B61E8009642D3 /* Consts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FFE856299B61E8009642D3 /* Consts.swift */; };
 /* End PBXBuildFile section */
@@ -101,6 +102,7 @@
 		A2EA905229C9B92C00A32570 /* RefreshableScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefreshableScrollView.swift; sourceTree = "<group>"; };
 		A2EA905429CAD08100A32570 /* BatchRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchRequest.swift; sourceTree = "<group>"; };
 		A2F64C1129BF0D5100B68B82 /* BlindDateApp.profdata */ = {isa = PBXFileReference; lastKnownFileType = file; path = BlindDateApp.profdata; sourceTree = "<group>"; };
+		A2FF540929DC0C7F004CD13F /* ChatHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatHeaderView.swift; sourceTree = "<group>"; };
 		A2FFE854299B5E03009642D3 /* BaseRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseRequest.swift; sourceTree = "<group>"; };
 		A2FFE856299B61E8009642D3 /* Consts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Consts.swift; sourceTree = "<group>"; };
 		A2FFE858299B6ABA009642D3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -221,6 +223,7 @@
 			children = (
 				A2A3A56B29BB8B8C0069C574 /* MessageView.swift */,
 				A2CBDB8429D5CAD5009A8BF1 /* ChatView.swift */,
+				A2FF540929DC0C7F004CD13F /* ChatHeaderView.swift */,
 				A2CBDB8629D5CC85009A8BF1 /* ChatRow.swift */,
 			);
 			path = MessagePage;
@@ -347,6 +350,8 @@
 			dependencies = (
 			);
 			name = BlindDateApp;
+			packageProductDependencies = (
+			);
 			productName = BlindDateApp;
 			productReference = A2E4E917299B5104000A46FE /* BlindDateApp.app */;
 			productType = "com.apple.product-type.application";
@@ -376,6 +381,8 @@
 				"zh-Hans",
 			);
 			mainGroup = A2E4E90E299B5104000A46FE;
+			packageReferences = (
+			);
 			productRefGroup = A2E4E918299B5104000A46FE /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -472,6 +479,7 @@
 				A2FFE857299B61E8009642D3 /* Consts.swift in Sources */,
 				A2519B9929A9EF640098DF3E /* ColorExtension.swift in Sources */,
 				A2519B9729A9E95B0098DF3E /* UserCenter.swift in Sources */,
+				A2FF540A29DC0C7F004CD13F /* ChatHeaderView.swift in Sources */,
 				A2A3A56C29BB8B8C0069C574 /* MessageView.swift in Sources */,
 				A209452429CC429E00963A1B /* CreateDynamicCircleView.swift in Sources */,
 				A281043129B197ED00C0B8E8 /* UIImageExtension.swift in Sources */,
