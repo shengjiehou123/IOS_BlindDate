@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Combine
+import PhotosUI
 
 
 
@@ -93,6 +94,19 @@ extension View{
         return baseVC
     }
     
+    func requestPhotoLibraryAuth(){
+        let level : PHAccessLevel = .readWrite
+        PHPhotoLibrary.requestAuthorization(for: level) { status in
+//            switch status{
+//            case .limited:
+//                break
+//            case .denied:
+//                break
+//            case .authorized:
+//                break
+//         }
+      }
+    }
 }
 
 fileprivate struct DelaysTouches: ViewModifier {

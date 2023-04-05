@@ -8,6 +8,7 @@
 import SwiftUI
 import ImSDK_Plus_Swift
 import SDWebImageSwiftUI
+import JFHeroBrowser
 
 struct ChatRow: View {
     let message: ChatMessageModel
@@ -34,7 +35,7 @@ struct ChatRow: View {
             } label: {
                 WebImage(url: URL(string: message.uidAvatar))
                     .resizable().aspectRatio(contentMode: .fill)
-                    .frame(width: 40, height: 40).clipped()
+                    .frame(width: 40, height: 40,alignment: .center).clipShape(RoundedRectangle(cornerRadius: 3))
             }
            
         }
@@ -46,7 +47,11 @@ struct ChatRow: View {
         var body: some View{
             WebImage(url: URL(string: message.content)).onSuccess(perform: { image, data, cacheType in
                 imageSize = image.size
-            }).resizable().aspectRatio(contentMode: .fill).frame(width: getImageWidth(),height: getImageHeight(),alignment: .center).clipped().background(Color.gray)
+            }).resizable().aspectRatio(contentMode: .fill).frame(width: getImageWidth(),height: getImageHeight(),alignment: .center).background(Color.gray).clipShape(RoundedRectangle(cornerRadius: 10)).onTapGesture {
+                var list: [HeroBrowserViewModule] = []
+                list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: message.content, originImgUrl: message.content))
+                myAppRootVC?.hero.browserPhoto(viewModules: list, initIndex: 0)
+            }
         }
         
         func getImageWidth() ->CGFloat{

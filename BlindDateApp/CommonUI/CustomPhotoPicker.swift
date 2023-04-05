@@ -9,12 +9,13 @@ import SwiftUI
 import PhotosUI
 
 struct CustomPhotoPicker: UIViewControllerRepresentable {
-         var configuration: PHPickerConfiguration
+        var configuration: PHPickerConfiguration
         @Binding var pickerResult: [UIImage]
         @Binding var isPresented: Bool
         func makeUIViewController(context: Context) -> PHPickerViewController {
             let controller = PHPickerViewController(configuration: configuration)
             controller.delegate = context.coordinator
+            controller.modalPresentationStyle = .popover
             return controller
         }
         func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) { }
@@ -32,7 +33,6 @@ struct CustomPhotoPicker: UIViewControllerRepresentable {
             }
             
             func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-                
                 for image in results {
                     if image.itemProvider.canLoadObject(ofClass: UIImage.self)  {
                         image.itemProvider.loadObject(ofClass: UIImage.self) { (newImage, error) in

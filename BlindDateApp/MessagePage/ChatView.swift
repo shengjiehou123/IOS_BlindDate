@@ -11,6 +11,7 @@ import Combine
 import ImSDK_Plus_Swift
 import HandyJSON
 import SDWebImageSwiftUI
+import PhotosUI
 
 
 
@@ -80,8 +81,9 @@ class ChatModel :BaseModel,V2TIMAdvancedMsgListener{
     }
     
     //MARK: send message
-    func requestSendMsg(userID:String){
-        let param = ["fromAccount":UserCenter.shared.userInfoModel?.id ?? 0,"toAccount":userID,"msgType":"text","msgContent":self.content] as [String : Any]
+    func requestSendMsg(userID:String,msgType:String){
+        
+        let param = ["fromAccount":"\(UserCenter.shared.userInfoModel?.id ?? 0)","toAccount":"\(userID)","msgType":msgType,"msgContent":self.content]
         NW.request(urlStr: "send/single/message", method: .post, parameters:param) {  response in
             self.content = ""
 //            requestHistoryMessageList(userID: userID, state: .normal)
@@ -89,6 +91,15 @@ class ChatModel :BaseModel,V2TIMAdvancedMsgListener{
             
         }
 
+    }
+    
+    func requestSendImageMsg(userID:String,images:[UIImage],completion:@escaping()->Void){
+        let param = ["fromAccount":"\(UserCenter.shared.userInfoModel?.id ?? 0)","toAccount":"\(userID)","msgType":"image","msgContent":" ","scenes":"chat_image"]
+        NW.uploadingImage(urlStr: "send/single/message", params: param, images: images) { response in
+            completion()
+        } failedHandler: { response in
+            
+        }
     }
     
     func requestGetToUserInfo(){
@@ -109,33 +120,35 @@ class ChatModel :BaseModel,V2TIMAdvancedMsgListener{
     
     /// Received a new message
     func onRecvNewMessage(msg: ImSDK_Plus_Swift.V2TIMMessage){
+        let model = ChatMessageModel()
+        if msg.sender == "\(UserCenter.shared.userInfoModel?.id ?? 0)" {
+            model.uid = Int(msg.sender!) ?? 0
+            model.uidAvatar = msg.faceURL ?? ""
+            model.toUid = Int(self.toUserId) ?? 0
+        }else{
+            model.uid = Int(self.toUserId) ?? 0
+            model.uidAvatar = msg.faceURL ?? ""
+            model.toUid = UserCenter.shared.userInfoModel?.id ?? 0
+        }
+        model.id = (self.listData.last?.id ?? 0) + 1
         if msg.elemType == .V2TIM_ELEM_TYPE_TEXT {
 //            log.info(msg.textElem?.text)
 //            let model = ImSDK_Plus_Swift.V2TIMMessage()
 //            model.faceURL = msg.faceURL
 //            model.nickName = msg.nickName
 //            model.textElem?.text = msg.textElem?.text
-            let model = ChatMessageModel()
-            if msg.sender == "\(UserCenter.shared.userInfoModel?.id ?? 0)" {
-                model.uid = Int(msg.sender!) ?? 0
-                model.uidAvatar = msg.faceURL ?? ""
-                model.toUid = Int(self.toUserId) ?? 0
-            }else{
-                model.uid = Int(self.toUserId) ?? 0
-                model.uidAvatar = msg.faceURL ?? ""
-                model.toUid = UserCenter.shared.userInfoModel?.id ?? 0
-               
-            }
-            model.id = (self.listData.last?.id ?? 0) + 1
+            model.type = "text"
             model.content = msg.textElem?.text ?? ""
-            self.listData.append(model)
-            self.scrollToLast = true
             log.info("lastMsgId:\(msg.msgID)")
         }else if msg.elemType == .V2TIM_ELEM_TYPE_IMAGE{
-            log.info(msg.imageElem?.imageList)
+            model.type = "image"
+            model.content = msg.imageElem?.imageList[0].url ?? ""
+//            log.info(msg.imageElem?.imageList)
         }else if msg.elemType == .V2TIM_ELEM_TYPE_SOUND{
             
         }
+        self.listData.append(model)
+        self.scrollToLast = true
     }
 
     /// Message read receipt notification (if you send a message that supports read receipts, the message receiver calls the sendMessageReadReceipts interface, and you will receive the callback)
@@ -173,20 +186,21 @@ class ChatModel :BaseModel,V2TIMAdvancedMsgListener{
 struct ChatView: View {
     var userId : String
     var nickName : String
-    @ObservedObject var chatModel : ChatModel = ChatModel()
+    @StateObject var chatModel : ChatModel = ChatModel()
     var body: some View {
         GeometryReader { proxy in
             VStack(spacing: 0) {
                 ChatList(userID: userId).environmentObject(chatModel)
                 Send(userID: userId).environmentObject(chatModel)
             }.edgesIgnoringSafeArea(.bottom)
-        }
-        .modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: nickName)).onAppear {
-            chatModel.toUserId = userId
-            V2TIMManager.shared.addAdvancedMsgListener(listener: chatModel)
-            chatModel.requestHistoryMessageList(userID: userId, state: .normal)
-            chatModel.requestGetToUserInfo()
-        }
+        }.modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: nickName))
+            .onAppear {
+                chatModel.toUserId = userId
+                V2TIMManager.shared.addAdvancedMsgListener(listener: chatModel)
+                chatModel.requestHistoryMessageList(userID: userId, state: .normal)
+                chatModel.requestGetToUserInfo()
+            }.toast(isShow: $chatModel.showToast, msg: chatModel.toastMsg)
+        
     }
     
     struct Send: View {
@@ -195,7 +209,14 @@ struct ChatView: View {
         @EnvironmentObject var chatModel : ChatModel
         @State var showMore : Bool = false
         @State var textFieldEdit : Bool = false
-        
+        @State var isPresentPhotoAlbum : Bool = false
+        @State var pickerResult: [UIImage] = []
+        var config: PHPickerConfiguration  {
+           var config = PHPickerConfiguration(photoLibrary: PHPhotoLibrary.shared())
+            config.filter = .images //videos, livePhotos...
+            config.selectionLimit = 1 //0 => any, set 1-2-3 for har limit
+            return config
+        }
         var body: some View {
             VStack(spacing: 0) {
                 Separator(color: Color("chat_send_line"))
@@ -218,7 +239,7 @@ struct ChatView: View {
                                     return
                                 }
                                 chatModel.content = textInput
-                                chatModel.requestSendMsg(userID: userID)
+                                chatModel.requestSendMsg(userID: userID,msgType: "text")
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
                                     textInput = ""
                                     log.info("textInput:\(textInput)")
@@ -253,6 +274,17 @@ struct ChatView: View {
                                 Image("album").resizable().aspectRatio(contentMode: .fill).frame(width:30,height:30)
                             }.frame(width: 60,height: 60,alignment: .center).background(RoundedRectangle(cornerRadius: 5).fill(Color.white))
                             Text("照片").font(.system(size: 12)).foregroundColor(.gray)
+                        }.onTapGesture {
+                            self.isPresentPhotoAlbum = true
+                        }.fullScreenCover(isPresented: $isPresentPhotoAlbum, content: {
+                            CustomPhotoPicker(configuration: config, pickerResult: $pickerResult, isPresented: $isPresentPhotoAlbum)
+                        }).onChange(of: pickerResult) { newValue in
+                            chatModel.requestSendImageMsg(userID: userID, images: pickerResult) {
+//                                pickerResult.removeAll { _ in
+//                                    return true
+//                                }
+                                pickerResult.removeFirst()
+                            }
                         }
                         Spacer()
                     }.padding(EdgeInsets(top: 0, leading: 20, bottom: 10, trailing: 0)).background(Color("chat_send_background"))
@@ -260,6 +292,8 @@ struct ChatView: View {
             }.background(Color("chat_send_background")).keyboardAdaptive()
         }
     }
+    
+   
 }
 
 
