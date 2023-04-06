@@ -37,6 +37,7 @@ class ChatModel :BaseModel,V2TIMAdvancedMsgListener{
     @Published var toUserId: String = ""
     @Published var page : Int = 1
     @Published var scrollToLast : Bool = false
+    @Published var scrollToPullId : Int = 0
     
     //MARK: 获取历史信息
     func requestHistoryMessageList(userID:String,state:RefreshState){
@@ -67,7 +68,10 @@ class ChatModel :BaseModel,V2TIMAdvancedMsgListener{
                 self.scrollToLast = true
                 self.listData.append(contentsOf: tempArr)
             }else{
-                for item in tempArr.reversed() {
+                for (index,item) in tempArr.reversed().enumerated() {
+                    if index == 0{
+                        self.scrollToPullId = item.id
+                    }
                     self.listData.insert(item, at: 0)
                 }
                
@@ -131,7 +135,7 @@ class ChatModel :BaseModel,V2TIMAdvancedMsgListener{
             model.uidAvatar = msg.faceURL ?? ""
             model.toUid = UserCenter.shared.userInfoModel?.id ?? 0
         }
-        model.id = (self.listData.last?.id ?? 0) + 1
+        model.id = (self.listData.last?.id ?? 0) + 1000
         if msg.elemType == .V2TIM_ELEM_TYPE_TEXT {
             model.type = "text"
             model.content = msg.textElem?.text ?? ""
@@ -314,30 +318,37 @@ struct ChatView: View {
 struct ChatList: View {
     let userID : String
     @EnvironmentObject var chatModel : ChatModel
+    @State var contentSizeHeight : CGFloat = 0
+    @State var offsetY : CGFloat = 0
     var body: some View {
-    ScrollViewReader { proxy in
-        RefreshableScrollView(refreshing: $chatModel.pullDown, pullDown: {
-            chatModel.requestHistoryMessageList(userID: userID, state: .pullDown)
-        }, footerRefreshing: $chatModel.footerRefreshing, loadMore: $chatModel.loadMore, onFooterRefreshing: nil){
-            ChatHeaderView().padding(EdgeInsets(top: 10, leading: 20, bottom: 0, trailing: 0)).environmentObject(chatModel)
-            
-            ForEach(chatModel.listData,id:\.id) { model in
-                ChatRow(message: model, isMe: model.uid == UserCenter.shared.userInfoModel?.id ?? 0)
-            }
-        }.onChange(of: chatModel.scrollToLast) { _ in
-            if chatModel.scrollToLast {
-                if let lastId = chatModel.listData.last?.id {
-                proxy.scrollTo(lastId) // 消息变化时跳到最后一条消息
-                }
-                chatModel.scrollToLast = false
-            }
-          
-        }.introspectScrollView { UIScrollView in
-            UIScrollView.keyboardDismissMode = .onDrag
-        }
-    }.onAppear {
-        chatModel.requestHistoryMessageList(userID: userID, state: .normal)
-    }
+     
+         ScrollViewReader { proxy in
+             RefreshableScrollView(refreshing: $chatModel.pullDown, pullDown: {
+                 chatModel.requestHistoryMessageList(userID: userID, state: .pullDown)
+             }, footerRefreshing: $chatModel.footerRefreshing, loadMore: $chatModel.loadMore, onFooterRefreshing: nil){
+                 ChatHeaderView().padding(EdgeInsets(top: 10, leading: 20, bottom: 0, trailing: 0)).environmentObject(chatModel)
+                 
+                 ForEach(chatModel.listData,id:\.id) { model in
+                     ChatRow(message: model, isMe: model.uid == UserCenter.shared.userInfoModel?.id ?? 0)
+                 }
+                    
+             }.onChange(of: chatModel.scrollToLast) { _ in
+                 if chatModel.scrollToLast {
+                     if let lastId = chatModel.listData.last?.id {
+                         proxy.scrollTo(lastId) // 消息变化时跳到最后一条消息
+                     }
+                     chatModel.scrollToLast = false
+                 }
+                 
+             }.onChange(of: chatModel.scrollToPullId, perform: { newValue in
+                 proxy.scrollTo(newValue,anchor: .top)
+             }).introspectScrollView { UIScrollView in
+                 UIScrollView.keyboardDismissMode = .onDrag
+             }.onAppear {
+                 chatModel.requestHistoryMessageList(userID: userID, state: .normal)
+             }
+         }
+    
        
 }
     

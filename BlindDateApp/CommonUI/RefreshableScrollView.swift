@@ -96,7 +96,6 @@ struct _RefreshableScrollView<Content: View>: View {
         return VStack {
             
                 ScrollView {
-                    
                     ZStack(alignment: .top) {
                         MovingView()
                         
