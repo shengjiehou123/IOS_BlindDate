@@ -17,7 +17,7 @@ struct ChatRow: View {
     var body: some View {
         HStack(alignment: .top, spacing: 8) {
             if isMe { Spacer() } else { Avatar(message: message ) }
-            if message.type == "text" { TextMessage(isMe: isMe, text: message.content ) }
+            if message.type == "text" { TextMessage(isMe: isMe, text: message.tempContent == nil ? message.content : message.tempContent as! String,isTemp: (message.tempContent != nil) ? true : false) }
             else if message.type == "image"{ImageMessage(message:message)}
             if isMe { Avatar(message: message ) } else { Spacer() }
         }
@@ -45,13 +45,22 @@ struct ChatRow: View {
         let message: ChatMessageModel
         @State var imageSize : CGSize = CGSize(width: 150, height: 200)
         var body: some View{
-            WebImage(url: URL(string: message.content)).onSuccess(perform: { image, data, cacheType in
-                imageSize = image.size
-            }).resizable().aspectRatio(contentMode: .fill).frame(width: getImageWidth(),height: getImageHeight(),alignment: .center).background(Color.gray).clipShape(RoundedRectangle(cornerRadius: 10)).onTapGesture {
-                var list: [HeroBrowserViewModule] = []
-                list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: message.content, originImgUrl: message.content))
-                myAppRootVC?.hero.browserPhoto(viewModules: list, initIndex: 0)
+            if message.tempContent != nil{
+                HStack{
+                    ActivityRep()
+                    Image(uiImage: message.tempContent as! UIImage).resizable().aspectRatio(contentMode: .fill).frame(width: getImageWidth(),height: getImageHeight(),alignment: .center).background(Color.gray).clipShape(RoundedRectangle(cornerRadius: 10))
+                }
+               
+            }else{
+                WebImage(url: URL(string: message.content)).onSuccess(perform: { image, data, cacheType in
+                    imageSize = image.size
+                }).resizable().aspectRatio(contentMode: .fill).frame(width: getImageWidth(),height: getImageHeight(),alignment: .center).background(Color.gray).clipShape(RoundedRectangle(cornerRadius: 10)).onTapGesture {
+                    var list: [HeroBrowserViewModule] = []
+                    list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: message.content, originImgUrl: message.content))
+                    myAppRootVC?.hero.browserPhoto(viewModules: list, initIndex: 0)
+                }
             }
+           
         }
         
         func getImageWidth() ->CGFloat{
@@ -78,16 +87,21 @@ struct ChatRow: View {
     struct TextMessage: View {
         let isMe: Bool
         let text: String
-        
+        let isTemp : Bool
         var body: some View {
             HStack(alignment: .top, spacing: 0) {
                 if !isMe { Arrow(isMe: isMe) }
-                
-                Text(text)
-                    .font(.system(size: 17))
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 10)
-                    .background(background)
+                HStack{
+                    if isTemp{
+                        ActivityRep()
+                    }
+                    Text(text)
+                        .font(.system(size: 17))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
+                        .background(background)
+                }
+            
                 
                 if isMe { Arrow(isMe: isMe) }
             }

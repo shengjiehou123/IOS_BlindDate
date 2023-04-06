@@ -22,6 +22,7 @@ class ChatMessageModel : HandyJSON{
     var toUid: Int = 0
     var type : String = "text"
     var content : String = ""
+    var tempContent : Any? = nil
     var createAt : String = ""
     var updateAt : String = ""
     required init() {
@@ -86,7 +87,7 @@ class ChatModel :BaseModel,V2TIMAdvancedMsgListener{
         let param = ["fromAccount":"\(UserCenter.shared.userInfoModel?.id ?? 0)","toAccount":"\(userID)","msgType":msgType,"msgContent":self.content]
         NW.request(urlStr: "send/single/message", method: .post, parameters:param) {  response in
             self.content = ""
-//            requestHistoryMessageList(userID: userID, state: .normal)
+            
         } failedHandler: { response in
             
         }
@@ -132,20 +133,17 @@ class ChatModel :BaseModel,V2TIMAdvancedMsgListener{
         }
         model.id = (self.listData.last?.id ?? 0) + 1
         if msg.elemType == .V2TIM_ELEM_TYPE_TEXT {
-//            log.info(msg.textElem?.text)
-//            let model = ImSDK_Plus_Swift.V2TIMMessage()
-//            model.faceURL = msg.faceURL
-//            model.nickName = msg.nickName
-//            model.textElem?.text = msg.textElem?.text
             model.type = "text"
             model.content = msg.textElem?.text ?? ""
             log.info("lastMsgId:\(msg.msgID)")
         }else if msg.elemType == .V2TIM_ELEM_TYPE_IMAGE{
             model.type = "image"
             model.content = msg.imageElem?.imageList[0].url ?? ""
-//            log.info(msg.imageElem?.imageList)
         }else if msg.elemType == .V2TIM_ELEM_TYPE_SOUND{
             
+        }
+        if self.listData.last?.tempContent != nil{
+            self.listData.removeLast()
         }
         self.listData.append(model)
         self.scrollToLast = true
@@ -186,7 +184,7 @@ class ChatModel :BaseModel,V2TIMAdvancedMsgListener{
 struct ChatView: View {
     var userId : String
     var nickName : String
-    @StateObject var chatModel : ChatModel = ChatModel()
+    @ObservedObject var chatModel : ChatModel = ChatModel()
     var body: some View {
         GeometryReader { proxy in
             VStack(spacing: 0) {
@@ -239,6 +237,14 @@ struct ChatView: View {
                                     return
                                 }
                                 chatModel.content = textInput
+                                let model = ChatMessageModel()
+                                model.type = "text"
+                                model.id = (chatModel.listData.last?.id  ?? 0) + 1000
+                                model.uid = UserCenter.shared.userInfoModel?.id ?? 0
+                                model.uidAvatar = UserCenter.shared.userInfoModel?.avatar ?? ""
+                                model.tempContent = textInput
+                                chatModel.listData.append(model)
+                                chatModel.scrollToLast = true
                                 chatModel.requestSendMsg(userID: userID,msgType: "text")
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
                                     textInput = ""
@@ -279,12 +285,20 @@ struct ChatView: View {
                         }.fullScreenCover(isPresented: $isPresentPhotoAlbum, content: {
                             CustomPhotoPicker(configuration: config, pickerResult: $pickerResult, isPresented: $isPresentPhotoAlbum)
                         }).onChange(of: pickerResult) { newValue in
-                            chatModel.requestSendImageMsg(userID: userID, images: pickerResult) {
-//                                pickerResult.removeAll { _ in
-//                                    return true
-//                                }
-                                pickerResult.removeFirst()
+                            if pickerResult.count > 0{
+                                let model = ChatMessageModel()
+                                model.type = "image"
+                                model.id = (chatModel.listData.last?.id  ?? 0) + 1000
+                                model.uid = UserCenter.shared.userInfoModel?.id ?? 0
+                                model.uidAvatar = UserCenter.shared.userInfoModel?.avatar ?? ""
+                                model.tempContent = pickerResult.last
+                                chatModel.listData.append(model)
+                                chatModel.scrollToLast = true
+                                chatModel.requestSendImageMsg(userID: userID, images: pickerResult) {
+                                    pickerResult.removeFirst()
+                                }
                             }
+                           
                         }
                         Spacer()
                     }.padding(EdgeInsets(top: 0, leading: 20, bottom: 10, trailing: 0)).background(Color("chat_send_background"))
@@ -305,11 +319,10 @@ struct ChatList: View {
         RefreshableScrollView(refreshing: $chatModel.pullDown, pullDown: {
             chatModel.requestHistoryMessageList(userID: userID, state: .pullDown)
         }, footerRefreshing: $chatModel.footerRefreshing, loadMore: $chatModel.loadMore, onFooterRefreshing: nil){
-           
             ChatHeaderView().padding(EdgeInsets(top: 10, leading: 20, bottom: 0, trailing: 0)).environmentObject(chatModel)
             
             ForEach(chatModel.listData,id:\.id) { model in
-                ChatRow(message: model, isMe: model.uid == UserCenter.shared.userInfoModel?.id ?? 0).id(model.id)
+                ChatRow(message: model, isMe: model.uid == UserCenter.shared.userInfoModel?.id ?? 0)
             }
         }.onChange(of: chatModel.scrollToLast) { _ in
             if chatModel.scrollToLast {
