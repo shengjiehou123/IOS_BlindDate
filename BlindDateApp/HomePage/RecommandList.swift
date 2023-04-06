@@ -229,7 +229,6 @@ struct HomePageAboutUsView:View{
             
             ForEach(userPhotos,id:\.id) { model in
                 let index = userPhotos.firstIndex(of: model) ?? 0
-//                let model = userPhotos[index]
                 let url = URL.init(string:model.photo)
                 Spacer().frame(height:10)
                 WebImage(url: url).resizable().interpolation(.high).aspectRatio(contentMode:.fill).frame(width:  screenWidth - 20, height: 500, alignment: .center)
@@ -250,9 +249,7 @@ struct CardView:View{
     @EnvironmentObject var recommandModel : ReCommandModel
     var body: some View{
         VStack(alignment: .leading, spacing: 0) {
-//            Spacer().frame(height:10)
             CardHeaderView().environmentObject(recommandModel)
-//            Spacer()
         }
     }
 }
