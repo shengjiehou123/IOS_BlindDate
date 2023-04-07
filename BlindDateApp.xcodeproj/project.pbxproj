@@ -21,12 +21,53 @@
 		A2519B9C29A9F1FA0098DF3E /* Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2519B9B29A9F1FA0098DF3E /* Header.swift */; };
 		A2519B9F29AA01E30098DF3E /* RecommandList.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2519B9E29AA01E30098DF3E /* RecommandList.swift */; };
 		A2519BA229AC8CD60098DF3E /* ReCommandModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2519BA129AC8CD60098DF3E /* ReCommandModel.swift */; };
+		A27B8A5329E0101D009B515B /* APBToygerFacade.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27B8A5229E0101D009B515B /* APBToygerFacade.framework */; };
+		A27B8A5529E01024009B515B /* MPRemoteLogging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27B8A5429E01024009B515B /* MPRemoteLogging.framework */; };
+		A27B8A5729E0102A009B515B /* BioAuthEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27B8A5629E0102A009B515B /* BioAuthEngine.framework */; };
+		A27B8A5929E01031009B515B /* ZolozUtility.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27B8A5829E01031009B515B /* ZolozUtility.framework */; };
+		A27B8A5B29E01038009B515B /* AliyunIdentityManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27B8A5A29E01038009B515B /* AliyunIdentityManager.framework */; };
+		A27B8A5D29E0103E009B515B /* APBToygerFacade.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27B8A5C29E0103E009B515B /* APBToygerFacade.framework */; };
+		A27B8A5F29E01046009B515B /* BioAuthAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27B8A5E29E01046009B515B /* BioAuthAPI.framework */; };
+		A27B8A6129E0104E009B515B /* ToygerService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27B8A6029E0104E009B515B /* ToygerService.framework */; };
+		A27B8A6329E01054009B515B /* ZolozSensorServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27B8A6229E01054009B515B /* ZolozSensorServices.framework */; };
+		A27B8A6529E0105D009B515B /* ZolozMobileRPC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27B8A6429E0105D009B515B /* ZolozMobileRPC.framework */; };
+		A27B8A6729E01065009B515B /* ZolozOpenPlatformBuild.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27B8A6629E01065009B515B /* ZolozOpenPlatformBuild.framework */; };
+		A27B8A6929E0106C009B515B /* APPSecuritySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27B8A6829E0106C009B515B /* APPSecuritySDK.framework */; };
+		A27B8A6B29E01075009B515B /* ZolozIdentityManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27B8A6A29E01075009B515B /* ZolozIdentityManager.framework */; };
+		A27B8A6D29E0107D009B515B /* OCRDetectSDKForTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27B8A6C29E0107D009B515B /* OCRDetectSDKForTech.framework */; };
+		A27B8A6F29E012C2009B515B /* FaceVerifyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A27B8A6E29E012C2009B515B /* FaceVerifyService.swift */; };
 		A281042F29B0AB4600C0B8E8 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281042E29B0AB4600C0B8E8 /* DateExtension.swift */; };
 		A281043129B197ED00C0B8E8 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043029B197ED00C0B8E8 /* UIImageExtension.swift */; };
 		A281043429B1E4F700C0B8E8 /* LikeMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043329B1E4F700C0B8E8 /* LikeMe.swift */; };
 		A281043729B1EA6200C0B8E8 /* LikeMeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043629B1EA6200C0B8E8 /* LikeMeModel.swift */; };
 		A281043C29B20DD900C0B8E8 /* Me.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043B29B20DD900C0B8E8 /* Me.swift */; };
 		A281043F29B2FCAC00C0B8E8 /* EnterInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043E29B2FCAC00C0B8E8 /* EnterInfoView.swift */; };
+		A281146129DFF4430022C508 /* APBToygerFacade.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A281146029DFF4430022C508 /* APBToygerFacade.bundle */; };
+		A281146329DFF45B0022C508 /* BioAuthEngine.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A281146229DFF45B0022C508 /* BioAuthEngine.bundle */; };
+		A281146529DFF4750022C508 /* ToygerService.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A281146429DFF4750022C508 /* ToygerService.bundle */; };
+		A281146729DFF48D0022C508 /* OCRXMedia.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A281146629DFF48D0022C508 /* OCRXMedia.bundle */; };
+		A281146929DFF4B00022C508 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A281146829DFF4B00022C508 /* CoreGraphics.framework */; };
+		A281146B29DFF4C20022C508 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A281146A29DFF4C20022C508 /* Accelerate.framework */; };
+		A281146D29DFF4C90022C508 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A281146C29DFF4C90022C508 /* SystemConfiguration.framework */; };
+		A281146F29DFF4CF0022C508 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A281146E29DFF4CF0022C508 /* AssetsLibrary.framework */; };
+		A281147129DFF4D90022C508 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A281147029DFF4D90022C508 /* CoreTelephony.framework */; };
+		A281147329DFF4EA0022C508 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A281147229DFF4EA0022C508 /* QuartzCore.framework */; };
+		A281147529DFF4F10022C508 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A281147429DFF4F10022C508 /* CoreFoundation.framework */; };
+		A281147729DFF4FA0022C508 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A281147629DFF4FA0022C508 /* CoreLocation.framework */; };
+		A281147929DFF5050022C508 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A281147829DFF5040022C508 /* ImageIO.framework */; };
+		A281147B29DFF50E0022C508 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A281147A29DFF50E0022C508 /* CoreMedia.framework */; };
+		A281147D29DFF5150022C508 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A281147C29DFF5150022C508 /* CoreMotion.framework */; };
+		A281147F29DFF51C0022C508 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A281147E29DFF51C0022C508 /* AVFoundation.framework */; };
+		A281148129DFF5250022C508 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A281148029DFF5250022C508 /* WebKit.framework */; };
+		A281148329DFF5310022C508 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A281148229DFF5310022C508 /* libresolv.tbd */; };
+		A281148529DFF53A0022C508 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A281148429DFF53A0022C508 /* libz.tbd */; };
+		A281148729DFF5470022C508 /* libc++.1.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A281148629DFF5470022C508 /* libc++.1.tbd */; };
+		A281148929DFF54F0022C508 /* libc++abi.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A281148829DFF54F0022C508 /* libc++abi.tbd */; };
+		A281148B29DFF5580022C508 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A281148A29DFF5580022C508 /* AudioToolbox.framework */; };
+		A281148D29DFF55F0022C508 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A281148C29DFF55F0022C508 /* CFNetwork.framework */; };
+		A281148F29DFF5680022C508 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A281148E29DFF5680022C508 /* MobileCoreServices.framework */; };
+		A281149129DFF5700022C508 /* libz.1.2.8.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A281149029DFF5700022C508 /* libz.1.2.8.tbd */; };
+		A281149329DFF5760022C508 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A281149229DFF5760022C508 /* AdSupport.framework */; };
 		A2A3A56729B9C0710069C574 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A3A56629B9C0710069C574 /* StringExtension.swift */; };
 		A2A3A56929BAE1B80069C574 /* CustomPhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A3A56829BAE1B80069C574 /* CustomPhotoPicker.swift */; };
 		A2A3A56C29BB8B8C0069C574 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A3A56B29BB8B8C0069C574 /* MessageView.swift */; };
@@ -70,12 +111,53 @@
 		A2519B9B29A9F1FA0098DF3E /* Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Header.swift; sourceTree = "<group>"; };
 		A2519B9E29AA01E30098DF3E /* RecommandList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommandList.swift; sourceTree = "<group>"; };
 		A2519BA129AC8CD60098DF3E /* ReCommandModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReCommandModel.swift; sourceTree = "<group>"; };
+		A27B8A5229E0101D009B515B /* APBToygerFacade.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = APBToygerFacade.framework; sourceTree = "<group>"; };
+		A27B8A5429E01024009B515B /* MPRemoteLogging.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MPRemoteLogging.framework; sourceTree = "<group>"; };
+		A27B8A5629E0102A009B515B /* BioAuthEngine.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BioAuthEngine.framework; sourceTree = "<group>"; };
+		A27B8A5829E01031009B515B /* ZolozUtility.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ZolozUtility.framework; sourceTree = "<group>"; };
+		A27B8A5A29E01038009B515B /* AliyunIdentityManager.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AliyunIdentityManager.framework; sourceTree = "<group>"; };
+		A27B8A5C29E0103E009B515B /* APBToygerFacade.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = APBToygerFacade.framework; path = "../Downloads/FaceVerifyiOSSDK/Products 6/APBToygerFacade.framework"; sourceTree = "<group>"; };
+		A27B8A5E29E01046009B515B /* BioAuthAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BioAuthAPI.framework; sourceTree = "<group>"; };
+		A27B8A6029E0104E009B515B /* ToygerService.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ToygerService.framework; sourceTree = "<group>"; };
+		A27B8A6229E01054009B515B /* ZolozSensorServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ZolozSensorServices.framework; sourceTree = "<group>"; };
+		A27B8A6429E0105D009B515B /* ZolozMobileRPC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ZolozMobileRPC.framework; sourceTree = "<group>"; };
+		A27B8A6629E01065009B515B /* ZolozOpenPlatformBuild.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ZolozOpenPlatformBuild.framework; sourceTree = "<group>"; };
+		A27B8A6829E0106C009B515B /* APPSecuritySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = APPSecuritySDK.framework; sourceTree = "<group>"; };
+		A27B8A6A29E01075009B515B /* ZolozIdentityManager.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ZolozIdentityManager.framework; sourceTree = "<group>"; };
+		A27B8A6C29E0107D009B515B /* OCRDetectSDKForTech.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCRDetectSDKForTech.framework; sourceTree = "<group>"; };
+		A27B8A6E29E012C2009B515B /* FaceVerifyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceVerifyService.swift; sourceTree = "<group>"; };
 		A281042E29B0AB4600C0B8E8 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		A281043029B197ED00C0B8E8 /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
 		A281043329B1E4F700C0B8E8 /* LikeMe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMe.swift; sourceTree = "<group>"; };
 		A281043629B1EA6200C0B8E8 /* LikeMeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMeModel.swift; sourceTree = "<group>"; };
 		A281043B29B20DD900C0B8E8 /* Me.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Me.swift; sourceTree = "<group>"; };
 		A281043E29B2FCAC00C0B8E8 /* EnterInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterInfoView.swift; sourceTree = "<group>"; };
+		A281146029DFF4430022C508 /* APBToygerFacade.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = APBToygerFacade.bundle; sourceTree = "<group>"; };
+		A281146229DFF45B0022C508 /* BioAuthEngine.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = BioAuthEngine.bundle; sourceTree = "<group>"; };
+		A281146429DFF4750022C508 /* ToygerService.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ToygerService.bundle; sourceTree = "<group>"; };
+		A281146629DFF48D0022C508 /* OCRXMedia.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = OCRXMedia.bundle; sourceTree = "<group>"; };
+		A281146829DFF4B00022C508 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		A281146A29DFF4C20022C508 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		A281146C29DFF4C90022C508 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		A281146E29DFF4CF0022C508 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		A281147029DFF4D90022C508 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		A281147229DFF4EA0022C508 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		A281147429DFF4F10022C508 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		A281147629DFF4FA0022C508 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		A281147829DFF5040022C508 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		A281147A29DFF50E0022C508 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		A281147C29DFF5150022C508 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		A281147E29DFF51C0022C508 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		A281148029DFF5250022C508 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		A281148229DFF5310022C508 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
+		A281148429DFF53A0022C508 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		A281148629DFF5470022C508 /* libc++.1.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.1.tbd"; path = "usr/lib/libc++.1.tbd"; sourceTree = SDKROOT; };
+		A281148829DFF54F0022C508 /* libc++abi.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++abi.tbd"; path = "usr/lib/libc++abi.tbd"; sourceTree = SDKROOT; };
+		A281148A29DFF5580022C508 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		A281148C29DFF55F0022C508 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		A281148E29DFF5680022C508 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		A281149029DFF5700022C508 /* libz.1.2.8.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.1.2.8.tbd; path = usr/lib/libz.1.2.8.tbd; sourceTree = SDKROOT; };
+		A281149229DFF5760022C508 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		A2A3A56629B9C0710069C574 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		A2A3A56829BAE1B80069C574 /* CustomPhotoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPhotoPicker.swift; sourceTree = "<group>"; };
 		A2A3A56B29BB8B8C0069C574 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
@@ -101,7 +183,6 @@
 		A2E4E928299B517D000A46FE /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		A2EA905229C9B92C00A32570 /* RefreshableScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefreshableScrollView.swift; sourceTree = "<group>"; };
 		A2EA905429CAD08100A32570 /* BatchRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchRequest.swift; sourceTree = "<group>"; };
-		A2F64C1129BF0D5100B68B82 /* BlindDateApp.profdata */ = {isa = PBXFileReference; lastKnownFileType = file; path = BlindDateApp.profdata; sourceTree = "<group>"; };
 		A2FF540929DC0C7F004CD13F /* ChatHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatHeaderView.swift; sourceTree = "<group>"; };
 		A2FFE854299B5E03009642D3 /* BaseRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseRequest.swift; sourceTree = "<group>"; };
 		A2FFE856299B61E8009642D3 /* Consts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Consts.swift; sourceTree = "<group>"; };
@@ -115,6 +196,42 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A281149329DFF5760022C508 /* AdSupport.framework in Frameworks */,
+				A281149129DFF5700022C508 /* libz.1.2.8.tbd in Frameworks */,
+				A27B8A6729E01065009B515B /* ZolozOpenPlatformBuild.framework in Frameworks */,
+				A27B8A5D29E0103E009B515B /* APBToygerFacade.framework in Frameworks */,
+				A281148F29DFF5680022C508 /* MobileCoreServices.framework in Frameworks */,
+				A27B8A6929E0106C009B515B /* APPSecuritySDK.framework in Frameworks */,
+				A281148D29DFF55F0022C508 /* CFNetwork.framework in Frameworks */,
+				A27B8A6D29E0107D009B515B /* OCRDetectSDKForTech.framework in Frameworks */,
+				A281148B29DFF5580022C508 /* AudioToolbox.framework in Frameworks */,
+				A281148929DFF54F0022C508 /* libc++abi.tbd in Frameworks */,
+				A27B8A5B29E01038009B515B /* AliyunIdentityManager.framework in Frameworks */,
+				A27B8A6529E0105D009B515B /* ZolozMobileRPC.framework in Frameworks */,
+				A27B8A5929E01031009B515B /* ZolozUtility.framework in Frameworks */,
+				A281148729DFF5470022C508 /* libc++.1.tbd in Frameworks */,
+				A281148529DFF53A0022C508 /* libz.tbd in Frameworks */,
+				A281148329DFF5310022C508 /* libresolv.tbd in Frameworks */,
+				A281148129DFF5250022C508 /* WebKit.framework in Frameworks */,
+				A281147F29DFF51C0022C508 /* AVFoundation.framework in Frameworks */,
+				A281147D29DFF5150022C508 /* CoreMotion.framework in Frameworks */,
+				A281147B29DFF50E0022C508 /* CoreMedia.framework in Frameworks */,
+				A281147929DFF5050022C508 /* ImageIO.framework in Frameworks */,
+				A27B8A5329E0101D009B515B /* APBToygerFacade.framework in Frameworks */,
+				A281147729DFF4FA0022C508 /* CoreLocation.framework in Frameworks */,
+				A281147529DFF4F10022C508 /* CoreFoundation.framework in Frameworks */,
+				A27B8A5729E0102A009B515B /* BioAuthEngine.framework in Frameworks */,
+				A27B8A6329E01054009B515B /* ZolozSensorServices.framework in Frameworks */,
+				A281147329DFF4EA0022C508 /* QuartzCore.framework in Frameworks */,
+				A27B8A6129E0104E009B515B /* ToygerService.framework in Frameworks */,
+				A281147129DFF4D90022C508 /* CoreTelephony.framework in Frameworks */,
+				A27B8A5529E01024009B515B /* MPRemoteLogging.framework in Frameworks */,
+				A281146F29DFF4CF0022C508 /* AssetsLibrary.framework in Frameworks */,
+				A281146D29DFF4C90022C508 /* SystemConfiguration.framework in Frameworks */,
+				A27B8A5F29E01046009B515B /* BioAuthAPI.framework in Frameworks */,
+				A281146B29DFF4C20022C508 /* Accelerate.framework in Frameworks */,
+				A27B8A6B29E01075009B515B /* ZolozIdentityManager.framework in Frameworks */,
+				A281146929DFF4B00022C508 /* CoreGraphics.framework in Frameworks */,
 				55219B014EB8F3FB048E4E7B /* Pods_BlindDateApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -125,6 +242,42 @@
 		363D64CA92C3E6867018CC70 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A281149229DFF5760022C508 /* AdSupport.framework */,
+				A281149029DFF5700022C508 /* libz.1.2.8.tbd */,
+				A281148E29DFF5680022C508 /* MobileCoreServices.framework */,
+				A281148C29DFF55F0022C508 /* CFNetwork.framework */,
+				A281148A29DFF5580022C508 /* AudioToolbox.framework */,
+				A281148829DFF54F0022C508 /* libc++abi.tbd */,
+				A281148629DFF5470022C508 /* libc++.1.tbd */,
+				A281148429DFF53A0022C508 /* libz.tbd */,
+				A281148229DFF5310022C508 /* libresolv.tbd */,
+				A281148029DFF5250022C508 /* WebKit.framework */,
+				A281147E29DFF51C0022C508 /* AVFoundation.framework */,
+				A281147C29DFF5150022C508 /* CoreMotion.framework */,
+				A281147A29DFF50E0022C508 /* CoreMedia.framework */,
+				A281147829DFF5040022C508 /* ImageIO.framework */,
+				A281147629DFF4FA0022C508 /* CoreLocation.framework */,
+				A281147429DFF4F10022C508 /* CoreFoundation.framework */,
+				A281147229DFF4EA0022C508 /* QuartzCore.framework */,
+				A281147029DFF4D90022C508 /* CoreTelephony.framework */,
+				A281146E29DFF4CF0022C508 /* AssetsLibrary.framework */,
+				A281146C29DFF4C90022C508 /* SystemConfiguration.framework */,
+				A281146A29DFF4C20022C508 /* Accelerate.framework */,
+				A281146829DFF4B00022C508 /* CoreGraphics.framework */,
+				A27B8A5229E0101D009B515B /* APBToygerFacade.framework */,
+				A27B8A5429E01024009B515B /* MPRemoteLogging.framework */,
+				A27B8A5629E0102A009B515B /* BioAuthEngine.framework */,
+				A27B8A5829E01031009B515B /* ZolozUtility.framework */,
+				A27B8A5A29E01038009B515B /* AliyunIdentityManager.framework */,
+				A27B8A5C29E0103E009B515B /* APBToygerFacade.framework */,
+				A27B8A6029E0104E009B515B /* ToygerService.framework */,
+				A27B8A5E29E01046009B515B /* BioAuthAPI.framework */,
+				A27B8A6429E0105D009B515B /* ZolozMobileRPC.framework */,
+				A27B8A6629E01065009B515B /* ZolozOpenPlatformBuild.framework */,
+				A27B8A6229E01054009B515B /* ZolozSensorServices.framework */,
+				A27B8A6C29E0107D009B515B /* OCRDetectSDKForTech.framework */,
+				A27B8A6A29E01075009B515B /* ZolozIdentityManager.framework */,
+				A27B8A6829E0106C009B515B /* APPSecuritySDK.framework */,
 				EA46E149846F89A84C1EE6CF /* Pods_BlindDateApp.framework */,
 			);
 			name = Frameworks;
@@ -256,7 +409,6 @@
 				A2E4E918299B5104000A46FE /* Products */,
 				B5C5E14EEBD53F916B567301 /* Pods */,
 				363D64CA92C3E6867018CC70 /* Frameworks */,
-				A2F64C1029BF0D5100B68B82 /* OptimizationProfiles */,
 			);
 			sourceTree = "<group>";
 		};
@@ -275,6 +427,7 @@
 				A2E4E91A299B5104000A46FE /* BlindDateAppApp.swift */,
 				A2CBDB7C29D18400009A8BF1 /* BaseModel */,
 				A2E4E91C299B5104000A46FE /* ContentView.swift */,
+				A27B8A6E29E012C2009B515B /* FaceVerifyService.swift */,
 				A281043D29B2FC6400C0B8E8 /* LoginModule */,
 				A2FFE856299B61E8009642D3 /* Consts.swift */,
 				A2519B9529A9E94B0098DF3E /* UserCenter */,
@@ -285,6 +438,10 @@
 				A2A3A56A29BB8B7F0069C574 /* MessagePage */,
 				A281043A29B20DC000C0B8E8 /* MePage */,
 				A2E4E91E299B5107000A46FE /* Assets.xcassets */,
+				A281146629DFF48D0022C508 /* OCRXMedia.bundle */,
+				A281146429DFF4750022C508 /* ToygerService.bundle */,
+				A281146229DFF45B0022C508 /* BioAuthEngine.bundle */,
+				A281146029DFF4430022C508 /* APBToygerFacade.bundle */,
 				A2D8272B29B86B290017445D /* school_data.json */,
 				A2D8272D29B87C750017445D /* profession.json */,
 				A2D8272F29B88E9C0017445D /* city.json */,
@@ -304,14 +461,6 @@
 				A2E4E921299B5107000A46FE /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		A2F64C1029BF0D5100B68B82 /* OptimizationProfiles */ = {
-			isa = PBXGroup;
-			children = (
-				A2F64C1129BF0D5100B68B82 /* BlindDateApp.profdata */,
-			);
-			path = OptimizationProfiles;
 			sourceTree = "<group>";
 		};
 		A2FFE853299B5DE9009642D3 /* NetWork */ = {
@@ -397,6 +546,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A281146129DFF4430022C508 /* APBToygerFacade.bundle in Resources */,
+				A281146329DFF45B0022C508 /* BioAuthEngine.bundle in Resources */,
+				A281146529DFF4750022C508 /* ToygerService.bundle in Resources */,
+				A281146729DFF48D0022C508 /* OCRXMedia.bundle in Resources */,
 				A2E4E922299B5107000A46FE /* Preview Assets.xcassets in Resources */,
 				A2D8273129B88E9C0017445D /* city.json in Resources */,
 				A2E4E91F299B5107000A46FE /* Assets.xcassets in Resources */,
@@ -478,6 +631,7 @@
 				A281042F29B0AB4600C0B8E8 /* DateExtension.swift in Sources */,
 				A2FFE857299B61E8009642D3 /* Consts.swift in Sources */,
 				A2519B9929A9EF640098DF3E /* ColorExtension.swift in Sources */,
+				A27B8A6F29E012C2009B515B /* FaceVerifyService.swift in Sources */,
 				A2519B9729A9E95B0098DF3E /* UserCenter.swift in Sources */,
 				A2FF540A29DC0C7F004CD13F /* ChatHeaderView.swift in Sources */,
 				A2A3A56C29BB8B8C0069C574 /* MessageView.swift in Sources */,
@@ -630,6 +784,10 @@
 				DEVELOPMENT_TEAM = GT49X56UC2;
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_OPTIMIZATION_LEVEL = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BlindDateApp/Info.plist;
@@ -648,6 +806,41 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"Alamofire\"",
+					"-framework",
+					"\"CFNetwork\"",
+					"-framework",
+					"\"HandyJSON\"",
+					"-framework",
+					"\"ImSDK_Plus_Swift\"",
+					"-framework",
+					"\"ImageIO\"",
+					"-framework",
+					"\"Introspect\"",
+					"-framework",
+					"\"JFHeroBrowser\"",
+					"-framework",
+					"\"JRBaseKit\"",
+					"-framework",
+					"\"ObjcExceptionBridging\"",
+					"-framework",
+					"\"SDWebImage\"",
+					"-framework",
+					"\"SDWebImageSwiftUI\"",
+					"-framework",
+					"\"XCGLogger\"",
+					"-weak_framework",
+					"\"Combine\"",
+					"-weak_framework",
+					"\"SwiftUI\"",
+					"-ObjC",
+					"-framework",
+					"\"BioAuthAPI\"",
+					"-lxml2",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.poolin.landmarks.BlindDateApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -671,6 +864,10 @@
 				DEVELOPMENT_TEAM = GT49X56UC2;
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BlindDateApp/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "上传头像或者发送图片，需要访问相机";
@@ -688,6 +885,41 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"Alamofire\"",
+					"-framework",
+					"\"CFNetwork\"",
+					"-framework",
+					"\"HandyJSON\"",
+					"-framework",
+					"\"ImSDK_Plus_Swift\"",
+					"-framework",
+					"\"ImageIO\"",
+					"-framework",
+					"\"Introspect\"",
+					"-framework",
+					"\"JFHeroBrowser\"",
+					"-framework",
+					"\"JRBaseKit\"",
+					"-framework",
+					"\"ObjcExceptionBridging\"",
+					"-framework",
+					"\"SDWebImage\"",
+					"-framework",
+					"\"SDWebImageSwiftUI\"",
+					"-framework",
+					"\"XCGLogger\"",
+					"-weak_framework",
+					"\"Combine\"",
+					"-weak_framework",
+					"\"SwiftUI\"",
+					"-ObjC",
+					"-framework",
+					"\"BioAuthAPI\"",
+					"-lxml2",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.poolin.landmarks.BlindDateApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

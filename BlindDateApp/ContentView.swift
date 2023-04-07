@@ -8,6 +8,8 @@
 import SwiftUI
 import JFHeroBrowser
 
+
+
 enum TableSelectionTagType:Hashable{
     case recommandTagType
     case likeTagType
@@ -55,6 +57,10 @@ struct ContentView: View {
             tabBar.shadowImage = UIImage.from(color: .clear)
             tabBar.tintColor = UIColor.colorWithHexString(hex: "#326291")
         }
+        
+        AliyunSdk.init()
+        let metaInfo = AliyunIdentityManager.getMetaInfo()
+        log.info("metaInfo:\(String(describing: metaInfo))")
         
 
 
