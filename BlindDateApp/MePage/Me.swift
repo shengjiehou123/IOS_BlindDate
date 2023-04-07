@@ -54,6 +54,8 @@ struct Me: View {
                 EmptyView()
             }
             
+            MyIdentifyView().frame(height:50).padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)).background(RoundedRectangle(cornerRadius: 5).fill(Color.white)).padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 10))
+            
           
             Spacer()
         }.navigationBarHidden(true).navigationBarTitleDisplayMode(.inline).background(Color.colorWithHexString(hex: "#F3F3F3")).edgesIgnoringSafeArea(.top).introspectTabBarController { tab in
@@ -88,6 +90,19 @@ struct MyDynamicView:View{
     var body: some View{
         HStack(alignment: .center, spacing: 10) {
             Text("我的动态")
+                .font(.system(size: 16))
+            Spacer()
+            Image("7x14right").resizable().aspectRatio( contentMode: .fill).frame(width: 7, height: 14, alignment: .leading)
+            
+        }
+    }
+}
+
+//MARK: 我的认证
+struct MyIdentifyView:View{
+    var body: some View{
+        HStack(alignment: .center, spacing: 10) {
+            Text("我的认证")
                 .font(.system(size: 16))
             Spacer()
             Image("7x14right").resizable().aspectRatio( contentMode: .fill).frame(width: 7, height: 14, alignment: .leading)

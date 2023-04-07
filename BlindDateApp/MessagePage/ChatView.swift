@@ -15,6 +15,7 @@ import PhotosUI
 
 
 
+
 class ChatMessageModel : HandyJSON{
     var id : Int = 0
     var uid : Int = 0
@@ -320,13 +321,17 @@ struct ChatList: View {
     @EnvironmentObject var chatModel : ChatModel
     @State var contentSizeHeight : CGFloat = 0
     @State var offsetY : CGFloat = 0
+    @State var sc : UIScrollView?
+    @State var showHeader : Bool = true
     var body: some View {
      
          ScrollViewReader { proxy in
              RefreshableScrollView(refreshing: $chatModel.pullDown, pullDown: {
                  chatModel.requestHistoryMessageList(userID: userID, state: .pullDown)
              }, footerRefreshing: $chatModel.footerRefreshing, loadMore: $chatModel.loadMore, onFooterRefreshing: nil){
-                 ChatHeaderView().padding(EdgeInsets(top: 10, leading: 20, bottom: 0, trailing: 0)).environmentObject(chatModel)
+                 if showHeader{
+                     ChatHeaderView().padding(EdgeInsets(top: 10, leading: 20, bottom: 0, trailing: 0)).environmentObject(chatModel)
+                 }
                  
                  ForEach(chatModel.listData,id:\.id) { model in
                      ChatRow(message: model, isMe: model.uid == UserCenter.shared.userInfoModel?.id ?? 0)
@@ -342,9 +347,14 @@ struct ChatList: View {
                  
              }.onChange(of: chatModel.scrollToPullId, perform: { newValue in
                  proxy.scrollTo(newValue,anchor: .top)
-             }).introspectScrollView { UIScrollView in
-                 UIScrollView.keyboardDismissMode = .onDrag
-             }.onAppear {
+             }).introspectScrollView { scrollView in
+                 scrollView.keyboardDismissMode = .onDrag
+                 sc = scrollView
+             }.onChange(of: sc?.isDragging, perform: { newValue in
+                 if newValue ?? false{
+                     showHeader = false
+                 }
+             }).onAppear {
                  chatModel.requestHistoryMessageList(userID: userID, state: .normal)
              }
          }
