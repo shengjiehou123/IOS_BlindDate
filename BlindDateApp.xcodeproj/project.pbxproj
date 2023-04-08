@@ -36,6 +36,7 @@
 		A27B8A6B29E01075009B515B /* ZolozIdentityManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27B8A6A29E01075009B515B /* ZolozIdentityManager.framework */; };
 		A27B8A6D29E0107D009B515B /* OCRDetectSDKForTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27B8A6C29E0107D009B515B /* OCRDetectSDKForTech.framework */; };
 		A27B8A6F29E012C2009B515B /* FaceVerifyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A27B8A6E29E012C2009B515B /* FaceVerifyService.swift */; };
+		A27B8A7129E1C262009B515B /* VerifyIDAlterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A27B8A7029E1C262009B515B /* VerifyIDAlterView.swift */; };
 		A281042F29B0AB4600C0B8E8 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281042E29B0AB4600C0B8E8 /* DateExtension.swift */; };
 		A281043129B197ED00C0B8E8 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043029B197ED00C0B8E8 /* UIImageExtension.swift */; };
 		A281043429B1E4F700C0B8E8 /* LikeMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043329B1E4F700C0B8E8 /* LikeMe.swift */; };
@@ -126,6 +127,7 @@
 		A27B8A6A29E01075009B515B /* ZolozIdentityManager.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ZolozIdentityManager.framework; sourceTree = "<group>"; };
 		A27B8A6C29E0107D009B515B /* OCRDetectSDKForTech.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCRDetectSDKForTech.framework; sourceTree = "<group>"; };
 		A27B8A6E29E012C2009B515B /* FaceVerifyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceVerifyService.swift; sourceTree = "<group>"; };
+		A27B8A7029E1C262009B515B /* VerifyIDAlterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyIDAlterView.swift; sourceTree = "<group>"; };
 		A281042E29B0AB4600C0B8E8 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		A281043029B197ED00C0B8E8 /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
 		A281043329B1E4F700C0B8E8 /* LikeMe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMe.swift; sourceTree = "<group>"; };
@@ -427,6 +429,7 @@
 				A2E4E91A299B5104000A46FE /* BlindDateAppApp.swift */,
 				A2CBDB7C29D18400009A8BF1 /* BaseModel */,
 				A2E4E91C299B5104000A46FE /* ContentView.swift */,
+				A27B8A7029E1C262009B515B /* VerifyIDAlterView.swift */,
 				A27B8A6E29E012C2009B515B /* FaceVerifyService.swift */,
 				A281043D29B2FC6400C0B8E8 /* LoginModule */,
 				A2FFE856299B61E8009642D3 /* Consts.swift */,
@@ -648,6 +651,7 @@
 				A2519B9429A9E5D40098DF3E /* LoadingView.swift in Sources */,
 				A2EA905529CAD08100A32570 /* BatchRequest.swift in Sources */,
 				A2E4E91B299B5104000A46FE /* BlindDateAppApp.swift in Sources */,
+				A27B8A7129E1C262009B515B /* VerifyIDAlterView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

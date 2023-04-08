@@ -13,7 +13,7 @@ class UserCenter :ObservableObject{
     @Published var token : String = ""
     @Published var isLogin : Bool = false
     @Published var userInfoModel : ReCommandModel? = nil
-    @Published var userSig : String = ""
+    var userSig : String = ""
     func setDefaultData(){
         token = readToken()
         if !token.isEmpty {

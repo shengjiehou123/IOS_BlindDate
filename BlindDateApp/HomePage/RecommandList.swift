@@ -19,11 +19,7 @@ struct RecommandList: View {
     @State var computedModel = ComputedProperty()
     @StateObject var recommnadData : RecommandData = RecommandData()
     @State var isFirst : Bool = true
-    var body: some View {
-//        Text("Hello, World!").onAppear {
-////            requestRecommandList(state: .normal)
-//        }
-   
+    var body: some View {   
         ZStack(alignment: .top){
             ForEach(recommnadData.listData,id:\.id){ model in
                 let index = recommnadData.listData.firstIndex(of: model) ?? 0
@@ -31,11 +27,12 @@ struct RecommandList: View {
             }
         }.navigationBarTitleDisplayMode(.inline)
             .modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).toast(isShow: $computedModel.showToast, msg: computedModel.toastMsg).onAppear {
-        if !isFirst {
-            return
-        }
-        isFirst = false
-        requestRecommandList(state: .normal)
+                if !isFirst {
+                    return
+                }
+                isFirst = false
+                requestRecommandList(state: .normal)
+       
     }
             
         

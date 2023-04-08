@@ -58,15 +58,13 @@ struct ContentView: View {
             tabBar.tintColor = UIColor.colorWithHexString(hex: "#326291")
         }
         
-        AliyunSdk.init()
-        let metaInfo = AliyunIdentityManager.getMetaInfo()
-        log.info("metaInfo:\(String(describing: metaInfo))")
-        
+        FaceVerifyService.shared.initAliyunSDK()        
 
 
     }
-    @ObservedObject var userCenter : UserCenter = UserCenter.shared
-    @ObservedObject var naviCenter : NavigationCenter = NavigationCenter.shared
+    @StateObject var userCenter : UserCenter = UserCenter.shared
+    @StateObject var naviCenter : NavigationCenter = NavigationCenter.shared
+    @State var showVerifyView : Bool = false
     var body: some View {
         if !userCenter.isLogin {
             LoginView()
@@ -82,17 +80,19 @@ struct ContentView: View {
                         } icon: {
                             Image(uiImage: UIImage(named: "tabbar_recommend")!)
                         }
-                    }.tag(TableSelectionTagType.recommandTagType)
+                    }.tag(TableSelectionTagType.recommandTagType).onAppear(perform: checkIdVerify).alertB(isPresented: $showVerifyView) {
+                        VerifyIDAlterView(show: $showVerifyView)
+                    }
                     
                     LikeMe().tabItem {
                         Label {
                             Text("喜欢")
                         } icon: {
-//                            Image(systemName: "arkit").foregroundColor(.red)
-//                            Image("like").resizable().aspectRatio(contentMode: .fit).frame(width: 30, height: 30, alignment: .center).foregroundColor(.black)
                             Image(uiImage: UIImage(named: "like")!)
                         }
-                    }.tag(TableSelectionTagType.likeTagType)
+                    }.tag(TableSelectionTagType.likeTagType).onAppear(perform: checkIdVerify).alertB(isPresented: $showVerifyView) {
+                        VerifyIDAlterView(show: $showVerifyView)
+                    }
                     
                     DynamicCircleView().tabItem {
                         Label {
@@ -100,7 +100,9 @@ struct ContentView: View {
                         } icon: {
                             Image(systemName: "arkit").foregroundColor(.red)
                         }
-                    }.tag(TableSelectionTagType.circleTagType)
+                    }.tag(TableSelectionTagType.circleTagType).onAppear(perform: checkIdVerify).alertB(isPresented: $showVerifyView) {
+                        VerifyIDAlterView(show: $showVerifyView)
+                    }
                     
                     MessageView().tabItem {
                         Label {
@@ -108,7 +110,9 @@ struct ContentView: View {
                         } icon: {
                             Image(systemName: "arkit").foregroundColor(.red)
                         }
-                    }.tag(TableSelectionTagType.messageTagType)
+                    }.tag(TableSelectionTagType.messageTagType).onAppear(perform: checkIdVerify).alertB(isPresented: $showVerifyView) {
+                        VerifyIDAlterView(show: $showVerifyView)
+                    }
                     
                     Me().tabItem {
                         Label {
@@ -116,7 +120,9 @@ struct ContentView: View {
                         } icon: {
                             Image(systemName: "arkit").foregroundColor(.red)
                         }
-                    }.tag(TableSelectionTagType.meTagType)
+                    }.tag(TableSelectionTagType.meTagType).onAppear(perform: checkIdVerify).alertB(isPresented: $showVerifyView) {
+                        VerifyIDAlterView(show: $showVerifyView)
+                    }
                 }.navigationBarTitleDisplayMode(.inline).navigationBarHidden(naviCenter.tableSelectionType == .meTagType ? true : false).toolbar(content: {
                     ToolbarItem(placement:.navigationBarLeading){
                         Text(returnNavigationLeftItemText(tabTagType: naviCenter.tableSelectionType)).font(.system(size: naviCenter.tableSelectionType == .likeTagType ? 25 : 30, weight: .medium, design: .default))
@@ -126,11 +132,23 @@ struct ContentView: View {
                     }
                 })
                        
-              }
+                }
             }
         }
        
         
+    }
+    
+    func checkIdVerify(){
+        if UserCenter.shared.isLogin{
+            if UserCenter.shared.userInfoModel?.idVerifyed == 0{
+                showVerifyView = true
+            }else{
+                showVerifyView = false
+            }
+        }else{
+            showVerifyView = false
+        }
     }
     
     func returnNavigationRightItem(tabTagType:TableSelectionTagType) ->AnyView{
