@@ -83,7 +83,7 @@ struct EnterInfoView: View {
                             log.info("otherTag:\(selectTagOtherArr)")
                             requestSetUserInfo()
                         }).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(10)
-                        RealNameVerifyView(name: $name, id: $id).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(11)
+                        RealNameVerifyView(name: $name, id: $id,isFirst: .constant(true)).padding(EdgeInsets(top: 40, leading: 20, bottom: 0, trailing: 20)).frame(width:screenWidth).id(11)
                     }
                 }.frame(width: screenWidth, alignment: .leading).offset(x:-screenWidth * CGFloat(scrollIndex))
             .animation(.linear(duration:0.25), value: scrollIndex).modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "")).onAppear {
@@ -167,29 +167,51 @@ struct EnterInfoView: View {
 struct RealNameVerifyView:View{
     @Binding var name : String
     @Binding var id : String
+    @Binding var isFirst : Bool
+    @State var showToast : Bool = false
+    @State var toastMsg : String = ""
+    @StateObject var faceVerifyService : FaceVerifyService  = FaceVerifyService()
     var body: some View{
         VStack(alignment: .leading, spacing: 20) {
             HStack{
-                Text("最后，实名认证")
+                Text(isFirst ? "最后，实名认证" : "实名认证")
                     .font(.system(size: 22, weight: .medium, design: .default))
                 Spacer()
             }
             Text("为了保障您的交友安全，请完成实名认证。\n认证后即可匹配其他实名认证用户 。")
                 .font(.system(size: 14))
-            TextField("请输入姓名", text: $name)
+            TextField("请输入姓名", text: $name).autocorrectionDisabled(true)
                 .padding()
                 .frame(height:45)
                 .background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
             TextField("请输入身份证号", text: $id)
                 .padding()
                 .frame(height:45)
-                .background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3")))
+                .background(RoundedRectangle(cornerRadius: 5).fill(Color.colorWithHexString(hex: "#F3F3F3"))).autocorrectionDisabled(true)
             Spacer().frame(height:20)
-            NextStepButton(title: "认证并完成注册") {
-                
+            
+            NextStepButton(title: isFirst ? "认证并完成注册" : "认证") {
+                name = name.trimmingCharacters(in: .whitespacesAndNewlines)
+                if name.isEmpty{
+                    faceVerifyService.showToast = true
+                    faceVerifyService.toastMsg = "请输入姓名"
+                    return
+                }
+                id = id.trimmingCharacters(in: .whitespacesAndNewlines)
+                if id.isEmpty{
+                    faceVerifyService.showToast = true
+                    faceVerifyService.toastMsg = "请输入身份证号"
+                    return
+                }
+                verify()
             }
+           
             Spacer()
-        }
+        }.modifier(LoadingView(isShowing: $faceVerifyService.showLoading, bgColor: $faceVerifyService.loadingBgColor)).toast(isShow: $faceVerifyService.showToast, msg: faceVerifyService.toastMsg)
+    }
+    
+    func verify(){
+        faceVerifyService.requestVerifyToken(certificateName: name, certificateNumber: id)
     }
 }
 

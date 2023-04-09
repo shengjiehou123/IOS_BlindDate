@@ -58,13 +58,16 @@ struct ContentView: View {
             tabBar.tintColor = UIColor.colorWithHexString(hex: "#326291")
         }
         
-        FaceVerifyService.shared.initAliyunSDK()        
+        FaceVerifyService().initAliyunSDK()        
 
 
     }
     @StateObject var userCenter : UserCenter = UserCenter.shared
     @StateObject var naviCenter : NavigationCenter = NavigationCenter.shared
     @State var showVerifyView : Bool = false
+    @State var pushVerify : Bool = false
+    @State var certificateName : String = ""
+    @State var certificateNumber : String = ""
     var body: some View {
         if !userCenter.isLogin {
             LoginView()
@@ -73,6 +76,15 @@ struct ContentView: View {
                 EnterInfoView()
             }else{
                 NavigationView{
+                    VStack(alignment: .leading, spacing: 0){
+                        NavigationLink(isActive: $pushVerify) {
+                            RealNameVerifyView(name: $certificateName, id: $certificateNumber, isFirst: .constant(false)).modifier(NavigationViewModifer(hiddenNavigation: .constant(false), title: "")).padding(EdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20))
+                        } label: {
+                            EmptyView()
+                        }.frame(height:0)
+                        
+                  
+                  
                 TabView(selection: $naviCenter.tableSelectionType){
                     RecommandList().tabItem {
                         Label {
@@ -81,7 +93,7 @@ struct ContentView: View {
                             Image(uiImage: UIImage(named: "tabbar_recommend")!)
                         }
                     }.tag(TableSelectionTagType.recommandTagType).onAppear(perform: checkIdVerify).alertB(isPresented: $showVerifyView) {
-                        VerifyIDAlterView(show: $showVerifyView)
+                        VerifyIDAlterView(show: $showVerifyView,pushVerify: $pushVerify)
                     }
                     
                     LikeMe().tabItem {
@@ -91,7 +103,7 @@ struct ContentView: View {
                             Image(uiImage: UIImage(named: "like")!)
                         }
                     }.tag(TableSelectionTagType.likeTagType).onAppear(perform: checkIdVerify).alertB(isPresented: $showVerifyView) {
-                        VerifyIDAlterView(show: $showVerifyView)
+                        VerifyIDAlterView(show: $showVerifyView,pushVerify: $pushVerify)
                     }
                     
                     DynamicCircleView().tabItem {
@@ -101,7 +113,7 @@ struct ContentView: View {
                             Image(systemName: "arkit").foregroundColor(.red)
                         }
                     }.tag(TableSelectionTagType.circleTagType).onAppear(perform: checkIdVerify).alertB(isPresented: $showVerifyView) {
-                        VerifyIDAlterView(show: $showVerifyView)
+                        VerifyIDAlterView(show: $showVerifyView,pushVerify: $pushVerify)
                     }
                     
                     MessageView().tabItem {
@@ -111,7 +123,7 @@ struct ContentView: View {
                             Image(systemName: "arkit").foregroundColor(.red)
                         }
                     }.tag(TableSelectionTagType.messageTagType).onAppear(perform: checkIdVerify).alertB(isPresented: $showVerifyView) {
-                        VerifyIDAlterView(show: $showVerifyView)
+                        VerifyIDAlterView(show: $showVerifyView,pushVerify: $pushVerify)
                     }
                     
                     Me().tabItem {
@@ -121,8 +133,9 @@ struct ContentView: View {
                             Image(systemName: "arkit").foregroundColor(.red)
                         }
                     }.tag(TableSelectionTagType.meTagType).onAppear(perform: checkIdVerify).alertB(isPresented: $showVerifyView) {
-                        VerifyIDAlterView(show: $showVerifyView)
+                        VerifyIDAlterView(show: $showVerifyView,pushVerify: $pushVerify)
                     }
+                   
                 }.navigationBarTitleDisplayMode(.inline).navigationBarHidden(naviCenter.tableSelectionType == .meTagType ? true : false).toolbar(content: {
                     ToolbarItem(placement:.navigationBarLeading){
                         Text(returnNavigationLeftItemText(tabTagType: naviCenter.tableSelectionType)).font(.system(size: naviCenter.tableSelectionType == .likeTagType ? 25 : 30, weight: .medium, design: .default))
@@ -131,6 +144,8 @@ struct ContentView: View {
                         returnNavigationRightItem(tabTagType: naviCenter.tableSelectionType)
                     }
                 })
+                    
+                    }
                        
                 }
             }
@@ -138,6 +153,7 @@ struct ContentView: View {
        
         
     }
+    
     
     func checkIdVerify(){
         if UserCenter.shared.isLogin{

@@ -18,7 +18,7 @@ class BaseModel: MyComputedProperty {
 
 }
 
-class MyComputedProperty:ObservableObject{
+class MyComputedProperty:NSObject,ObservableObject{
     @Published var showLoading:Bool = false
     @Published var loadingBgColor:Color = .clear
     @Published var showRefreshView : Bool = false
