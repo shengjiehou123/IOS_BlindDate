@@ -21,7 +21,7 @@ struct Me: View {
         VStack(alignment: .leading, spacing: 0) {
             Spacer().frame(height:20 + kSafeTop)
             HStack(alignment: .center, spacing: 10) {
-                WebImage(url: URL.init(string: userInfoModel.avatar))
+                WebImage(url: URL.init(string: userInfoModel._avatar))
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 80, height: 80, alignment: .center)

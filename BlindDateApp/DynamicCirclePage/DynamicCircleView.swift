@@ -16,6 +16,17 @@ class CircleModel:HandyJSON,Identifiable,ObservableObject{
     var uid : Int = 0
     var content : String = ""
     var images : String = ""
+    var _images : String{
+       let arr = images.components(separatedBy: ",")
+        var imageUrls : [String] = []
+        for item in arr{
+            if item.count > 0{
+                let imageUrl = Consts.shared.imageHost + item
+                imageUrls.append(imageUrl)
+            }
+        }
+        return imageUrls.joined(separator: ",")
+    }
     var userInfo : CircleUserInfo = CircleUserInfo()
     var likeCount : Int = 0
     var likeInfoList : [CircleLikeUserInfo] = []
@@ -28,6 +39,9 @@ class CircleModel:HandyJSON,Identifiable,ObservableObject{
 
 class CircleUserInfo:HandyJSON{
     var avatar : String = ""
+    var _avatar : String{
+        return Consts.shared.imageHost + avatar
+    }
     var nickName : String = ""
     var birthday : Double = 0
     var workCityName : String = ""
@@ -161,7 +175,7 @@ struct CircleRow:View{
                 NavigationLink{
                     UserIntroduceView(uid: model.uid)
                 } label: {
-                    WebImage(url: URL(string:model.userInfo.avatar)).resizable().aspectRatio( contentMode: .fill).frame(width: 40, height: 40, alignment: .center).background(Color.red).clipShape(Circle())
+                    WebImage(url: URL(string:model.userInfo._avatar)).resizable().aspectRatio( contentMode: .fill).frame(width: 40, height: 40, alignment: .center).background(Color.red).clipShape(Circle())
                 }
                
                 VStack(alignment: .leading, spacing: 5){
@@ -239,11 +253,11 @@ struct CircleRow:View{
 //        }
         
         .onAppear {
-            if !model.images.isEmpty{
-                if model.images.contains(",") {
-                    images =  model.images.components(separatedBy: ",")
+            if !model._images.isEmpty{
+                if model._images.contains(",") {
+                    images =  model._images.components(separatedBy: ",")
                 }else{
-                    images = [model.images]
+                    images = [model._images]
                 }
                 rowsCount = getRow(total: images.count)
             }else{
@@ -679,7 +693,7 @@ struct CommentSection:View{
                     NavigationLink{
                         UserIntroduceView(uid: model.uid)
                     } label: {
-                        WebImage(url: URL(string: model.userInfo.avatar)).resizable().aspectRatio(contentMode: .fill).background(Color.gray).clipShape(Circle()).frame(width: 30, height: 30, alignment: .center)
+                        WebImage(url: URL(string: model.userInfo._avatar)).resizable().aspectRatio(contentMode: .fill).background(Color.gray).clipShape(Circle()).frame(width: 30, height: 30, alignment: .center)
                     }
                    
                     VStack(alignment: .leading, spacing: 3){
@@ -722,7 +736,7 @@ struct SecondaryCommentRow:View{
                     NavigationLink {
                         UserIntroduceView(uid:model.uid)
                     } label: {
-                        WebImage(url: URL(string: model.uidInfo.avatar)).resizable().aspectRatio(contentMode: .fill).background(Color.gray).clipShape(Circle()).frame(width: 20, height: 20, alignment: .center)
+                        WebImage(url: URL(string: model.uidInfo._avatar)).resizable().aspectRatio(contentMode: .fill).background(Color.gray).clipShape(Circle()).frame(width: 20, height: 20, alignment: .center)
                     }
 
                     Text(model.atUid > 0 ? "\(model.uidInfo.nickName)►\(model.atUidInfo.nickName)" : "\(model.uidInfo.nickName)").font(.system(size: 13)).foregroundColor(.colorWithHexString(hex: "#999999"))

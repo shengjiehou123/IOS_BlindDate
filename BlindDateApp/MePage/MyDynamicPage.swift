@@ -229,11 +229,11 @@ struct MyDynamicRow:View{
                 
             }.padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 20))
         }.padding(.bottom,20).onAppear {
-            if !model.images.isEmpty{
-                if model.images.contains(",") {
-                    images =  model.images.components(separatedBy: ",")
+            if !model._images.isEmpty{
+                if model._images.contains(",") {
+                    images =  model._images.components(separatedBy: ",")
                 }else{
-                    images = [model.images]
+                    images = [model._images]
                 }
                 rowsCount = getRow(total: images.count)
             }else{

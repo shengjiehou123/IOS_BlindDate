@@ -15,7 +15,7 @@ struct ChatHeaderView:View{
         VStack(alignment: .leading,spacing: 20){
             HStack(alignment: .center,spacing: 15) {
                 NavigationLink(destination: UserIntroduceView(uid:chatModel.toUserInfo.id)) {
-                    WebImage(url: URL(string: chatModel.toUserInfo.avatar)).resizable().aspectRatio(contentMode: .fill).frame(width: 60,height: 60,alignment: .center).background(Color.gray).clipShape(Circle())
+                    WebImage(url: URL(string: chatModel.toUserInfo._avatar)).resizable().aspectRatio(contentMode: .fill).frame(width: 60,height: 60,alignment: .center).background(Color.gray).clipShape(Circle())
                 }
                 VStack(alignment: .leading,spacing: 10) {
                     Text(chatModel.toUserInfo.nickName).font(.system(size: 17,weight:.medium))
@@ -36,7 +36,7 @@ struct ChatHeaderView:View{
                             var list: [HeroBrowserViewModule] = []
                             for i in 0..<chatModel.toUserInfo.userPhotos.count {
                                 let photoModel = chatModel.toUserInfo.userPhotos[i]
-                                list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: photoModel.photo, originImgUrl: photoModel.photo))
+                                list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: photoModel._photo, originImgUrl: photoModel._photo))
                             }
                             myAppRootVC?.hero.browserPhoto(viewModules: list, initIndex: index)
                         }
@@ -51,7 +51,7 @@ struct ChartHeaderImageItem:View{
     let photoModel : UserPhotoModel
     var body: some View{
         ZStack(alignment: .topLeading) {
-            WebImage(url: URL(string: photoModel.photo)).resizable().aspectRatio(contentMode: .fill).frame(width: 100,height: 100,alignment: .center).background(Color.gray).clipShape(RoundedRectangle(cornerRadius: 5)).contentShape(Rectangle())
+            WebImage(url: URL(string: photoModel._photo)).resizable().aspectRatio(contentMode: .fill).frame(width: 100,height: 100,alignment: .center).background(Color.gray).clipShape(RoundedRectangle(cornerRadius: 5)).contentShape(Rectangle())
             let scenes = getScenesStr()
             if !scenes.isEmpty{
                 Text(scenes).font(.system(size: 12)).foregroundColor(.white).padding(5).background(RoundedRectangle(cornerRadius: 5).fill(Color.black.opacity(0.2))).padding(10)

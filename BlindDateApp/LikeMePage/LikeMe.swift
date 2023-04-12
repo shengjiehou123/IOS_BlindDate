@@ -64,7 +64,7 @@ struct LikeMe: View {
                             NavigationLink {
                                 UserIntroduceView(uid: model.id)
                             } label: {
-                                WebImage(url: URL(string: model.avatar)).resizable().aspectRatio( contentMode: .fill).frame(height:250).blur(radius: UserCenter.shared.userInfoModel?.idVerifyed == 0 ? 20 : 0).clipShape(RoundedRectangle(cornerRadius: 10))
+                                WebImage(url: URL(string: model._avatar)).resizable().aspectRatio( contentMode: .fill).frame(height:250).blur(radius: UserCenter.shared.userInfoModel?.idVerifyed == 0 ? 20 : 0).clipShape(RoundedRectangle(cornerRadius: 10))
                             }
                            if UserCenter.shared.userInfoModel?.idVerifyed == 0 {
                                VisualEffectView(effect: UIBlurEffect(style: .dark)).frame(height:250) .clipShape(RoundedRectangle(cornerRadius: 10))

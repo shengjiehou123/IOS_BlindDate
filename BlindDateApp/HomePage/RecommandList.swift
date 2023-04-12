@@ -10,30 +10,40 @@ import SDWebImageSwiftUI
 import JFHeroBrowser
 
 
-class RecommandData:ObservableObject{
-    var id : UUID = UUID()
+class RecommandData:BaseModel{
     @Published var listData : [ReCommandModel] = []
+    @Published var displayListData : [ReCommandModel] = []
+    
+    func getIndex(model:ReCommandModel) ->Int{
+        let index = displayListData.firstIndex(where: { currentModel in
+             return model.id == currentModel.id
+        }) ?? 0
+                
+        return index
+      
+    }
 }
 
 struct RecommandList: View {
-    @State var computedModel = ComputedProperty()
     @StateObject var recommnadData : RecommandData = RecommandData()
     @State var isFirst : Bool = true
     var body: some View {   
         ZStack(alignment: .top){
-            ForEach(recommnadData.listData,id:\.id){ model in
-                let index = recommnadData.listData.firstIndex(of: model) ?? 0
-                ScrollCardView(index: index).environmentObject(model)
-            }
-        }.navigationBarTitleDisplayMode(.inline)
-            .modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).toast(isShow: $computedModel.showToast, msg: computedModel.toastMsg).onAppear {
+             let listData = recommnadData.displayListData
+                ForEach(listData.reversed(),id:\.id){ model in
+                    ScrollCardView(recommandModel: model).environmentObject(recommnadData)
+                }
+            
+            
+        }.navigationBarTitleDisplayMode(.inline).padding(.top,30)
+            .modifier(LoadingView(isShowing: $recommnadData.showLoading, bgColor: $recommnadData.loadingBgColor)).toast(isShow: $recommnadData.showToast, msg: recommnadData.toastMsg).onAppear {
                 if !isFirst {
                     return
                 }
                 isFirst = false
                 requestRecommandList(state: .normal)
        
-    }
+     }
             
         
     }
@@ -41,11 +51,11 @@ struct RecommandList: View {
     func requestRecommandList(state:RefreshState){
         let param = ["page":1,"pageLimit":10]
         if state == .normal{
-            computedModel.showLoading = true
-            computedModel.loadingBgColor = .white
+            recommnadData.showLoading = true
+            recommnadData.loadingBgColor = .white
         }
         NW.request(urlStr: "recommended/list", method: .post, parameters: param) { response in
-            computedModel.showLoading = false
+            recommnadData.showLoading = false
             if state == .normal || state == .pullDown || state == .refresh {
                 recommnadData.listData.removeAll()
             }
@@ -61,18 +71,19 @@ struct RecommandList: View {
                 tempArr.append(recommandModel)
             }
             recommnadData.listData.append(contentsOf: tempArr)
+            recommnadData.displayListData = recommnadData.listData
         } failedHandler: { response in
-            computedModel.showLoading = false
-            computedModel.showToast = true
-            computedModel.toastMsg = response.message
+            recommnadData.showLoading = false
+            recommnadData.showToast = true
+            recommnadData.toastMsg = response.message
         }
 
     }
 }
 
 struct ScrollCardView:View{
-    @EnvironmentObject var recommandModel : ReCommandModel
-    var index:Int
+    var recommandModel : ReCommandModel
+    @EnvironmentObject  var recommnadData : RecommandData
     @State var offset : CGFloat = 0;
     @GestureState var isDragging : Bool = false
     @State var endSwipe : Bool = false
@@ -80,14 +91,18 @@ struct ScrollCardView:View{
     @State var showLikeEachOther : Bool = false
     @State var showLeftText : Bool = false
     @State var showRightText : Bool = false
+//    @State var topOffset : Int = 0
+    
     var body: some View{
-        let topOffset = index <= 2 ? index * 15 : 0
+
+        let index = recommnadData.getIndex(model: recommandModel)
+        let topOffset = (index <= 2 ? index  : 2 ) * 15
     ZStack(alignment: .top) {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack{
                 ForEach(0..<4,id:\.self){ index in
                     if index == 0{
-                        CardView().environmentObject(recommandModel)
+                        CardView(recommandModel:recommandModel)
                     }
                   
                     if index == 1{
@@ -108,7 +123,7 @@ struct ScrollCardView:View{
                 scrollView.bounces = false
             })
             
-        }.navigationViewStyle(.stack).clipShape(RoundedRectangle(cornerRadius: 10)).background(RoundedRectangle(cornerRadius: 10).fill(Color.white).shadow(color: Color.black.opacity(0.2), radius: 3, x: 0, y: 2)).padding(EdgeInsets(top: 0, leading: 10, bottom: CGFloat(topOffset) + 10, trailing: 10))
+        }.navigationViewStyle(.stack).clipShape(RoundedRectangle(cornerRadius: 10)).background(RoundedRectangle(cornerRadius: 10).fill(Color.white).shadow(color: Color.black.opacity(0.2), radius: 3, x: 0, y: 2)).padding(EdgeInsets(top: 0, leading: 10, bottom: CGFloat(topOffset) + 10, trailing: 10)).offset(y:-CGFloat(topOffset)).frame(width:screenWidth  - CGFloat(topOffset))
         if showLeftText {
             HStack(alignment: .center, spacing: 0) {
                 Text("还不错").foregroundColor(Color.red).font(.system(size: 40, weight: .bold, design: .default)).padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)).background(RoundedRectangle(cornerRadius: 5).strokeBorder(Color.red,style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round, miterLimit: 0)))
@@ -122,10 +137,10 @@ struct ScrollCardView:View{
                 Text("不合适").foregroundColor(Color.blue).font(.system(size: 40, weight: .bold, design: .default)).padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)).background(RoundedRectangle(cornerRadius: 5).strokeBorder(Color.blue,style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round, miterLimit: 0)))
             }.offset(x: -30, y: 10).rotationEffect(.init(degrees: 15),anchor:.bottom)
         }
-     }.offset(x:offset,y:CGFloat(topOffset))
-            .rotationEffect(.init(degrees: getRotation(angle: 8)),anchor: .bottom)
+    }.padding(.top,3).offset(x:offset)
+            .rotationEffect(.init(degrees: getRotation(angle: 8)),anchor: .bottom).contentShape(Rectangle().trim(from: 0, to: endSwipe ? 0 : 1))
             .alertB(isPresented: $showLikeEachOther, builder: {
-                LikeEachOtherView(isShow: $showLikeEachOther,avatar: UserCenter.shared.userInfoModel?.avatar ?? "",likeUserAvatar: recommandModel.avatar,toUserId: recommandModel.id)
+                LikeEachOtherView(isShow: $showLikeEachOther,avatar: UserCenter.shared.userInfoModel?._avatar ?? "",likeUserAvatar: recommandModel._avatar,toUserId: recommandModel.id)
             }).onTapGesture {
                 
             }.gesture(DragGesture().updating($isDragging, body: { value, out, _ in
@@ -156,6 +171,15 @@ struct ScrollCardView:View{
                 withAnimation {
                     if checkingStatus > 15{
                         //delete card
+                        withAnimation(.none) {endSwipe = true}
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                           if let _ =  recommnadData.displayListData.first{
+                               let _ = withAnimation {
+                                   recommnadData.displayListData.removeFirst()
+                               }
+                           }
+                        }
+                     
                         offset = (translation > 0 ? screenWidth: -screenWidth) * 2
                         if translation > 0 {
                             //rightswipe
@@ -178,6 +202,8 @@ struct ScrollCardView:View{
         )
         
     }
+    
+   
     
     // 旋转
     func getRotation(angle: Double)-> Double{
@@ -226,14 +252,14 @@ struct HomePageAboutUsView:View{
             
             ForEach(userPhotos,id:\.id) { model in
                 let index = userPhotos.firstIndex(of: model) ?? 0
-                let url = URL.init(string:model.photo)
+                let url = URL.init(string:model._photo)
                 Spacer().frame(height:10)
                 WebImage(url: url).resizable().interpolation(.high).aspectRatio(contentMode:.fill).frame(width:  screenWidth - 20, height: 500, alignment: .center)
                     .clipped(antialiased: true).contentShape(Rectangle()).onTapGesture {
                    var list: [HeroBrowserViewModule] = []
                    for i in 0..<userPhotos.count {
                        let photoModel = userPhotos[i]
-                       list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: photoModel.photo, originImgUrl: photoModel.photo))
+                       list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: photoModel._photo, originImgUrl: photoModel._photo))
                    }
                    myAppRootVC?.hero.browserPhoto(viewModules: list, initIndex: index)
                     }
@@ -243,16 +269,16 @@ struct HomePageAboutUsView:View{
 }
 
 struct CardView:View{
-    @EnvironmentObject var recommandModel : ReCommandModel
+     var recommandModel : ReCommandModel
     var body: some View{
         VStack(alignment: .leading, spacing: 0) {
-            CardHeaderView().environmentObject(recommandModel)
+            CardHeaderView(recommandModel:recommandModel)
         }
     }
 }
 
 struct CardHeaderView:View{
-    @EnvironmentObject var recommandModel : ReCommandModel
+    var recommandModel : ReCommandModel
     @State var titles : [String] = []
     @State var sumWidth : CGFloat = 0
     @State var overParentWidthDic :[Int:[String]] = [:]
@@ -261,12 +287,12 @@ struct CardHeaderView:View{
         ZStack(alignment: .top) {
             GeometryReader { reader in
                 let size = reader.size
-                WebImage(url: URL(string: recommandModel.bgImageUrl)).resizable().aspectRatio(contentMode: .fill).frame(width: size.width, height: size.height, alignment: .center).clipShape(RoundedRectangle(cornerRadius: 10))
+                WebImage(url: URL(string: recommandModel._bgImageUrl)).resizable().aspectRatio(contentMode: .fill).frame(width: size.width, height: size.height, alignment: .center).clipShape(RoundedRectangle(cornerRadius: 10))
             }
        
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .center, spacing: 0, content: {
-                let avatarUrl = URL(string: recommandModel.avatar)
+                let avatarUrl = URL(string: recommandModel._avatar)
                 WebImage(url: avatarUrl).resizable().aspectRatio(contentMode: .fill).background(Color.gray).frame(width: 80, height: 80, alignment: .leading).clipShape(Circle())
                 VStack(alignment: .leading, spacing: 0) {
                     HStack(alignment: .center, spacing: 10) {

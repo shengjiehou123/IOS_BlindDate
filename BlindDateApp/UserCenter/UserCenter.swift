@@ -28,6 +28,7 @@ class UserCenter :ObservableObject{
         }else{
             requestChatUserSig()
         }
+        requestUserInfo(needUserSig: true)
     }
     
     func loginTIM(){

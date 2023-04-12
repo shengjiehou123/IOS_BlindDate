@@ -22,6 +22,8 @@ class Consts: NSObject {
     
     public let env = NetWorkEnv.dev
     
+    public let imageHost = "https://blinddate-1257858019.cos.ap-beijing.myqcloud.com"
+    
     public var domain : String{
         switch env {
         case .dev:

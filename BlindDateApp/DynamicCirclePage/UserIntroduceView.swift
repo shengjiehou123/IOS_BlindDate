@@ -81,7 +81,7 @@ struct UserIntroduceView: View {
         ZStack(alignment: .bottom){
         RefreshableScrollView(refreshing: .constant(false), pullDown: nil, footerRefreshing: .constant(false), loadMore: .constant(false), onFooterRefreshing: nil){
                
-            CardView().environmentObject(introductionModel.recommandModel).id(UUID())
+            CardView(recommandModel:introductionModel.recommandModel).id(UUID())
                 HomePageAboutUsView(title: "关于我",content: introductionModel.recommandModel.myTag.count > 0 ? (introductionModel.recommandModel.aboutMeDesc + "\n" + introductionModel.recommandModel.myTag) : introductionModel.recommandModel.aboutMeDesc,userPhotos: introductionModel.recommandModel.userPhotos)
                  HomePageAboutUsView(title: "希望对方",content: introductionModel.recommandModel.likePersonTag,userPhotos: [])
                 if !introductionModel.recommandModel.loveGoalsDesc.isEmpty {

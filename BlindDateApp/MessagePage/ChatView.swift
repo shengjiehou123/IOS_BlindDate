@@ -20,9 +20,18 @@ class ChatMessageModel : HandyJSON{
     var id : Int = 0
     var uid : Int = 0
     var uidAvatar : String = ""
+    var _uidAvatar:String{
+        return Consts.shared.imageHost + uidAvatar
+    }
     var toUid: Int = 0
     var type : String = "text"
     var content : String = ""
+    var _content : String{
+        if type == "image"{
+            return Consts.shared.imageHost + content
+        }
+        return content
+    }
     var tempContent : Any? = nil
     var createAt : String = ""
     var updateAt : String = ""

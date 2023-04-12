@@ -9,9 +9,12 @@ import UIKit
 import HandyJSON
 import XCGLogger
 
-class ReCommandModel: HandyJSON,Identifiable,ObservableObject,Equatable {
+class ReCommandModel: HandyJSON,Identifiable,Equatable {
     var id :Int = 0
     var idVerifyed : Int = 0
+    var _avatar : String{
+        return Consts.shared.imageHost + avatar
+    }
     var avatar : String = ""
     var nickName :String = ""
     var gender :Int = 0
@@ -47,6 +50,9 @@ class ReCommandModel: HandyJSON,Identifiable,ObservableObject,Equatable {
     var userPhotos: [UserPhotoModel] = []
     var bgImageId : Int = 0
     var bgImageUrl : String = ""
+    var _bgImageUrl : String{
+        return Consts.shared.imageHost + bgImageUrl
+    }
     static func == (lhs: ReCommandModel, rhs: ReCommandModel) -> Bool{
         return lhs.id == rhs.id
     }
@@ -62,7 +68,10 @@ class UserPhotoModel:HandyJSON,Identifiable,Equatable{
     var id : Int = 0
     var uid :Int = 0
     var scenes:String = "life"
-    var photo:String = ""
+    var photo : String = ""
+    var _photo:String{
+        return Consts.shared.imageHost + photo
+    }
     var photoDesc:String = ""
     required  init() {
         

@@ -13,6 +13,9 @@ class LikeMeModel: HandyJSON,Identifiable {
 //    var uid : Int = 0
     var nickName:String = ""
     var avatar: String = ""
+    var _avatar: String{
+        return Consts.shared.imageHost + avatar
+    }
     var gender :Int = 0
     var height :Int = 0
     var birthday:Double = 0
