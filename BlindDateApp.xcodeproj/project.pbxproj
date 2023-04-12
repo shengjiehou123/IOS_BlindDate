@@ -37,6 +37,7 @@
 		A27B8A6D29E0107D009B515B /* OCRDetectSDKForTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27B8A6C29E0107D009B515B /* OCRDetectSDKForTech.framework */; };
 		A27B8A6F29E012C2009B515B /* FaceVerifyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A27B8A6E29E012C2009B515B /* FaceVerifyService.swift */; };
 		A27B8A7129E1C262009B515B /* VerifyIDAlterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A27B8A7029E1C262009B515B /* VerifyIDAlterView.swift */; };
+		A27B8A7329E6F773009B515B /* LightWaveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A27B8A7229E6F773009B515B /* LightWaveView.swift */; };
 		A281042F29B0AB4600C0B8E8 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281042E29B0AB4600C0B8E8 /* DateExtension.swift */; };
 		A281043129B197ED00C0B8E8 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043029B197ED00C0B8E8 /* UIImageExtension.swift */; };
 		A281043429B1E4F700C0B8E8 /* LikeMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043329B1E4F700C0B8E8 /* LikeMe.swift */; };
@@ -128,6 +129,7 @@
 		A27B8A6C29E0107D009B515B /* OCRDetectSDKForTech.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCRDetectSDKForTech.framework; sourceTree = "<group>"; };
 		A27B8A6E29E012C2009B515B /* FaceVerifyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceVerifyService.swift; sourceTree = "<group>"; };
 		A27B8A7029E1C262009B515B /* VerifyIDAlterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyIDAlterView.swift; sourceTree = "<group>"; };
+		A27B8A7229E6F773009B515B /* LightWaveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightWaveView.swift; sourceTree = "<group>"; };
 		A281042E29B0AB4600C0B8E8 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		A281043029B197ED00C0B8E8 /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
 		A281043329B1E4F700C0B8E8 /* LikeMe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMe.swift; sourceTree = "<group>"; };
@@ -302,7 +304,6 @@
 				A2519B9829A9EF640098DF3E /* ColorExtension.swift */,
 				A281042E29B0AB4600C0B8E8 /* DateExtension.swift */,
 				A2D8270329B6F0070017445D /* NavigationViewExtension.swift */,
-				A2519B9329A9E5D40098DF3E /* LoadingView.swift */,
 				A281043029B197ED00C0B8E8 /* UIImageExtension.swift */,
 				A2A3A56629B9C0710069C574 /* StringExtension.swift */,
 				A209452529CDAF7400963A1B /* DataExtension.swift */,
@@ -396,10 +397,12 @@
 			isa = PBXGroup;
 			children = (
 				A2EA905229C9B92C00A32570 /* RefreshableScrollView.swift */,
+				A2519B9329A9E5D40098DF3E /* LoadingView.swift */,
 				A2D8270629B748C40017445D /* CustomDatePicker.swift */,
 				A2D8270829B784350017445D /* CustomPicker.swift */,
 				A2A3A56829BAE1B80069C574 /* CustomPhotoPicker.swift */,
 				A2D8273529B89AB40017445D /* AddressView.swift */,
+				A27B8A7229E6F773009B515B /* LightWaveView.swift */,
 			);
 			path = CommonUI;
 			sourceTree = "<group>";
@@ -634,6 +637,7 @@
 				A281042F29B0AB4600C0B8E8 /* DateExtension.swift in Sources */,
 				A2FFE857299B61E8009642D3 /* Consts.swift in Sources */,
 				A2519B9929A9EF640098DF3E /* ColorExtension.swift in Sources */,
+				A27B8A7329E6F773009B515B /* LightWaveView.swift in Sources */,
 				A27B8A6F29E012C2009B515B /* FaceVerifyService.swift in Sources */,
 				A2519B9729A9E95B0098DF3E /* UserCenter.swift in Sources */,
 				A2FF540A29DC0C7F004CD13F /* ChatHeaderView.swift in Sources */,

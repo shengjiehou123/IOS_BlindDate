@@ -35,8 +35,8 @@ struct RecommandList: View {
                 }
             
             
-        }.navigationBarTitleDisplayMode(.inline).padding(.top,30)
-            .modifier(LoadingView(isShowing: $recommnadData.showLoading, bgColor: $recommnadData.loadingBgColor)).toast(isShow: $recommnadData.showToast, msg: recommnadData.toastMsg).onAppear {
+        }.navigationBarTitleDisplayMode(.inline).padding(.top,30).lightWaveView(isShow: $recommnadData.showLoading)
+            .toast(isShow: $recommnadData.showToast, msg: recommnadData.toastMsg).onAppear {
                 if !isFirst {
                     return
                 }

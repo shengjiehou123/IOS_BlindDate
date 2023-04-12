@@ -40,6 +40,8 @@ public let myAppRootVC : UIViewController? = keyWindow?.rootViewController
 
 public let btnLRLineGradient : LinearGradient = .linearGradient(Gradient(colors: [Color.colorWithHexString(hex: "#F97676"),Color.colorWithHexString(hex: "#F6286F")]),startPoint: .leading,endPoint: .trailing)
 
+public let lightWaveLineGradient : LinearGradient = .linearGradient(Gradient(colors: [Color.colorWithHexString(hex: "#F97676").opacity(0.3),Color.colorWithHexString(hex: "#F6286F").opacity(0.3)]),startPoint: .leading,endPoint: .trailing)
+
 public let textFieldAccentColor = Color.colorWithHexString(hex: "#F6286F")
                                                         
                                                     
