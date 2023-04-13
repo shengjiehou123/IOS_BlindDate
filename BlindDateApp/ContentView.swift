@@ -147,6 +147,10 @@ struct ContentView: View {
                     
                     }
                        
+                }.onChange(of: userCenter.idVerifyed) { newValue in
+                    if newValue > 0{
+                        pushVerify = false
+                    }
                 }
             }
         }

@@ -12,6 +12,7 @@ class UserCenter :ObservableObject{
     static let  shared = UserCenter()
     @Published var token : String = ""
     @Published var isLogin : Bool = false
+    @Published var idVerifyed : Int = 0
     @Published var userInfoModel : ReCommandModel? = nil
     var userSig : String = ""
     func setDefaultData(){

@@ -118,7 +118,7 @@ class FaceVerifyService:BaseModel {
 //            }
             log.info("verify Suc")
 //            log.info("faceData: \(String(describing: zimResponse?.faceData)) imageContent:\(String(describing: zimResponse?.imageContent!))")
-//            
+//
      
             /**
              ZIMResponseSuccess  = 1000,     //采集成功并且服务端成功(人脸比对成功，或者证件宝服务端OCR/质量检测成功)[zim不会弹框处理]
@@ -143,6 +143,10 @@ class FaceVerifyService:BaseModel {
             self.showLoading = false
             self.showToast = true
             self.toastMsg = "认证成功"
+            UserCenter.shared.userInfoModel?.idVerifyed = 1
+            UserCenter.shared.saveUserInfoModel(userInfoModel: UserCenter.shared.userInfoModel)
+            UserCenter.shared.idVerifyed = 1
+            UserCenter.shared.requestUserInfo(needUserSig: true)
         } failedHandler: { response in
             self.showLoading = false
             self.showToast = true
