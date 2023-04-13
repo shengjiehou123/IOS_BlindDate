@@ -13,6 +13,48 @@ import JFHeroBrowser
 class RecommandData:BaseModel{
     @Published var listData : [ReCommandModel] = []
     @Published var displayListData : [ReCommandModel] = []
+    @Published var page : Int = 1
+    
+    func requestRecommandList(state:RefreshState){
+        if state == .normal{
+            self.showLoading = true
+            self.loadingBgColor = .white
+        }
+        if state != .pullUp{
+            self.page = 1
+        }
+        let param = ["page":self.page,"pageLimit":10]
+        NW.request(urlStr: "recommended/list", method: .post, parameters: param) { response in
+            self.showLoading = false
+            if state == .normal || state == .pullDown || state == .refresh {
+                self.displayListData.removeAll()
+            }
+            
+            guard let list = response.data["list"] as? [[String:Any]] else{
+                return
+            }
+            
+            self.page += 1
+
+            for item in list {
+                guard let recommandModel = ReCommandModel.deserialize(from: item, designatedPath: nil) else{
+                    continue
+                }
+//                if state == .normal || state == .refresh{
+                    self.displayListData.append(recommandModel)
+//                }else{
+//                    self.displayListData.insert(recommandModel, at: 0)
+//                }
+            }
+          
+//            self.displayListData = self.listData
+        } failedHandler: { response in
+            self.showLoading = false
+            self.showToast = true
+            self.toastMsg = response.message
+        }
+
+    }
     
     func getIndex(model:ReCommandModel) ->Int{
         let index = displayListData.firstIndex(where: { currentModel in
@@ -41,44 +83,14 @@ struct RecommandList: View {
                     return
                 }
                 isFirst = false
-                requestRecommandList(state: .normal)
+               recommnadData.requestRecommandList(state: .normal)
        
      }
             
         
     }
     
-    func requestRecommandList(state:RefreshState){
-        let param = ["page":1,"pageLimit":10]
-        if state == .normal{
-            recommnadData.showLoading = true
-            recommnadData.loadingBgColor = .white
-        }
-        NW.request(urlStr: "recommended/list", method: .post, parameters: param) { response in
-            recommnadData.showLoading = false
-            if state == .normal || state == .pullDown || state == .refresh {
-                recommnadData.listData.removeAll()
-            }
-            guard let list = response.data["list"] as? [[String:Any]] else{
-                return
-            }
-            var tempArr : [ReCommandModel] = []
-
-            for item in list {
-                guard let recommandModel = ReCommandModel.deserialize(from: item, designatedPath: nil) else{
-                    continue
-                }
-                tempArr.append(recommandModel)
-            }
-            recommnadData.listData.append(contentsOf: tempArr)
-            recommnadData.displayListData = recommnadData.listData
-        } failedHandler: { response in
-            recommnadData.showLoading = false
-            recommnadData.showToast = true
-            recommnadData.toastMsg = response.message
-        }
-
-    }
+    
 }
 
 struct ScrollCardView:View{
@@ -96,7 +108,7 @@ struct ScrollCardView:View{
     var body: some View{
 
         let index = recommnadData.getIndex(model: recommandModel)
-        let topOffset = (index <= 2 ? index  : 2 ) * 15
+        let topOffset = (index <= 2 ? index  : 2 ) * 10
     ZStack(alignment: .top) {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack{
@@ -123,7 +135,7 @@ struct ScrollCardView:View{
                 scrollView.bounces = false
             })
             
-        }.navigationViewStyle(.stack).clipShape(RoundedRectangle(cornerRadius: 10)).background(RoundedRectangle(cornerRadius: 10).fill(Color.white).shadow(color: Color.black.opacity(0.2), radius: 3, x: 0, y: 2)).padding(EdgeInsets(top: 0, leading: 10, bottom: CGFloat(topOffset) + 10, trailing: 10)).offset(y:-CGFloat(topOffset)).frame(width:screenWidth  - CGFloat(topOffset))
+        }.navigationViewStyle(.stack).clipShape(RoundedRectangle(cornerRadius: 10)).background(RoundedRectangle(cornerRadius: 10).fill(Color.white).shadow(color: Color.colorWithHexString(hex: "#E3E3E3").opacity(0.6), radius: 2, x: 0, y: 2)).padding(EdgeInsets(top: 0, leading: 10, bottom: CGFloat(topOffset) + 10, trailing: 10)).offset(y:-CGFloat(topOffset)).frame(width:screenWidth  - CGFloat(topOffset))
         if showLeftText {
             HStack(alignment: .center, spacing: 0) {
                 Text("还不错").foregroundColor(Color.red).font(.system(size: 40, weight: .bold, design: .default)).padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)).background(RoundedRectangle(cornerRadius: 5).strokeBorder(Color.red,style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round, miterLimit: 0)))
@@ -137,7 +149,7 @@ struct ScrollCardView:View{
                 Text("不合适").foregroundColor(Color.blue).font(.system(size: 40, weight: .bold, design: .default)).padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)).background(RoundedRectangle(cornerRadius: 5).strokeBorder(Color.blue,style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round, miterLimit: 0)))
             }.offset(x: -30, y: 10).rotationEffect(.init(degrees: 15),anchor:.bottom)
         }
-    }.padding(.top,3).offset(x:offset)
+    }.padding(.top,0).offset(x:offset)
             .rotationEffect(.init(degrees: getRotation(angle: 8)),anchor: .bottom).contentShape(Rectangle().trim(from: 0, to: endSwipe ? 0 : 1))
             .alertB(isPresented: $showLikeEachOther, builder: {
                 LikeEachOtherView(isShow: $showLikeEachOther,avatar: UserCenter.shared.userInfoModel?._avatar ?? "",likeUserAvatar: recommandModel._avatar,toUserId: recommandModel.id)
@@ -171,15 +183,7 @@ struct ScrollCardView:View{
                 withAnimation {
                     if checkingStatus > 15{
                         //delete card
-                        withAnimation(.none) {endSwipe = true}
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                           if let _ =  recommnadData.displayListData.first{
-                               let _ = withAnimation {
-                                   recommnadData.displayListData.removeFirst()
-                               }
-                           }
-                        }
-                     
+                        endSwipeAction()
                         offset = (translation > 0 ? screenWidth: -screenWidth) * 2
                         if translation > 0 {
                             //rightswipe
@@ -203,7 +207,19 @@ struct ScrollCardView:View{
         
     }
     
-   
+    func endSwipeAction(){
+        withAnimation(.none) {endSwipe = true}
+        if recommnadData.displayListData.count <= 4{
+            recommnadData.requestRecommandList(state: .pullUp)
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+           if let _ =  recommnadData.displayListData.first{
+               let _ = withAnimation {
+                   recommnadData.displayListData.removeFirst()
+               }
+           }
+        }
+    }
     
     // 旋转
     func getRotation(angle: Double)-> Double{
