@@ -38,6 +38,8 @@
 		A27B8A6F29E012C2009B515B /* FaceVerifyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A27B8A6E29E012C2009B515B /* FaceVerifyService.swift */; };
 		A27B8A7129E1C262009B515B /* VerifyIDAlterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A27B8A7029E1C262009B515B /* VerifyIDAlterView.swift */; };
 		A27B8A7329E6F773009B515B /* LightWaveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A27B8A7229E6F773009B515B /* LightWaveView.swift */; };
+		A27B8A7529E7B4FD009B515B /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27B8A7429E7B4FD009B515B /* StoreKit.framework */; };
+		A27B8A7729E7B6DF009B515B /* StorePurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A27B8A7629E7B6DF009B515B /* StorePurchaseView.swift */; };
 		A281042F29B0AB4600C0B8E8 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281042E29B0AB4600C0B8E8 /* DateExtension.swift */; };
 		A281043129B197ED00C0B8E8 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043029B197ED00C0B8E8 /* UIImageExtension.swift */; };
 		A281043429B1E4F700C0B8E8 /* LikeMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043329B1E4F700C0B8E8 /* LikeMe.swift */; };
@@ -130,6 +132,8 @@
 		A27B8A6E29E012C2009B515B /* FaceVerifyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceVerifyService.swift; sourceTree = "<group>"; };
 		A27B8A7029E1C262009B515B /* VerifyIDAlterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyIDAlterView.swift; sourceTree = "<group>"; };
 		A27B8A7229E6F773009B515B /* LightWaveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightWaveView.swift; sourceTree = "<group>"; };
+		A27B8A7429E7B4FD009B515B /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		A27B8A7629E7B6DF009B515B /* StorePurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePurchaseView.swift; sourceTree = "<group>"; };
 		A281042E29B0AB4600C0B8E8 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		A281043029B197ED00C0B8E8 /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
 		A281043329B1E4F700C0B8E8 /* LikeMe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMe.swift; sourceTree = "<group>"; };
@@ -203,6 +207,7 @@
 				A281149329DFF5760022C508 /* AdSupport.framework in Frameworks */,
 				A281149129DFF5700022C508 /* libz.1.2.8.tbd in Frameworks */,
 				A27B8A6729E01065009B515B /* ZolozOpenPlatformBuild.framework in Frameworks */,
+				A27B8A7529E7B4FD009B515B /* StoreKit.framework in Frameworks */,
 				A27B8A5D29E0103E009B515B /* APBToygerFacade.framework in Frameworks */,
 				A281148F29DFF5680022C508 /* MobileCoreServices.framework in Frameworks */,
 				A27B8A6929E0106C009B515B /* APPSecuritySDK.framework in Frameworks */,
@@ -246,6 +251,7 @@
 		363D64CA92C3E6867018CC70 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A27B8A7429E7B4FD009B515B /* StoreKit.framework */,
 				A281149229DFF5760022C508 /* AdSupport.framework */,
 				A281149029DFF5700022C508 /* libz.1.2.8.tbd */,
 				A281148E29DFF5680022C508 /* MobileCoreServices.framework */,
@@ -361,6 +367,7 @@
 			children = (
 				A281043B29B20DD900C0B8E8 /* Me.swift */,
 				A209452B29CF3E8900963A1B /* MyDynamicPage.swift */,
+				A27B8A7629E7B6DF009B515B /* StorePurchaseView.swift */,
 			);
 			path = MePage;
 			sourceTree = "<group>";
@@ -626,6 +633,7 @@
 				A2D8270D29B851420017445D /* LocalData.swift in Sources */,
 				A2D8273629B89AB40017445D /* AddressView.swift in Sources */,
 				A2CBDB7E29D18413009A8BF1 /* BaseModel.swift in Sources */,
+				A27B8A7729E7B6DF009B515B /* StorePurchaseView.swift in Sources */,
 				A2A3A56929BAE1B80069C574 /* CustomPhotoPicker.swift in Sources */,
 				A2519B9229A9E59D0098DF3E /* ViewExtension.swift in Sources */,
 				A281043729B1EA6200C0B8E8 /* LikeMeModel.swift in Sources */,

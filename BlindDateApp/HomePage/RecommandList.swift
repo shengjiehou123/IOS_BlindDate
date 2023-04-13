@@ -96,7 +96,8 @@ struct RecommandList: View {
 struct ScrollCardView:View{
     var recommandModel : ReCommandModel
     @EnvironmentObject  var recommnadData : RecommandData
-    @State var offset : CGFloat = 0;
+    @GestureState var offset : CGFloat = 0;
+    @State var offsetX : CGFloat = 0;
     @GestureState var isDragging : Bool = false
     @State var endSwipe : Bool = false
     @State var likeUseAvatar : String = ""
@@ -109,6 +110,13 @@ struct ScrollCardView:View{
 
         let index = recommnadData.getIndex(model: recommandModel)
         let topOffset = (index <= 2 ? index  : 2 ) * 10
+        let dragGesture = DragGesture()
+                .updating($offset) { value, gestureState, transaction in
+                    gestureState = value.translation.width
+                }
+                .updating($isDragging) { value, gestureState, transaction in
+                    gestureState = true
+                }
     ZStack(alignment: .top) {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack{
@@ -149,62 +157,56 @@ struct ScrollCardView:View{
                 Text("不合适").foregroundColor(Color.blue).font(.system(size: 40, weight: .bold, design: .default)).padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)).background(RoundedRectangle(cornerRadius: 5).strokeBorder(Color.blue,style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round, miterLimit: 0)))
             }.offset(x: -30, y: 10).rotationEffect(.init(degrees: 15),anchor:.bottom)
         }
-    }.padding(.top,0).offset(x:offset)
+    }.padding(.top,0).offset(x:offsetX)
             .rotationEffect(.init(degrees: getRotation(angle: 8)),anchor: .bottom).contentShape(Rectangle().trim(from: 0, to: endSwipe ? 0 : 1))
             .alertB(isPresented: $showLikeEachOther, builder: {
                 LikeEachOtherView(isShow: $showLikeEachOther,avatar: UserCenter.shared.userInfoModel?._avatar ?? "",likeUserAvatar: recommandModel._avatar,toUserId: recommandModel.id)
-            }).onTapGesture {
-                
-            }.gesture(DragGesture().updating($isDragging, body: { value, out, _ in
-                out = true
-            }).onChanged({ value in
-                let translation = value.translation.width
-                log.info("translationWidth\(translation)")
-                offset = isDragging ? translation : .zero
-                let checkingStatus = translation > 0 ? translation : -translation
-                if checkingStatus > 15 {
-                    if translation > 0 {
-                        //rightswipe
-                        //like
-                        showLeftText = true
-                        showRightText = false
-                    }else{
-                        //leftswipe
-                        showLeftText = false
-                        showRightText = true
-                    }
-                }else{
-                    showLeftText = false
-                    showRightText = false
-                }
-            }).onEnded({ value in
-                let translation = value.translation.width
-                let checkingStatus = translation > 0 ? translation : -translation
-                withAnimation {
-                    if checkingStatus > 15{
-                        //delete card
-                        endSwipeAction()
-                        offset = (translation > 0 ? screenWidth: -screenWidth) * 2
-                        if translation > 0 {
+            }).onChange(of: offset, perform: { newValue in
+                if isDragging{
+                    offsetX = newValue
+                    let checkingStatus = newValue > 0 ? newValue : -newValue
+                    if checkingStatus > 15 {
+                        if newValue > 0 {
                             //rightswipe
                             //like
-                            requestLikePerson(toUserId: recommandModel.id, like: true)
-                            
+                            showLeftText = true
+                            showRightText = false
+                          
                         }else{
                             //leftswipe
-                            //not like
-                            requestLikePerson(toUserId: recommandModel.id, like: false)
+                            showLeftText = false
+                            showRightText = true
                         }
                     }else{
-                        offset = .zero
                         showLeftText = false
                         showRightText = false
+                        offsetX = .zero
                     }
+                }else{
+                    withAnimation(){
+                        let checkingStatus = offsetX > 0 ? offsetX : -offsetX
+                        if checkingStatus > 15 {
+                            endSwipeAction()
+                            offsetX = (offsetX > 0 ? screenWidth: -screenWidth) * 2
+                            if newValue > 0 {
+                                //rightswipe
+                                //like
+                                requestLikePerson(toUserId: recommandModel.id, like: true)
+                            }else{
+                                //leftswipe
+                                requestLikePerson(toUserId: recommandModel.id, like: false)
+                            }
+                        }else{
+                            showLeftText = false
+                            showRightText = false
+                            offsetX = .zero
+                        }
+                    }
+                  
                 }
-    
-            })
-        )
-        
+            }).onTapGesture {
+                
+            }.gesture(dragGesture)
     }
     
     func endSwipeAction(){
@@ -212,6 +214,7 @@ struct ScrollCardView:View{
         if recommnadData.displayListData.count <= 4{
             recommnadData.requestRecommandList(state: .pullUp)
         }
+       
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
            if let _ =  recommnadData.displayListData.first{
                let _ = withAnimation {
@@ -223,7 +226,7 @@ struct ScrollCardView:View{
     
     // 旋转
     func getRotation(angle: Double)-> Double{
-        let rotation = (offset / (screenWidth - 50)) * angle
+        let rotation = (offsetX / (screenWidth - 50)) * angle
         return rotation
     }
     
