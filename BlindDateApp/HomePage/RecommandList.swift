@@ -23,7 +23,7 @@ class RecommandData:BaseModel{
         if state != .pullUp{
             self.page = 1
         }
-        let param = ["page":self.page,"pageLimit":10]
+        let param = ["page":self.page,"pageLimit":6]
         NW.request(urlStr: "recommended/list", method: .post, parameters: param) { response in
             self.showLoading = false
             if state == .normal || state == .pullDown || state == .refresh {
@@ -119,7 +119,7 @@ struct ScrollCardView:View{
                 }
     ZStack(alignment: .top) {
         ScrollView(.vertical, showsIndicators: false) {
-            LazyVStack{
+            VStack{
                 ForEach(0..<4,id:\.self){ index in
                     if index == 0{
                         CardView(recommandModel:recommandModel)
@@ -210,11 +210,13 @@ struct ScrollCardView:View{
     }
     
     func endSwipeAction(){
-        withAnimation(.none) {endSwipe = true}
-        if recommnadData.displayListData.count <= 4{
-            recommnadData.requestRecommandList(state: .pullUp)
+        withAnimation(.none) {
+            endSwipe = true
+            if recommnadData.displayListData.count <= 5{
+                recommnadData.requestRecommandList(state: .pullUp)
+            }
         }
-       
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
            if let _ =  recommnadData.displayListData.first{
                let _ = withAnimation {

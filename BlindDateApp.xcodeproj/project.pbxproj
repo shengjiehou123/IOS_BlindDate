@@ -40,6 +40,7 @@
 		A27B8A7329E6F773009B515B /* LightWaveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A27B8A7229E6F773009B515B /* LightWaveView.swift */; };
 		A27B8A7529E7B4FD009B515B /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27B8A7429E7B4FD009B515B /* StoreKit.framework */; };
 		A27B8A7729E7B6DF009B515B /* StorePurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A27B8A7629E7B6DF009B515B /* StorePurchaseView.swift */; };
+		A27B8A7B29E974CA009B515B /* LineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A27B8A7A29E974CA009B515B /* LineView.swift */; };
 		A281042F29B0AB4600C0B8E8 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281042E29B0AB4600C0B8E8 /* DateExtension.swift */; };
 		A281043129B197ED00C0B8E8 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043029B197ED00C0B8E8 /* UIImageExtension.swift */; };
 		A281043429B1E4F700C0B8E8 /* LikeMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = A281043329B1E4F700C0B8E8 /* LikeMe.swift */; };
@@ -95,6 +96,7 @@
 		A2E4E929299B517D000A46FE /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E4E928299B517D000A46FE /* LoginView.swift */; };
 		A2EA905329C9B92C00A32570 /* RefreshableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2EA905229C9B92C00A32570 /* RefreshableScrollView.swift */; };
 		A2EA905529CAD08100A32570 /* BatchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2EA905429CAD08100A32570 /* BatchRequest.swift */; };
+		A2FCEE3B29E985C300AED44E /* CustomActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FCEE3A29E985C300AED44E /* CustomActionSheet.swift */; };
 		A2FF540A29DC0C7F004CD13F /* ChatHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FF540929DC0C7F004CD13F /* ChatHeaderView.swift */; };
 		A2FFE855299B5E03009642D3 /* BaseRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FFE854299B5E03009642D3 /* BaseRequest.swift */; };
 		A2FFE857299B61E8009642D3 /* Consts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FFE856299B61E8009642D3 /* Consts.swift */; };
@@ -134,6 +136,7 @@
 		A27B8A7229E6F773009B515B /* LightWaveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightWaveView.swift; sourceTree = "<group>"; };
 		A27B8A7429E7B4FD009B515B /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		A27B8A7629E7B6DF009B515B /* StorePurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePurchaseView.swift; sourceTree = "<group>"; };
+		A27B8A7A29E974CA009B515B /* LineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineView.swift; sourceTree = "<group>"; };
 		A281042E29B0AB4600C0B8E8 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		A281043029B197ED00C0B8E8 /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
 		A281043329B1E4F700C0B8E8 /* LikeMe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMe.swift; sourceTree = "<group>"; };
@@ -191,6 +194,7 @@
 		A2E4E928299B517D000A46FE /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		A2EA905229C9B92C00A32570 /* RefreshableScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefreshableScrollView.swift; sourceTree = "<group>"; };
 		A2EA905429CAD08100A32570 /* BatchRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchRequest.swift; sourceTree = "<group>"; };
+		A2FCEE3A29E985C300AED44E /* CustomActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomActionSheet.swift; sourceTree = "<group>"; };
 		A2FF540929DC0C7F004CD13F /* ChatHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatHeaderView.swift; sourceTree = "<group>"; };
 		A2FFE854299B5E03009642D3 /* BaseRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseRequest.swift; sourceTree = "<group>"; };
 		A2FFE856299B61E8009642D3 /* Consts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Consts.swift; sourceTree = "<group>"; };
@@ -410,6 +414,8 @@
 				A2A3A56829BAE1B80069C574 /* CustomPhotoPicker.swift */,
 				A2D8273529B89AB40017445D /* AddressView.swift */,
 				A27B8A7229E6F773009B515B /* LightWaveView.swift */,
+				A27B8A7A29E974CA009B515B /* LineView.swift */,
+				A2FCEE3A29E985C300AED44E /* CustomActionSheet.swift */,
 			);
 			path = CommonUI;
 			sourceTree = "<group>";
@@ -622,6 +628,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A2FCEE3B29E985C300AED44E /* CustomActionSheet.swift in Sources */,
+				A27B8A7B29E974CA009B515B /* LineView.swift in Sources */,
 				A2D8270729B748C40017445D /* CustomDatePicker.swift in Sources */,
 				A2519B9F29AA01E30098DF3E /* RecommandList.swift in Sources */,
 				A281043C29B20DD900C0B8E8 /* Me.swift in Sources */,
@@ -811,6 +819,7 @@
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "发送语音信息，需要访问麦克风";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "上传图片，需要访问相册";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "上传图片，需要访问相册";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -890,6 +899,7 @@
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "发送语音信息，需要访问麦克风";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "上传图片，需要访问相册";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "上传图片，需要访问相册";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;

@@ -61,6 +61,24 @@ class CircleLikeUserInfo:HandyJSON{
     }
 }
 
+class DynamicManager : BaseModel{
+    
+    func requestReportCircle(circleId:Int,type:String){
+        let param = ["circleId":circleId,"type":type] as [String : Any]
+        self.showLoading = true
+        self.loadingBgColor = .clear
+        NW.request(urlStr: "report/circle",method: .post,parameters: param) { response in
+            self.showLoading = false
+            self.showToast = true
+            self.toastMsg = "感谢您的反馈,我们会快速处理"
+        } failedHandler: { response in
+            self.showLoading = false
+            self.showToast = true
+            self.toastMsg = response.message
+        }
+    }
+}
+
 struct DynamicCircleView: View {
     @State var listData : [CircleModel] = []
     @State var page : Int = 1
@@ -69,22 +87,22 @@ struct DynamicCircleView: View {
     @State var showComment : Bool = false
     @State var selectCircleModel : CircleModel = CircleModel()
     @State var isFirst : Bool = true
-    @StateObject var computedModel : MyComputedProperty = MyComputedProperty()
+    @StateObject var dynamicManager : DynamicManager = DynamicManager()
     var body: some View {
      
         
-         RefreshableScrollView(refreshing: $computedModel.pullDown, pullDown: {
+         RefreshableScrollView(refreshing: $dynamicManager.pullDown, pullDown: {
              requestCircleList(state: .pullDown)
-         }, footerRefreshing: $computedModel.footerRefreshing, loadMore: $computedModel.loadMore) {
+         }, footerRefreshing: $dynamicManager.footerRefreshing, loadMore: $dynamicManager.loadMore) {
              requestCircleList(state: .pullUp)
          } content: {
              ForEach(listData,id:\.id){ model in
                  CircleRow(model:model,tapCircleHandle:{show in
                      showComment = true
                      selectCircleModel = model
-                 })
+                 }).environmentObject(dynamicManager)
              }
-         }.navigationBarTitleDisplayMode(.inline).modifier(LoadingView(isShowing: $computedModel.showLoading, bgColor: $computedModel.loadingBgColor)).onAppear {
+         }.navigationBarTitleDisplayMode(.inline).modifier(LoadingView(isShowing: $dynamicManager.showLoading, bgColor: $dynamicManager.loadingBgColor)).onAppear {
              NotificationCenter.default.addObserver(forName: .init(rawValue: kNotiCreateCircle), object: nil, queue: .main) { _ in
                  isPresentCreateCircleView = true
              }
@@ -95,10 +113,10 @@ struct DynamicCircleView: View {
              requestCircleList(state: .normal)
          }.alertB(isPresented: $isPresentCreateCircleView) {
              CreateDynamicCircleView(show: $isPresentCreateCircleView) {
-                 computedModel.pullDown = true
+                 dynamicManager.pullDown = true
                  requestCircleList(state: .pullDown)
              }
-         }.toast(isShow: $computedModel.showToast, msg: computedModel.toastMsg)
+         }.toast(isShow: $dynamicManager.showToast, msg: dynamicManager.toastMsg)
             .alertB(isPresented: $showComment) {
                 CommentListView(show:$showComment).environmentObject(selectCircleModel)
             }
@@ -112,8 +130,8 @@ struct DynamicCircleView: View {
     
     func requestCircleList(state:RefreshState){
         if state == .normal {
-            computedModel.loadingBgColor = .white
-            computedModel.showLoading = true
+            dynamicManager.loadingBgColor = .white
+            dynamicManager.showLoading = true
             page = 1
         }else if state == .pullDown{
             page = 1
@@ -122,9 +140,9 @@ struct DynamicCircleView: View {
         }
         let params = ["page":page,"pageLimit":pageLimit]
         NW.request(urlStr: "circle/list", method: .post, parameters: params) { response in
-            computedModel.showLoading = false
-            computedModel.pullDown = false
-            computedModel.footerRefreshing = false
+            dynamicManager.showLoading = false
+            dynamicManager.pullDown = false
+            dynamicManager.footerRefreshing = false
             guard let list = response.data["list"] as? [[String:Any]] else{
                 return
             }
@@ -132,9 +150,9 @@ struct DynamicCircleView: View {
                 listData.removeAll()
             }
             if list.count < pageLimit {
-                computedModel.loadMore = false
+                dynamicManager.loadMore = false
             }else{
-                computedModel.loadMore = true
+                dynamicManager.loadMore = true
             }
             var tempArr : [CircleModel] = []
             for item in list {
@@ -147,12 +165,12 @@ struct DynamicCircleView: View {
             listData.append(contentsOf: tempArr)
             
         } failedHandler: { response in
-            computedModel.showLoading = false
-            computedModel.pullDown = false
-            computedModel.footerRefreshing = false
-            computedModel.loadMore = true
-            computedModel.showToast = true
-            computedModel.toastMsg = response.message
+            dynamicManager.showLoading = false
+            dynamicManager.pullDown = false
+            dynamicManager.footerRefreshing = false
+            dynamicManager.loadMore = true
+            dynamicManager.showToast = true
+            dynamicManager.toastMsg = response.message
             
         }
 
@@ -162,6 +180,7 @@ struct DynamicCircleView: View {
 struct CircleRow:View{
     var model : CircleModel
     var tapCircleHandle : (_ show:Bool) ->Void
+    @EnvironmentObject var dynamicManager : DynamicManager
     @State var showComment : Bool = false
     @State var images: [String] = []
     @State var imageSize : CGSize = CGSize(width: 100, height: 100)
@@ -169,8 +188,10 @@ struct CircleRow:View{
     @State var likeCircleMap : [Int:CircleLikeUserInfo] = [:]
     @State var push : Bool = false
     @State var pushUid : Int = 0
+    @State var showReport : Bool = false
+    @State var showActionReport : Bool = false
     var body: some View{
-        VStack(alignment: .leading, spacing: 15) {
+        VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .center, spacing: 10) {
                 NavigationLink{
                     UserIntroduceView(uid: model.uid)
@@ -226,6 +247,9 @@ struct CircleRow:View{
             }
             
             HStack(alignment:.center,spacing:35){
+                Image("more").renderingMode(.template).resizable().aspectRatio(contentMode: .fill).frame(width:20,height:10,alignment: .leading).foregroundColor(.gray).padding(.leading,65).contentShape(Rectangle()).onTapGesture {
+                    showReport = true
+                }
                 Spacer()
                 HStack(alignment: .center, spacing: 8) {
                     Image("like").renderingMode(.template).resizable().aspectRatio(contentMode: .fill).frame(width: 24, height: 24, alignment: .center).foregroundColor( likeCircleMap[UserCenter.shared.userInfoModel?.id ?? 0] != nil ? Color.red : Color.gray)
@@ -246,11 +270,51 @@ struct CircleRow:View{
             
            
 
-        }
+        }.padding(.bottom,20)
+            .customActionSheet(isPresented: $showReport, actions: {
+            Button {
+                showReport = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+                    showActionReport = true
+                })
+              
+            } label: {
+                Text("举报帖子").foregroundColor(.colorWithHexString(hex: "333333")).frame(maxWidth:.infinity,maxHeight:50).contentShape(Rectangle())
+            }.buttonStyle(PlainButtonStyle())
+
+            LineHorizontalView()
+            Button {
+                showReport = false
+            } label: {
+                Text("取消").foregroundColor(.colorWithHexString(hex: "333333")).frame(maxWidth:.infinity,maxHeight:50).padding(.bottom,kSafeBottom).contentShape(Rectangle())
+              
+            }.buttonStyle(PlainButtonStyle())
+
+            }).customActionSheet(isPresented: $showActionReport, actions: {
+                let repostTypes = ["广告营销","色情低俗","诈骗","恶意骚扰、不文明语言","刷屏","其他","取消"]
+                VStack(spacing:0){
+                    ForEach(0..<repostTypes.count,id:\.self){ index in
+                        let resportType = repostTypes[index]
+                        Button {
+                            showActionReport = false
+                            if resportType == "其他"{
+                                
+                            }else if resportType != "取消"{
+                                dynamicManager.requestReportCircle(circleId: model.id, type: resportType)
+                            }
+                        } label: {
+                            Text(resportType).foregroundColor(.colorWithHexString(hex: "333333")).frame(maxWidth:.infinity, maxHeight:50).contentShape(Rectangle()).padding(.bottom,index == repostTypes.count - 1 ? kSafeBottom : 0)
+                           
+                        }.buttonStyle(PlainButtonStyle())
+                        LineHorizontalView()
+                    }
+                }
+                
+            })
         
-//        .alertB(isPresented: $showComment) {
-//            CommentListView(show:$showComment).environmentObject(model)
-//        }
+        .alertB(isPresented: $showComment) {
+            CommentListView(show:$showComment).environmentObject(model)
+        }
         
         .onAppear {
             if !model._images.isEmpty{
@@ -290,6 +354,8 @@ struct CircleRow:View{
             
         }
     }
+    
+    
     
     func getImageWidth() ->CGFloat{
         if imageSize.width > imageSize.height {
@@ -339,7 +405,7 @@ struct CommentListView:View{
     @State var showSecondaryList : Bool = false
     @State var showAnimation : Bool = false
     @State var comment : String = ""
-    @StateObject var computedModel : MyComputedProperty = MyComputedProperty()
+    @StateObject var dynamicManager : MyComputedProperty = MyComputedProperty()
     @State var page : Int = 1
     var body: some View{
         if show{
@@ -368,7 +434,7 @@ struct CommentListView:View{
             }.padding(EdgeInsets(top: 0, leading: 25, bottom: 0, trailing: 0)).frame(height:50)
         
             ScrollViewReader { reader in
-            RefreshableScrollView(refreshing: $computedModel.pullDown, pullDown: nil, footerRefreshing: $computedModel.footerRefreshing, loadMore: $computedModel.loadMore) {
+            RefreshableScrollView(refreshing: $dynamicManager.pullDown, pullDown: nil, footerRefreshing: $dynamicManager.footerRefreshing, loadMore: $dynamicManager.loadMore) {
                 requestCommentList(state: .pullUp)
             } content: {
                
@@ -433,14 +499,14 @@ struct CommentListView:View{
             page = 1
         }
         if state == .normal {
-            computedModel.showLoading  = true
-            computedModel.loadingBgColor = .white
+            dynamicManager.showLoading  = true
+            dynamicManager.loadingBgColor = .white
         }
         let params = ["circleId":circleModel.id,"page":page,"pageLimit":10]
         NW.request(urlStr: "comment/list",method: .post,parameters: params) { response in
-            computedModel.showLoading = false
-            computedModel.pullDown = false
-            computedModel.footerRefreshing = false
+            dynamicManager.showLoading = false
+            dynamicManager.pullDown = false
+            dynamicManager.footerRefreshing = false
             guard let list = response.data["list"] as? [[String:Any]] else{
                 return
             }
@@ -448,9 +514,9 @@ struct CommentListView:View{
                 titles.removeAll()
             }
             if list.count < 10 {
-                computedModel.loadMore = false
+                dynamicManager.loadMore = false
             }else{
-                computedModel.loadMore = true
+                dynamicManager.loadMore = true
             }
             for item in list {
                 guard let model = CommentModel.deserialize(from: item, designatedPath: nil) else{
@@ -464,10 +530,10 @@ struct CommentListView:View{
             }
             circleModel.commentCount = total
         } failedHandler: { response in
-            computedModel.showLoading = false
-            computedModel.pullDown = false
-            computedModel.loadMore = true
-            computedModel.footerRefreshing = false
+            dynamicManager.showLoading = false
+            dynamicManager.pullDown = false
+            dynamicManager.loadMore = true
+            dynamicManager.footerRefreshing = false
         }
     }
     

@@ -51,7 +51,14 @@ extension View{
         ModifiedContent(content: self, modifier: KeyboardAdaptive())
     }
     
-
+    func customActionSheet<A>(isPresented: Binding<Bool>,@ViewBuilder actions: @escaping () -> A) -> some View where A : View{
+        self.alertB(isPresented: isPresented) {
+            
+            CustomActionSheet(isPresented: isPresented, actions: actions)
+            
+            
+        }
+    }
     
     func alertB<Content:View>(isPresented: Binding<Bool>, @ViewBuilder builder: () -> Content) -> some View {
         let toPresent = UIHostingController(rootView: AnyView(EmptyView()))
