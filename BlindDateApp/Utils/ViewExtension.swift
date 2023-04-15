@@ -9,7 +9,24 @@ import SwiftUI
 import Combine
 import PhotosUI
 
+struct LightStatusBarModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .onAppear {
+                UIApplication.shared.statusBarStyle = .lightContent
+            }
+            .onDisappear {
+                UIApplication.shared.statusBarStyle = .default
+            }
+    }
+}
 
+private struct SizePreferenceKey:PreferenceKey{
+    static var defaultValue: CGSize = .zero
+    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+        
+    }
+}
 
 struct ViewControllerHolder {
     weak var value: UIViewController?
@@ -31,6 +48,16 @@ extension EnvironmentValues {
 
 
 extension View{
+    
+    func readSize(onChange:@escaping (_ newSize :CGSize) -> Void) ->some View{
+        self.background(GeometryReader{ geometryProxy in
+            Color.clear.preference(key: SizePreferenceKey.self,value: geometryProxy.size)
+        }).onPreferenceChange(SizePreferenceKey.self, perform: onChange)
+    }
+    
+    func enableLightStatusBar() -> some View {
+           self.modifier(LightStatusBarModifier())
+    }
     
     func toast(isShow:Binding<Bool>,msg:String) -> some View{
         ZStack(alignment: .center) {

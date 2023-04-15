@@ -99,7 +99,7 @@ struct MessageView: View {
                 ConversationRow(model: model).id(model.conversationID)
             }
             Spacer()
-        }.onAppear {
+        }.preferredColorScheme(.light).onAppear {
             if msgModel.TiMIsLoginSuc() {
                 msgModel.requestConversionList(state: .normal)
             }else{

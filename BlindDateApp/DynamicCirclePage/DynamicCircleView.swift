@@ -111,7 +111,7 @@ struct DynamicCircleView: View {
              }
              isFirst = false
              requestCircleList(state: .normal)
-         }.alertB(isPresented: $isPresentCreateCircleView) {
+         }.preferredColorScheme(.light).alertB(isPresented: $isPresentCreateCircleView) {
              CreateDynamicCircleView(show: $isPresentCreateCircleView) {
                  dynamicManager.pullDown = true
                  requestCircleList(state: .pullDown)

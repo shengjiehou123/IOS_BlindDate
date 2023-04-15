@@ -13,10 +13,15 @@ class PurchaseModel:NSObject,SKPaymentTransactionObserver,SKProductsRequestDeleg
    
     
     func startPurchase(){
-        let productIdentifiers = Set.init(["normal_vip"]) //产品ID
-        let request = SKProductsRequest.init(productIdentifiers: productIdentifiers)
-        request.delegate = self
-        request.start()
+        if SKPaymentQueue.canMakePayments() {
+            let productIdentifiers = Set.init(["normal_vip"]) //产品ID
+            let request = SKProductsRequest.init(productIdentifiers: productIdentifiers)
+            request.delegate = self
+            request.start()
+        }else {
+            print("用户禁止购买")
+        }
+       
     }
     
     func addObserverPurchaseResult(){
@@ -28,10 +33,13 @@ class PurchaseModel:NSObject,SKPaymentTransactionObserver,SKProductsRequestDeleg
         for transaction in transactions{
             switch transaction.transactionState{
             case .purchased://购买成功
+                dl_completeTransaction(transaction: transaction)
                 break
             case .failed://购买失败
+                dl_failedTransaction(transaction: transaction)
                 break
             case .restored://恢复购买
+                dl_restoreTransaction(transaction: transaction)
                 break
             case .purchasing://正在处理
                 break
@@ -51,20 +59,27 @@ class PurchaseModel:NSObject,SKPaymentTransactionObserver,SKProductsRequestDeleg
             /**
              可以将receipt发给服务器进行购买验证
              */
+            log.info("支付成功")
         }
         SKPaymentQueue.default().finishTransaction(transaction)
     }
 
     func dl_failedTransaction(transaction:SKPaymentTransaction) {
 //        [SVProgressHUD showErrorWithStatus:@"支付失败"];
+        log.info("支付失败")
         SKPaymentQueue.default().finishTransaction(transaction)
     }
 
+    func dl_restoreTransaction(transaction:SKPaymentTransaction){
+        log.info("恢复购买")
+        SKPaymentQueue.default().finishTransaction(transaction)
+    }
     
     //MARK: SKProductsRequestDelegate
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         if response.invalidProductIdentifiers.count > 0{
             //无效的产品ID
+            log.info("无效的产品ID")
         }else{
             if response.products.count > 0{
                 let payment = SKMutablePayment(product: response.products.first!)

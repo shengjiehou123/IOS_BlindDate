@@ -96,6 +96,7 @@
 		A2E4E929299B517D000A46FE /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E4E928299B517D000A46FE /* LoginView.swift */; };
 		A2EA905329C9B92C00A32570 /* RefreshableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2EA905229C9B92C00A32570 /* RefreshableScrollView.swift */; };
 		A2EA905529CAD08100A32570 /* BatchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2EA905429CAD08100A32570 /* BatchRequest.swift */; };
+		A2F5640D29EA77BE002C24B3 /* VerifyListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F5640C29EA77BE002C24B3 /* VerifyListView.swift */; };
 		A2FCEE3B29E985C300AED44E /* CustomActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FCEE3A29E985C300AED44E /* CustomActionSheet.swift */; };
 		A2FF540A29DC0C7F004CD13F /* ChatHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FF540929DC0C7F004CD13F /* ChatHeaderView.swift */; };
 		A2FFE855299B5E03009642D3 /* BaseRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FFE854299B5E03009642D3 /* BaseRequest.swift */; };
@@ -194,6 +195,7 @@
 		A2E4E928299B517D000A46FE /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		A2EA905229C9B92C00A32570 /* RefreshableScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefreshableScrollView.swift; sourceTree = "<group>"; };
 		A2EA905429CAD08100A32570 /* BatchRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchRequest.swift; sourceTree = "<group>"; };
+		A2F5640C29EA77BE002C24B3 /* VerifyListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyListView.swift; sourceTree = "<group>"; };
 		A2FCEE3A29E985C300AED44E /* CustomActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomActionSheet.swift; sourceTree = "<group>"; };
 		A2FF540929DC0C7F004CD13F /* ChatHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatHeaderView.swift; sourceTree = "<group>"; };
 		A2FFE854299B5E03009642D3 /* BaseRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseRequest.swift; sourceTree = "<group>"; };
@@ -372,6 +374,7 @@
 				A281043B29B20DD900C0B8E8 /* Me.swift */,
 				A209452B29CF3E8900963A1B /* MyDynamicPage.swift */,
 				A27B8A7629E7B6DF009B515B /* StorePurchaseView.swift */,
+				A2F5640C29EA77BE002C24B3 /* VerifyListView.swift */,
 			);
 			path = MePage;
 			sourceTree = "<group>";
@@ -654,6 +657,7 @@
 				A2FFE857299B61E8009642D3 /* Consts.swift in Sources */,
 				A2519B9929A9EF640098DF3E /* ColorExtension.swift in Sources */,
 				A27B8A7329E6F773009B515B /* LightWaveView.swift in Sources */,
+				A2F5640D29EA77BE002C24B3 /* VerifyListView.swift in Sources */,
 				A27B8A6F29E012C2009B515B /* FaceVerifyService.swift in Sources */,
 				A2519B9729A9E95B0098DF3E /* UserCenter.swift in Sources */,
 				A2FF540A29DC0C7F004CD13F /* ChatHeaderView.swift in Sources */,
@@ -805,7 +809,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"BlindDateApp/Preview Content\"";
-				DEVELOPMENT_TEAM = GT49X56UC2;
+				DEVELOPMENT_TEAM = KAM5B3W9B2;
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -822,6 +826,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDarkContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -866,7 +871,7 @@
 					"\"BioAuthAPI\"",
 					"-lxml2",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.poolin.landmarks.BlindDateApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.poolinwallet.blockinwallet;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "BlindDateApp/BlindDateApp-Bridging-Header.h";
@@ -886,7 +891,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"BlindDateApp/Preview Content\"";
-				DEVELOPMENT_TEAM = GT49X56UC2;
+				DEVELOPMENT_TEAM = KAM5B3W9B2;
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -902,6 +907,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDarkContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -946,7 +952,7 @@
 					"\"BioAuthAPI\"",
 					"-lxml2",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.poolin.landmarks.BlindDateApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.poolinwallet.blockinwallet;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "BlindDateApp/BlindDateApp-Bridging-Header.h";

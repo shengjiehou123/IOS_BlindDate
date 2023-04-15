@@ -83,7 +83,7 @@ struct LikeMe: View {
                         }
                     }
                 }.frame(maxWidth:.infinity,maxHeight: .infinity).padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
-            }.navigationBarTitleDisplayMode(.inline).onAppear {
+            }.preferredColorScheme(.light).navigationBarTitleDisplayMode(.inline).onAppear {
                     if !isFirst {
                         return
                     }

@@ -22,30 +22,30 @@ open class NavigationCenter : ObservableObject{
     static let shared = NavigationCenter()
     @Published var tableSelectionType : TableSelectionTagType = .recommandTagType
     @Published var likeTitle : String = "喜欢我的人"
-}
-
-struct ContentView: View {
-    init(){
-        UserCenter.shared.setDefaultData()
-        JFHeroBrowserGlobalConfig.default.networkImageProvider = HeroNetworkImageProvider.shared
+    
+    func setNavigation(color:UIColor){
         let navigationBar = UINavigationBar.appearance()
 
         if #available(iOS 15.0, *)  {
             let navibarAppearance = UINavigationBarAppearance()
-            navibarAppearance.backgroundColor = .white
-            navibarAppearance.backgroundImage = UIImage.from(color: .white)
+//            navibarAppearance.configureWithOpaqueBackground()
+            navibarAppearance.backgroundColor = color
+            navibarAppearance.backgroundImage = UIImage.from(color: color)
             navibarAppearance.shadowImage = UIImage.from(color: .clear)
 
             navigationBar.standardAppearance = navibarAppearance
             navigationBar.scrollEdgeAppearance = navibarAppearance
         }else{
-            navigationBar.setBackgroundImage(UIImage.from(color: .white), for: .any, barMetrics: .default)
+            navigationBar.setBackgroundImage(UIImage.from(color: color), for: .any, barMetrics: .default)
             navigationBar.shadowImage = UIImage()
         }
+    }
+    
+    func setTabBar(color:UIColor){
         let tabBar = UITabBar.appearance()
         if #available(iOS 13.0, *) {
             let tabbarAppearance = UITabBarAppearance()
-            tabbarAppearance.backgroundImage = UIImage.from(color: .white)
+            tabbarAppearance.backgroundImage = UIImage.from(color: color)
             tabbarAppearance.shadowImage = UIImage.from(color: .clear)
            tabBar.standardAppearance = tabbarAppearance
             if #available(iOS 15.0, *) {
@@ -53,13 +53,21 @@ struct ContentView: View {
             }
         }else{
             tabBar.isTranslucent = false
-            tabBar.backgroundImage = UIImage.from(color: .white)
+            tabBar.backgroundImage = UIImage.from(color: color)
             tabBar.shadowImage = UIImage.from(color: .clear)
             tabBar.tintColor = UIColor.colorWithHexString(hex: "#326291")
         }
-        
-        FaceVerifyService().initAliyunSDK()        
+    }
+}
 
+
+struct ContentView: View {
+    init(){
+        UserCenter.shared.setDefaultData()
+        JFHeroBrowserGlobalConfig.default.networkImageProvider = HeroNetworkImageProvider.shared
+        NavigationCenter.shared.setNavigation(color: UIColor.white)
+        NavigationCenter.shared.setTabBar(color: UIColor.white)
+        FaceVerifyService().initAliyunSDK()        
 
     }
     @StateObject var userCenter : UserCenter = UserCenter.shared

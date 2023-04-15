@@ -12,12 +12,11 @@ struct Me: View {
     @State var userInfoModel : ReCommandModel = ReCommandModel()
     @State var isFirst : Bool = true
     @State var push : Bool = false
-    @State var tabbarVc : UITabBarController? = nil
     var body: some View {
 //        Text("Hello, World!").onAppear {
 //            requestUserInfo()
 //        }
-        NavigationView{
+//        NavigationView{
         VStack(alignment: .leading, spacing: 0) {
             Spacer().frame(height:20 + kSafeTop)
             HStack(alignment: .center, spacing: 10) {
@@ -45,30 +44,27 @@ struct Me: View {
                 Spacer()
             }.padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
             MeVipEntranceView()
-            MyDynamicView().frame(height:80).padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)).background(RoundedRectangle(cornerRadius: 5).fill(Color.white)).padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)).onTapGesture {
-                 push = true
-            }
-            NavigationLink(isActive: $push) {
+            NavigationLink {
                 MyDynamicPage()
             } label: {
-                EmptyView()
+                MyDynamicView().frame(height:80).padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)).background(RoundedRectangle(cornerRadius: 5).fill(Color.white)).padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
             }
             
-            MyIdentifyView().frame(height:50).padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)).background(RoundedRectangle(cornerRadius: 5).fill(Color.white)).padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 10))
-            
+            NavigationLink {
+                VerifyListView()
+            } label: {
+                MyIdentifyView().frame(height:55).padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)).background(RoundedRectangle(cornerRadius: 5).fill(Color.white)).padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 10))
+            }
           
             Spacer()
-        }.navigationBarHidden(true).navigationBarTitleDisplayMode(.inline).background(Color.colorWithHexString(hex: "#F3F3F3")).edgesIgnoringSafeArea(.top).introspectTabBarController { tab in
-            tabbarVc = tab
-        }.onAppear {
-            tabbarVc?.tabBar.isHidden = false
+        }.navigationBarHidden(true).navigationBarTitleDisplayMode(.inline).preferredColorScheme(.light).background(Color.colorWithHexString(hex: "#F3F3F3")).ignoresSafeArea(.container,edges: .top).onAppear {
             if !isFirst {
                 return
             }
             isFirst = false
             requestUserInfo()
         }
-     }
+//     }
     }
     func requestUserInfo(){
         NW.request(urlStr: "get/user/info", method: .post, parameters: nil) { response in
@@ -87,9 +83,10 @@ struct Me: View {
 
 //MARK: 我的动态
 struct MyDynamicView:View{
+    
     var body: some View{
         HStack(alignment: .center, spacing: 10) {
-            Text("我的动态")
+            Text("我的动态").foregroundColor(.black)
                 .font(.system(size: 16))
             Spacer()
             Image("7x14right").resizable().aspectRatio( contentMode: .fill).frame(width: 7, height: 14, alignment: .leading)
@@ -100,9 +97,10 @@ struct MyDynamicView:View{
 
 //MARK: 我的认证
 struct MyIdentifyView:View{
+    @State var model:PurchaseModel = PurchaseModel()
     var body: some View{
         HStack(alignment: .center, spacing: 10) {
-            Text("我的认证")
+            Text("我的认证").foregroundColor(.black)
                 .font(.system(size: 16))
             Spacer()
             Image("7x14right").resizable().aspectRatio( contentMode: .fill).frame(width: 7, height: 14, alignment: .leading)

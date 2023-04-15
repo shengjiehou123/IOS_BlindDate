@@ -31,6 +31,10 @@ public let keyWindow = UIApplication.shared.connectedScenes
                         .compactMap({ $0 })
                         .first?.windows.first
 
+public let kStatusHeight =  UIApplication.shared.statusBarFrame.size.height
+
+public let kNaviHeight = kStatusHeight + 44
+
 public let kSafeTop = keyWindow?.safeAreaInsets.top ?? 0
 
 public let kSafeBottom = keyWindow?.safeAreaInsets.bottom ?? 0
