@@ -97,6 +97,10 @@
 		A2EA905329C9B92C00A32570 /* RefreshableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2EA905229C9B92C00A32570 /* RefreshableScrollView.swift */; };
 		A2EA905529CAD08100A32570 /* BatchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2EA905429CAD08100A32570 /* BatchRequest.swift */; };
 		A2F5640D29EA77BE002C24B3 /* VerifyListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F5640C29EA77BE002C24B3 /* VerifyListView.swift */; };
+		A2F5640F29EAB0B7002C24B3 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F5640E29EAB0B7002C24B3 /* SettingView.swift */; };
+		A2F5641129EAB57E002C24B3 /* ModifyPhoneNumberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F5641029EAB57E002C24B3 /* ModifyPhoneNumberView.swift */; };
+		A2F5641329EAB616002C24B3 /* AccountAndSafeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F5641229EAB616002C24B3 /* AccountAndSafeView.swift */; };
+		A2F5641529EABEDB002C24B3 /* NewPhoneNumberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F5641429EABEDB002C24B3 /* NewPhoneNumberView.swift */; };
 		A2FCEE3B29E985C300AED44E /* CustomActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FCEE3A29E985C300AED44E /* CustomActionSheet.swift */; };
 		A2FF540A29DC0C7F004CD13F /* ChatHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FF540929DC0C7F004CD13F /* ChatHeaderView.swift */; };
 		A2FFE855299B5E03009642D3 /* BaseRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FFE854299B5E03009642D3 /* BaseRequest.swift */; };
@@ -196,6 +200,10 @@
 		A2EA905229C9B92C00A32570 /* RefreshableScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefreshableScrollView.swift; sourceTree = "<group>"; };
 		A2EA905429CAD08100A32570 /* BatchRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchRequest.swift; sourceTree = "<group>"; };
 		A2F5640C29EA77BE002C24B3 /* VerifyListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyListView.swift; sourceTree = "<group>"; };
+		A2F5640E29EAB0B7002C24B3 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
+		A2F5641029EAB57E002C24B3 /* ModifyPhoneNumberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyPhoneNumberView.swift; sourceTree = "<group>"; };
+		A2F5641229EAB616002C24B3 /* AccountAndSafeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountAndSafeView.swift; sourceTree = "<group>"; };
+		A2F5641429EABEDB002C24B3 /* NewPhoneNumberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPhoneNumberView.swift; sourceTree = "<group>"; };
 		A2FCEE3A29E985C300AED44E /* CustomActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomActionSheet.swift; sourceTree = "<group>"; };
 		A2FF540929DC0C7F004CD13F /* ChatHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatHeaderView.swift; sourceTree = "<group>"; };
 		A2FFE854299B5E03009642D3 /* BaseRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseRequest.swift; sourceTree = "<group>"; };
@@ -375,6 +383,10 @@
 				A209452B29CF3E8900963A1B /* MyDynamicPage.swift */,
 				A27B8A7629E7B6DF009B515B /* StorePurchaseView.swift */,
 				A2F5640C29EA77BE002C24B3 /* VerifyListView.swift */,
+				A2F5640E29EAB0B7002C24B3 /* SettingView.swift */,
+				A2F5641229EAB616002C24B3 /* AccountAndSafeView.swift */,
+				A2F5641029EAB57E002C24B3 /* ModifyPhoneNumberView.swift */,
+				A2F5641429EABEDB002C24B3 /* NewPhoneNumberView.swift */,
 			);
 			path = MePage;
 			sourceTree = "<group>";
@@ -640,9 +652,11 @@
 				A2CBDB8529D5CAD5009A8BF1 /* ChatView.swift in Sources */,
 				A209452C29CF3E8900963A1B /* MyDynamicPage.swift in Sources */,
 				A2519BA229AC8CD60098DF3E /* ReCommandModel.swift in Sources */,
+				A2F5641129EAB57E002C24B3 /* ModifyPhoneNumberView.swift in Sources */,
 				A209452629CDAF7400963A1B /* DataExtension.swift in Sources */,
 				A2D8270D29B851420017445D /* LocalData.swift in Sources */,
 				A2D8273629B89AB40017445D /* AddressView.swift in Sources */,
+				A2F5641329EAB616002C24B3 /* AccountAndSafeView.swift in Sources */,
 				A2CBDB7E29D18413009A8BF1 /* BaseModel.swift in Sources */,
 				A27B8A7729E7B6DF009B515B /* StorePurchaseView.swift in Sources */,
 				A2A3A56929BAE1B80069C574 /* CustomPhotoPicker.swift in Sources */,
@@ -656,8 +670,10 @@
 				A281042F29B0AB4600C0B8E8 /* DateExtension.swift in Sources */,
 				A2FFE857299B61E8009642D3 /* Consts.swift in Sources */,
 				A2519B9929A9EF640098DF3E /* ColorExtension.swift in Sources */,
+				A2F5641529EABEDB002C24B3 /* NewPhoneNumberView.swift in Sources */,
 				A27B8A7329E6F773009B515B /* LightWaveView.swift in Sources */,
 				A2F5640D29EA77BE002C24B3 /* VerifyListView.swift in Sources */,
+				A2F5640F29EAB0B7002C24B3 /* SettingView.swift in Sources */,
 				A27B8A6F29E012C2009B515B /* FaceVerifyService.swift in Sources */,
 				A2519B9729A9E95B0098DF3E /* UserCenter.swift in Sources */,
 				A2FF540A29DC0C7F004CD13F /* ChatHeaderView.swift in Sources */,

@@ -38,6 +38,12 @@ extension String{
     }
     
     
-    
+    func formatPhoneNumber() -> String {
+        let regex = try! NSRegularExpression(pattern: "(\\d{3})(\\d{3})(\\d{4})", options: [])
+        let range = NSRange(location: 0, length: self.utf16.count)
+        let formattedNumber = regex.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "($1) $2-$3")
+        return formattedNumber
+    }
 
+    
 }

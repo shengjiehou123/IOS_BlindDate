@@ -28,25 +28,23 @@ struct NavigationViewModifer: ViewModifier {
     @Binding var hiddenNavigation : Bool
     var title : String
     func body(content: Content) -> some View {
-//        NavigationView{
-            content
-                .navigationBarHidden(hiddenNavigation)
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle(title)
-                .navigationBarBackButtonHidden(true)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button {
-                            presentationMode.wrappedValue.dismiss()
-                        } label: {
-                            Image("back_btn").resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 30, height: 30, alignment: .leading)
-                        }
-
+        content
+            .navigationBarHidden(hiddenNavigation)
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(title)
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        presentationMode.wrappedValue.dismiss()
+                    } label: {
+                        Image("back_btn").resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 30, height: 30, alignment: .leading)
                     }
+
                 }
-//        }
+            }
     }
 }
 

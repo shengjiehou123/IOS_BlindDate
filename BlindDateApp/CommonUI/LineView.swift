@@ -9,13 +9,13 @@ import SwiftUI
 
 struct LineHorizontalView: View {
     var body: some View {
-        Spacer().frame(maxWidth:.infinity,maxHeight: 1).background(Color.colorWithHexString(hex: "#E3E3E3"))
+        Spacer().frame(maxWidth:.infinity,maxHeight: 1).background(Color.colorWithHexString(hex: "#F3F3F3"))
     }
 }
 
 struct LineVerticalView: View {
     var body: some View {
-        Spacer().frame(maxWidth:1,maxHeight: .infinity).background(Color.colorWithHexString(hex: "#E3E3E3"))
+        Spacer().frame(maxWidth:1,maxHeight: .infinity).background(Color.colorWithHexString(hex: "#F3F3F3"))
     }
 }
 

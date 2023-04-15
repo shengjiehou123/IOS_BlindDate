@@ -15,6 +15,7 @@ class ReCommandModel: HandyJSON,Identifiable,Equatable {
     var _avatar : String{
         return Consts.shared.imageHost + avatar
     }
+    var phoneNumber : String = ""
     var avatar : String = ""
     var nickName :String = ""
     var gender :Int = 0
