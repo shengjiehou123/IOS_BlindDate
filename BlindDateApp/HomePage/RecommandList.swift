@@ -147,6 +147,7 @@ struct ScrollCardView:View{
             }.introspectScrollView(customize: { scrollView in
                 scrollView.bounces = false
             }).onAppear{
+                profileContent.removeAll()
                 profileContent.append("\(recommandModel.height)cm")
                 if !recommandModel.school.isEmpty{
                     profileContent.append("\(recommandModel.school)")
@@ -409,7 +410,7 @@ struct CardHeaderView:View{
                   .padding(EdgeInsets(top: 20, leading: 10, bottom:20, trailing: 10))
             
         }.padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 10)).onAppear {
-          
+            titles.removeAll()
             titles.append("\(recommandModel.height)cm")
             if recommandModel.educationType > 2{
                 titles.append(recommandModel.educationTypeDesc)
