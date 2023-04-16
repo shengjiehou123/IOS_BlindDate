@@ -32,6 +32,8 @@ class ChatMessageModel : HandyJSON{
         }
         return content
     }
+    var width:CGFloat = 0
+    var height : CGFloat = 0
     var tempContent : Any? = nil
     var createAt : String = ""
     var updateAt : String = ""
@@ -153,6 +155,9 @@ class ChatModel :BaseModel,V2TIMAdvancedMsgListener{
         }else if msg.elemType == .V2TIM_ELEM_TYPE_IMAGE{
             model.type = "image"
             model.content = msg.imageElem?.imageList[0].url ?? ""
+            model.width = CGFloat(msg.imageElem?.imageList[0].width ?? 0)
+            model.height = CGFloat(msg.imageElem?.imageList[0].height ?? 0)
+            print("###################\(model.width) \(model.height)")
         }else if msg.elemType == .V2TIM_ELEM_TYPE_SOUND{
             
         }
@@ -305,7 +310,11 @@ struct ChatView: View {
                                 model.id = (chatModel.listData.last?.id  ?? 0) + 1000
                                 model.uid = UserCenter.shared.userInfoModel?.id ?? 0
                                 model.uidAvatar = UserCenter.shared.userInfoModel?.avatar ?? ""
-                                model.tempContent = pickerResult.last
+                                let image = pickerResult.last
+                                model.tempContent = image
+                                model.width = image?.size.width ?? 0
+                                model.height = image?.size.height ?? 0
+                                print("###send \(model.width) \(model.height)")
                                 chatModel.listData.append(model)
                                 chatModel.scrollToLast = true
                                 chatModel.requestSendImageMsg(userID: userID, images: pickerResult) {

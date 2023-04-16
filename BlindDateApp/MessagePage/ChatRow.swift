@@ -48,13 +48,11 @@ struct ChatRow: View {
             if message.tempContent != nil{
                 HStack{
                     ActivityRep()
-                    Image(uiImage: message.tempContent as! UIImage).resizable().aspectRatio(contentMode: .fill).frame(width: getImageWidth(),height: getImageHeight(),alignment: .center).background(Color.gray).clipShape(RoundedRectangle(cornerRadius: 10))
+                    Image(uiImage: message.tempContent as! UIImage).resizable().aspectRatio(contentMode: .fill).frame(width: getImageWidth(width: message.width,height: message.height),height: getImageHeight(width: message.width,height: message.height),alignment: .center).background(Color.gray).clipShape(RoundedRectangle(cornerRadius: 10))
                 }
                
             }else{
-                WebImage(url: URL(string: message._content)).onSuccess(perform: { image, data, cacheType in
-                    imageSize = image.size
-                }).resizable().aspectRatio(contentMode: .fill).frame(width: getImageWidth(),height: getImageHeight(),alignment: .center).background(Color.gray).clipShape(RoundedRectangle(cornerRadius: 10)).onTapGesture {
+                WebImage(url: URL(string: message._content)).resizable().aspectRatio(contentMode: .fill).frame(width: getImageWidth(width: message.width,height: message.height),height: getImageHeight(width: message.width,height: message.height),alignment: .center).background(Color.gray).clipShape(RoundedRectangle(cornerRadius: 10)).onTapGesture {
                     var list: [HeroBrowserViewModule] = []
                     list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: message._content, originImgUrl: message._content))
                     myAppRootVC?.hero.browserPhoto(viewModules: list, initIndex: 0)
@@ -63,22 +61,22 @@ struct ChatRow: View {
            
         }
         
-        func getImageWidth() ->CGFloat{
-            if imageSize.width > imageSize.height {
+        func getImageWidth(width:CGFloat,height:CGFloat) ->CGFloat{
+            if  width > height {
                 return 230
             }
             return 150
         }
         
-        func getImageHeight() -> CGFloat{
-            if imageSize.width > imageSize.height {
-                return 230 * imageSize.height / imageSize.width
+        func getImageHeight(width:CGFloat,height:CGFloat) -> CGFloat{
+            if width > height {
+                return CGFloat(230 * height / width)
             }
-            let height = 150 * imageSize.height / imageSize.width
+            let height = 150 * height / width
             if height > 250 {
                 return 250
             }
-            return height
+            return CGFloat(height)
         }
         
         

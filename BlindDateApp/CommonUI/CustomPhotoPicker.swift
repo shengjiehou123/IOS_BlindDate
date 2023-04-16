@@ -33,14 +33,20 @@ struct CustomPhotoPicker: UIViewControllerRepresentable {
             }
             
             func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+                var assetIdentifiers : [String] = []
+                var dic : [String:UIImage] = [:]
                 for image in results {
+                    assetIdentifiers.append(image.assetIdentifier ?? "")
+                    print("########\(assetIdentifiers)")
                     if image.itemProvider.canLoadObject(ofClass: UIImage.self)  {
+//                        image.assetIdentifier
+                        
                         image.itemProvider.loadObject(ofClass: UIImage.self) { (newImage, error) in
                             if let error = error {
                                 print(error.localizedDescription)
                             } else {
-                                self.parent.pickerResult.append(newImage as! UIImage)
-                                
+                                dic[image.assetIdentifier ?? ""]  = newImage as? UIImage
+//                               self.parent.pickerResult.append(newImage as! UIImage)
                             }
                         }
                     } else {

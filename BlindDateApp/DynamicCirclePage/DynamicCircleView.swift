@@ -27,6 +27,17 @@ class CircleModel:HandyJSON,Identifiable,ObservableObject{
         }
         return imageUrls.joined(separator: ",")
     }
+    var widths : String = ""
+    var _widths : [String]{
+        let widthStrArr = widths.components(separatedBy: ",")
+        return widthStrArr
+    }
+    
+    var heights : String = ""
+    var _heights : [String]{
+        let heightStrArr = heights.components(separatedBy: ",")
+        return heightStrArr
+    }
     var userInfo : CircleUserInfo = CircleUserInfo()
     var likeCount : Int = 0
     var likeInfoList : [CircleLikeUserInfo] = []
@@ -222,12 +233,12 @@ struct CircleRow:View{
                             ForEach(0..<3,id:\.self){ j in
                                 let index = getIndex(i: i, j: j)
                                 if index < images.count {
+                                    let width = Int(model._widths[index]) ?? 0
+                                    let height = Int(model._heights[index]) ?? 0
                                     let urlStr = "\(images[index])".urlEncoded()
                                     let url = URL(string: urlStr)
-                                    WebImage(url:url).onSuccess(perform: { image, data, cacheType in
-                                        imageSize = image.size
-                                    }).resizable().aspectRatio(contentMode: .fill)
-                                        .frame(width:images.count == 1 ? getImageWidth() : 100,height: images.count == 1 ? getImageHeight() : 100,alignment: .center).background(Color.gray).clipShape(RoundedRectangle(cornerRadius: 10)).contentShape(Rectangle()).onTapGesture {
+                                    WebImage(url:url).resizable().aspectRatio(contentMode: .fill)
+                                        .frame(width:images.count == 1 ? getImageWidth(width: width, height: height) : 100,height: images.count == 1 ? getImageHeight(width: width, height: height) : 100,alignment: .center).background(Color.gray).clipShape(RoundedRectangle(cornerRadius: 10)).contentShape(Rectangle()).onTapGesture {
                                             var list: [HeroBrowserViewModule] = []
                                             for imageUrlStr in images {
                                                 list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: imageUrlStr, originImgUrl: imageUrlStr))
@@ -357,22 +368,25 @@ struct CircleRow:View{
     
     
     
-    func getImageWidth() ->CGFloat{
-        if imageSize.width > imageSize.height {
+    func getImageWidth(width:Int,height:Int) ->CGFloat{
+        if width > height {
             return 230
         }
         return 150
     }
     
-    func getImageHeight() -> CGFloat{
-        if imageSize.width > imageSize.height {
-            return 230 * imageSize.height / imageSize.width
+    func getImageHeight(width:Int,height:Int) -> CGFloat{
+        if width == 0{
+            return 0
         }
-        let height = 150 * imageSize.height / imageSize.width
+        if width > height {
+            return CGFloat(230 * height / width)
+        }
+        let height = 150 * height / width
         if height > 250 {
             return 250
         }
-        return height
+        return CGFloat(height)
     }
 
     
