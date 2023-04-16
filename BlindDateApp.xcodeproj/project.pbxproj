@@ -101,6 +101,7 @@
 		A2F5641129EAB57E002C24B3 /* ModifyPhoneNumberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F5641029EAB57E002C24B3 /* ModifyPhoneNumberView.swift */; };
 		A2F5641329EAB616002C24B3 /* AccountAndSafeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F5641229EAB616002C24B3 /* AccountAndSafeView.swift */; };
 		A2F5641529EABEDB002C24B3 /* NewPhoneNumberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F5641429EABEDB002C24B3 /* NewPhoneNumberView.swift */; };
+		A2F5641729EBDA96002C24B3 /* FlexibleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F5641629EBDA96002C24B3 /* FlexibleView.swift */; };
 		A2FCEE3B29E985C300AED44E /* CustomActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FCEE3A29E985C300AED44E /* CustomActionSheet.swift */; };
 		A2FF540A29DC0C7F004CD13F /* ChatHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FF540929DC0C7F004CD13F /* ChatHeaderView.swift */; };
 		A2FFE855299B5E03009642D3 /* BaseRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FFE854299B5E03009642D3 /* BaseRequest.swift */; };
@@ -204,6 +205,7 @@
 		A2F5641029EAB57E002C24B3 /* ModifyPhoneNumberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyPhoneNumberView.swift; sourceTree = "<group>"; };
 		A2F5641229EAB616002C24B3 /* AccountAndSafeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountAndSafeView.swift; sourceTree = "<group>"; };
 		A2F5641429EABEDB002C24B3 /* NewPhoneNumberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPhoneNumberView.swift; sourceTree = "<group>"; };
+		A2F5641629EBDA96002C24B3 /* FlexibleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlexibleView.swift; sourceTree = "<group>"; };
 		A2FCEE3A29E985C300AED44E /* CustomActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomActionSheet.swift; sourceTree = "<group>"; };
 		A2FF540929DC0C7F004CD13F /* ChatHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatHeaderView.swift; sourceTree = "<group>"; };
 		A2FFE854299B5E03009642D3 /* BaseRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseRequest.swift; sourceTree = "<group>"; };
@@ -431,6 +433,7 @@
 				A27B8A7229E6F773009B515B /* LightWaveView.swift */,
 				A27B8A7A29E974CA009B515B /* LineView.swift */,
 				A2FCEE3A29E985C300AED44E /* CustomActionSheet.swift */,
+				A2F5641629EBDA96002C24B3 /* FlexibleView.swift */,
 			);
 			path = CommonUI;
 			sourceTree = "<group>";
@@ -648,6 +651,7 @@
 				A2D8270729B748C40017445D /* CustomDatePicker.swift in Sources */,
 				A2519B9F29AA01E30098DF3E /* RecommandList.swift in Sources */,
 				A281043C29B20DD900C0B8E8 /* Me.swift in Sources */,
+				A2F5641729EBDA96002C24B3 /* FlexibleView.swift in Sources */,
 				A2519B9C29A9F1FA0098DF3E /* Header.swift in Sources */,
 				A2CBDB8529D5CAD5009A8BF1 /* ChatView.swift in Sources */,
 				A209452C29CF3E8900963A1B /* MyDynamicPage.swift in Sources */,

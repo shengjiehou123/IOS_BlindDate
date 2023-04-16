@@ -104,6 +104,7 @@ struct ScrollCardView:View{
     @State var showLikeEachOther : Bool = false
     @State var showLeftText : Bool = false
     @State var showRightText : Bool = false
+    @State var profileContent : [String] = []
 //    @State var topOffset : Int = 0
     
     var body: some View{
@@ -120,7 +121,7 @@ struct ScrollCardView:View{
     ZStack(alignment: .top) {
         ScrollView(.vertical, showsIndicators: false) {
             VStack{
-                ForEach(0..<4,id:\.self){ index in
+                ForEach(0...4,id:\.self){ index in
                     if index == 0{
                         CardView(recommandModel:recommandModel)
                     }
@@ -128,12 +129,16 @@ struct ScrollCardView:View{
                     if index == 1{
                         HomePageAboutUsView(title: "关于我",content: recommandModel.myTag.count > 0 ? (recommandModel.aboutMeDesc + "\n" + recommandModel.myTag) : recommandModel.aboutMeDesc,userPhotos: recommandModel.userPhotos)
                     }
-                   
+                    
                     if index == 2{
+                        MyProfileView(title: "基本资料", contents: profileContent)
+                    }
+                   
+                    if index == 3{
                         HomePageAboutUsView(title: "希望对方",content: recommandModel.likePersonTag,userPhotos: [])
                     }
                   
-                    if !recommandModel.loveGoalsDesc.isEmpty && index == 3 {
+                    if !recommandModel.loveGoalsDesc.isEmpty && index == 4 {
                         HomePageAboutUsView(title: "恋爱目标",content: recommandModel.loveGoalsDesc,userPhotos: [])
                     }
                 }
@@ -141,7 +146,41 @@ struct ScrollCardView:View{
                 
             }.introspectScrollView(customize: { scrollView in
                 scrollView.bounces = false
-            })
+            }).onAppear{
+                profileContent.append("\(recommandModel.height)cm")
+                if !recommandModel.school.isEmpty{
+                    profileContent.append("\(recommandModel.school)")
+                }
+                
+                if !recommandModel.educationTypeDesc.isEmpty{
+                    profileContent.append("\(recommandModel.educationTypeDesc)")
+                }
+                
+                if !recommandModel.job.isEmpty{
+                    profileContent.append("\(recommandModel.job)")
+                }
+                
+                if !recommandModel.yearIncomeDesc.isEmpty{
+                    profileContent.append("年薪\(recommandModel.yearIncomeDesc)")
+                }
+                
+                if !recommandModel.homeTownCityName.isEmpty{
+                    if recommandModel.homeTownProvinceName != recommandModel.homeTownCityName{
+                        profileContent.append("家乡\(recommandModel.homeTownProvinceName)\(recommandModel.homeTownCityName)")
+                    }else{
+                        profileContent.append("家乡\(recommandModel.homeTownProvinceName)")
+                    }
+                }
+                
+                if !recommandModel.workCityName.isEmpty{
+                    if recommandModel.workProvinceName != recommandModel.workCityName{
+                        profileContent.append("现居地\(recommandModel.workProvinceName)\(recommandModel.workCityName)")
+                    }else{
+                        profileContent.append("现居地\(recommandModel.workProvinceName)")
+                    }
+                }
+                
+            }
             
         }.navigationViewStyle(.stack).clipShape(RoundedRectangle(cornerRadius: 10)).background(RoundedRectangle(cornerRadius: 10).fill(Color.white).shadow(color: Color.colorWithHexString(hex: "#E3E3E3").opacity(0.6), radius: 2, x: 0, y: 2)).padding(EdgeInsets(top: 0, leading: 10, bottom: CGFloat(topOffset) + 10, trailing: 10)).offset(y:-CGFloat(topOffset)).frame(width:screenWidth  - CGFloat(topOffset))
         if showLeftText {
@@ -253,6 +292,21 @@ struct ScrollCardView:View{
     
 }
 
+struct MyProfileView:View{
+    var title:String = "基本资料"
+    var contents:[String]
+    var body: some View{
+        HStack(alignment: .top, spacing: 0) {
+            Text(title)
+                .foregroundColor(.gray)
+                .font(.system(size: 15, weight: .medium, design: .default))
+            Spacer()
+        }.padding(EdgeInsets(top: 20, leading: 10, bottom: 15, trailing: 10))
+        FlexibleView(data:contents , spacing: 10, alignment: .leading) { item in
+            Text(item).foregroundColor(.black).font(.system(size: 16)).lineLimit(1).padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 15)).background(Capsule().fill(Color.colorWithHexString(hex: "F3F3F3"))).padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
+        }.padding(EdgeInsets(top: 0, leading: 5, bottom: 10, trailing: 10))
+    }
+}
 
 struct HomePageAboutUsView:View{
     var title : String
@@ -283,7 +337,8 @@ struct HomePageAboutUsView:View{
                        list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: photoModel._photo, originImgUrl: photoModel._photo))
                    }
                    myAppRootVC?.hero.browserPhoto(viewModules: list, initIndex: index)
-                    }
+                }
+               
             }
         
     }
@@ -310,9 +365,6 @@ struct CardView:View{
 struct CardHeaderView:View{
     var recommandModel : ReCommandModel
     @State var titles : [String] = []
-    @State var sumWidth : CGFloat = 0
-    @State var overParentWidthDic :[Int:[String]] = [:]
-    @State var rows :[Int] = []
     var body: some View{
         ZStack(alignment: .top) {
             GeometryReader { reader in
@@ -347,69 +399,42 @@ struct CardHeaderView:View{
                 }
                 Spacer()
             }).padding(EdgeInsets(top: 30, leading: 10, bottom: 0, trailing: 0))
-            ForEach(rows,id:\.self){ row in
-                let titleContents = overParentWidthDic[row] ?? []
-                HStack(alignment: .top, spacing: 10) {
-                    ForEach(titleContents,id:\.self){ title in
-                        BackColorText(title: title)
-                    }
-                }.padding(EdgeInsets(top: 20, leading: 10, bottom:row == rows.count - 1 ? 20 : 0, trailing: 10))
-            }
+            FlexibleView(
+                    data: titles,
+                    spacing: 10,
+                    alignment: .leading
+                  ) { item in
+                      BlackColorText(title: item)
+                  }
+                  .padding(EdgeInsets(top: 20, leading: 10, bottom:20, trailing: 10))
             
-            
-//            Spacer()
         }.padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 10)).onAppear {
-            if !recommandModel.school.isEmpty {
-                titles = ["\(recommandModel.height)cm",recommandModel.educationTypeDesc,recommandModel.school,recommandModel.job]
-            }else{
-                titles = ["\(recommandModel.height)cm",recommandModel.educationTypeDesc,recommandModel.job]
+          
+            titles.append("\(recommandModel.height)cm")
+            if recommandModel.educationType > 2{
+                titles.append(recommandModel.educationTypeDesc)
             }
-            sortTitles()
+            if !recommandModel.school.isEmpty {
+                titles.append(recommandModel.school)
+            }
+            
+            if !recommandModel.job.isEmpty{
+                titles.append(recommandModel.job)
+            }
+            
+//            if recommandModel.yearIncome > 1{
+//                titles.append("年薪" + recommandModel.yearIncomeDesc)
+//            }
             
         }
     }
       
     }
     
-    func sortTitles(){
-        rows.removeAll()
-        getNextRowTitles(row: 0, titles: titles)
-        log.info("overParentWidthDic:\(overParentWidthDic)")
-    }
     
-    func getNextRowTitles(row:Int,titles:[String]){
-        var normalRowTitles : [String] = []
-        var nextRowTitles : [String] = []
-        for (index,item) in titles.enumerated() {
-            let tuple = calTextWidth(index: index, title: item, font: UIFont.systemFont(ofSize: 17))
-            let textContent = tuple.1
-            if !textContent.isEmpty {
-                nextRowTitles.append(textContent)
-            }else{
-                normalRowTitles.append(item)
-            }
-        }
-        overParentWidthDic[row] = normalRowTitles
-        rows.append(row)
-        if !nextRowTitles.isEmpty {
-            getNextRowTitles(row: row + 1, titles: nextRowTitles)
-        }
-    }
-    
-    func calTextWidth(index:Int,title:String,font:UIFont) ->(index:Int,title:String){
-        let width = title.size(withAttributes: [NSAttributedString.Key.font : font]).width + 7 + 7
-        if index == 0 {
-            sumWidth = 0
-        }
-        sumWidth += ((index == 0) ? 10 + width : width)
-        if sumWidth > screenWidth - 40 {
-            return (index,title)
-        }
-        return (index,"")
-    }
 }
 
-struct BackColorText:View{
+struct BlackColorText:View{
     var title:String = ""
     var body: some View{
         Text(title).foregroundColor(.white).font(.system(size: 14)).lineLimit(1).padding(EdgeInsets(top: 7, leading: 10, bottom: 7, trailing: 10)).background(Capsule().fill(Color.black.opacity(0.4)))
