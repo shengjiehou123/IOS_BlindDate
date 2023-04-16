@@ -33,16 +33,29 @@ struct CustomPhotoPicker: UIViewControllerRepresentable {
             }
            
             func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-                let semaphore = DispatchSemaphore(value: 1)
+                var assetIdentifiers : [String] = []
+                for image in results {
+                    assetIdentifiers.append(image.assetIdentifier ?? "")
+                }
+                var dic : [String:UIImage] = [:]
                 for image in results {
                     if image.itemProvider.canLoadObject(ofClass: UIImage.self)  {
-                        semaphore.wait()
                         image.itemProvider.loadObject(ofClass: UIImage.self) { (newImage, error) in
                             if let error = error {
                                 print(error.localizedDescription)
                             } else {
-                                self.parent.pickerResult.append(newImage as!UIImage)
-                                semaphore.signal()
+                                dic[image.assetIdentifier ?? ""] = newImage as? UIImage
+                                if dic.values.count == results.count{
+                                    DispatchQueue.main.async {
+                                        for identifier in assetIdentifiers{
+                                            guard let uploadImage = dic[identifier] else{
+                                                continue
+                                            }
+                                            self.parent.pickerResult.append(uploadImage)
+                                        }
+                                    }
+                                }
+//                                self.parent.pickerResult.append(newImage as!UIImage)
                             }
                         }
                        
