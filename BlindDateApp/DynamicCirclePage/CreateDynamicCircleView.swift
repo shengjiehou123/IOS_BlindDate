@@ -46,11 +46,13 @@ struct CreateDynamicCircleView: View {
                 Spacer()
                 
                 Button {
-                    comment = comment.trimmingCharacters(in: .whitespaces)
-                    if comment.isEmpty {
-                        computedModel.showToast = true
-                        computedModel.toastMsg = "请输入文字"
-                        return
+                    if pickerResult.count == 0{
+                        comment = comment.trimmingCharacters(in: .whitespaces)
+                        if comment.isEmpty {
+                            computedModel.showToast = true
+                            computedModel.toastMsg = "请输入文字"
+                            return
+                        }
                     }
                     requestCreateCircle()
                 } label: {
@@ -59,7 +61,7 @@ struct CreateDynamicCircleView: View {
                             .font(.system(size: 15,weight: .medium))
                             .foregroundColor( .white).padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)).background(Capsule().fill(!comment.isEmpty || pickerResult.count > 0 ? btnLRLineGradient : .linearGradient(Gradient(colors: [Color.colorWithHexString(hex: "#999999")]), startPoint: .leading, endPoint: .trailing)))
                     }.padding(.trailing,20)
-                }.buttonStyle(PlainButtonStyle()).foregroundColor(.red).disabled(comment.isEmpty)
+                }.buttonStyle(PlainButtonStyle()).foregroundColor(.red).disabled((comment.isEmpty && pickerResult.count == 0))
 
             }
             ZStack(alignment: .topLeading) {

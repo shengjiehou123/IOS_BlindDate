@@ -31,24 +31,21 @@ struct CustomPhotoPicker: UIViewControllerRepresentable {
             init(_ parent: CustomPhotoPicker) {
                 self.parent = parent
             }
-            
+           
             func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-                var assetIdentifiers : [String] = []
-                var dic : [String:UIImage] = [:]
+                let semaphore = DispatchSemaphore(value: 1)
                 for image in results {
-                    assetIdentifiers.append(image.assetIdentifier ?? "")
-                    print("########\(assetIdentifiers)")
                     if image.itemProvider.canLoadObject(ofClass: UIImage.self)  {
-//                        image.assetIdentifier
-                        
+                        semaphore.wait()
                         image.itemProvider.loadObject(ofClass: UIImage.self) { (newImage, error) in
                             if let error = error {
                                 print(error.localizedDescription)
                             } else {
-                                dic[image.assetIdentifier ?? ""]  = newImage as? UIImage
-//                               self.parent.pickerResult.append(newImage as! UIImage)
+                                self.parent.pickerResult.append(newImage as!UIImage)
+                                semaphore.signal()
                             }
                         }
+                       
                     } else {
                         print("Loaded Assest is not a Image")
                     }
