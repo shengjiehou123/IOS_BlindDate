@@ -73,6 +73,8 @@ class UserPhotoModel:HandyJSON,Identifiable,Equatable{
     var _photo:String{
         return Consts.shared.imageHost + photo
     }
+    var width:Int = 0
+    var height:Int = 0
     var photoDesc:String = ""
     required  init() {
         

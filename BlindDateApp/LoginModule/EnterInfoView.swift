@@ -16,7 +16,7 @@ import Combine
 struct EnterInfoView: View {
     @State var scrollIndex: Int = 0
     @State var nickName: String = ""
-    @State var gender: Int = 3
+    @State var gender: Int = 0
     @State var birthDay: Double = 0
     @State var height: Int = 0
     @State var educationType : Int = 0
@@ -124,7 +124,7 @@ struct EnterInfoView: View {
                      "gender":gender,
                      "birthday":birthDay,
                      "height":height,
-                     "educationType":educationType,
+                     "educationType":educationType + 1,
                      "school":schoolName,
                      "job":job,
                      "yearIncome":yearIncome,
@@ -420,11 +420,11 @@ struct MyLifeView:View{
                                         .foregroundColor(.red)
                                 }
                             }
-                        }.contentShape(Rectangle()).frame(maxWidth:.infinity,minHeight: 150,maxHeight: 150, alignment: .center).background(RoundedRectangle(cornerRadius: 10).strokeBorder(.red,style: .init(lineWidth: 1, lineCap: .round, lineJoin: .round, miterLimit: 0, dash: [4,4], dashPhase: 2)))
+                        }.contentShape(Rectangle()).frame(width:(screenWidth - 40 - 20) / 3,height: 150, alignment: .center).background(RoundedRectangle(cornerRadius: 10).strokeBorder(.red,style: .init(lineWidth: 1, lineCap: .round, lineJoin: .round, miterLimit: 0, dash: [4,4], dashPhase: 2)))
                             .background((Color.colorWithHexString(hex: "#FFF9F9")))
                     }else{
                         Image(uiImage:  model.image! ).resizable().aspectRatio( contentMode: .fill)
-                            .frame(maxWidth:.infinity,minHeight: 150, maxHeight: 150,alignment: .center).clipShape(RoundedRectangle(cornerRadius: 10))
+                            .frame(width: (screenWidth - 40 - 20) / 3 ,height:150,alignment: .center).cornerRadius(10).clipped()
                     }
                    
                     
@@ -1073,7 +1073,7 @@ struct GenderAgeHeightView:View{
                 
                 Spacer()
                 BackBtnMergeNextBtnView {
-                    if gender > 1 {
+                    if gender == 0 {
                         showToast = true
                         toastMsg = "请选择性别"
                         return
@@ -1193,7 +1193,7 @@ struct GenderView:View{
                         }.padding(.leading,20)
                     }.onTapGesture {
                         selectedIndex = index + 1
-                        gender = (selectedIndex - 1 == 0) ? 1 : 0
+                        gender = selectedIndex
                     }
                 }
             }

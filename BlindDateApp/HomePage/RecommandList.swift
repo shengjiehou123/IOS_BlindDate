@@ -275,7 +275,7 @@ struct HomePageAboutUsView:View{
                 let index = userPhotos.firstIndex(of: model) ?? 0
                 let url = URL.init(string:model._photo)
                 Spacer().frame(height:10)
-                WebImage(url: url).resizable().interpolation(.high).aspectRatio(contentMode:.fill).frame(width:  screenWidth - 20, height: 400, alignment: .center)
+                WebImage(url: url).resizable().interpolation(.high).aspectRatio(contentMode:.fill).frame(width:  screenWidth - 20, height: getPhotoHeight(model: model), alignment: .center)
                     .clipped(antialiased: true).contentShape(Rectangle()).onTapGesture {
                    var list: [HeroBrowserViewModule] = []
                    for i in 0..<userPhotos.count {
@@ -286,6 +286,15 @@ struct HomePageAboutUsView:View{
                     }
             }
         
+    }
+    
+    func getPhotoHeight(model:UserPhotoModel) -> CGFloat{
+        if model.height == 0{
+            return 400
+        }
+        
+        
+        return CGFloat((Int(screenWidth) - 20) * model.height / model.width)
     }
 }
 
